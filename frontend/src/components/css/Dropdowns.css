@@ -1,0 +1,43 @@
+.filterDropdown {
+    margin-top: 2%;
+}
+
+.btn-primary {
+    color: #f6f4e6;
+    background-color: #FF8C32;
+    border-color: #FF8C32;
+}
+
+.btn-primary:hover {
+    color: #f6f4e6;
+    background-color: #dd6911;
+    border-color: #dd6911;
+}
+
+.btn-primary:focus {
+    color: #fff;
+    background-color: #dd6911;
+    border-color: #dd6911;
+    box-shadow: 0 0 0 0.25rem rgb(221 105 17 / 50%);
+}
+
+.show>.btn-primary.dropdown-toggle {
+    color: #f6f4e6;
+    background-color: #dd6911;
+    border-color: #dd6911;
+}
+
+.show>.btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.25rem rgb(221 105 17 / 50%);
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.checkboxGroup {
+    border-radius: 25px;
+    border: 2px solid #FF8C32;
+    padding: 20px; 
+    width: 200px;
+}

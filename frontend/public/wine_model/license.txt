@@ -1,0 +1,11 @@
+Model Information:
+* title:	Glass of wine
+* source:	https://sketchfab.com/3d-models/glass-of-wine-49fd48db381e47bea3724f086e99f32b
+* author:	combine_soldier (https://sketchfab.com/combine_soldier)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Glass of wine" (https://sketchfab.com/3d-models/glass-of-wine-49fd48db381e47bea3724f086e99f32b) by combine_soldier (https://sketchfab.com/combine_soldier) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

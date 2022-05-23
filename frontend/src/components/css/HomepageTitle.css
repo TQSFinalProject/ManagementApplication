@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:900i&display=swap');
+
+body {
+    /* background: yellow; */
+    font-family: 'Montserrat', sans-serif;
+}
+
+.mainTitle {
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    font-size: 5vw;
+    letter-spacing: 0.1vw;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 0.2vw;
+    -webkit-text-stroke-color: #DDDDDD;
+    text-shadow:
+        8px 8px #FF8C32,
+        20px 20px #06113C;
+}
