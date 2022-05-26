@@ -1,10 +1,9 @@
 // React
 import React from 'react';
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
-import ModelViewer from '../components/ModelViewer';
 
 // Bootstrap
 import Container from 'react-bootstrap/Container'
@@ -20,15 +19,33 @@ function Homepage() {
         <>
             <GeneralNavbar />
 
-            <Container>
-                <Row>
-                    <Col sm={8}>
-                        <div style={{ marginTop: '2%', width: '30vw', height: '89vh' }}>
-                            <ModelViewer scale="0.4" modelPath={"/wine_model/scene.gltf"} />
+            <Container style={{ marginInline: 'auto' }}>
+                <Row className="d-flex justify-content-center">
+                    <Col className='align-self-center col-xs-1' align='center'>
+                        <div style={{ marginTop: '40%' }}>
+                            <svg xmlns="http://www.w3.org/2000/svg">
+                                <filter id="motion-blur-filter" filterUnits="userSpaceOnUse">
+                                    <feGaussianBlur stdDeviation="100 0"></feGaussianBlur>
+                                </filter>
+                            </svg>
+                            <span>
+                                <span className='homepageTitle' filter-content="T">TRACK</span> <br />
+                                <span className='homepageTitle' filter-content="I">IT</span>
+                            </span>
                         </div>
+                        <Row style={{ marginTop: '5%' }}>
+                            <span className='presentationText'>A trustworthy management system.</span>
+                        </Row>
                     </Col>
-                    <Col sm={4}>
-                        <span className='mainTitle'>CHATEAU DU VIN</span>
+                    <Col className='align-self-center col-xs-1' align='center'>
+                        <Link to='/login'>
+                            <button className="learn-more" style={{ marginTop: '70%' }}>
+                                <span className="circle" aria-hidden="true">
+                                    <span className="icon arrow"></span>
+                                </span>
+                                <span className="button-text">Login</span>
+                            </button>
+                        </Link>
                     </Col>
                 </Row>
             </Container>

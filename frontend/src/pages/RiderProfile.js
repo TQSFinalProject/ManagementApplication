@@ -25,9 +25,6 @@ import { staff } from '../App'
 
 function RiderProfile() {
 
-    console.log(staff)
-    
-
     const params = useParams();
     const riderId = params.id;
     const rider = staff[riderId - 1];

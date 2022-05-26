@@ -1,6 +1,6 @@
 // React
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
@@ -39,8 +39,6 @@ function dynamicSort(property) {
 
 function Staff() {
 
-    // document.getElementById("page1").click();
-
     let navigate = useNavigate();
     let local_staff = [...staff]; // because the sorting of the filters was changing the original staff and messing things up
 
@@ -60,27 +58,7 @@ function Staff() {
     }
 
     function checkBoxFoolery() {
-
-        local_staff = [...staff]
-
-        let a = document.getElementById('checkboxA').checked == true
-        let b = document.getElementById('checkboxB').checked == true
-        let c = document.getElementById('checkboxC').checked == true
-        let d = document.getElementById('checkboxD').checked == true
-
-        if (a || b || c || d) {
-            if (!a) {
-                for (let driver of local_staff) {
-                    if (driver.workZone=='A') {
-                        
-                    }
-                }
-            }
-        }
-        // else {
-        //     local_staff = [...staff]
-        // }
-
+        // TODO: do this
     }
 
     return (
@@ -88,7 +66,16 @@ function Staff() {
             <GeneralNavbar />
 
             <Container>
-                <h1 style={{ marginTop: '5%' }}>PERSONNEL MANAGEMENT</h1>
+                <Row>
+                    <Col style={{ marginTop: '5%' }} sm={8}>
+                        <h1>PERSONNEL MANAGEMENT</h1>
+                    </Col>
+                    <Col style={{ marginTop: '10%', paddingLeft: '8%' }} sm={4}>
+                        <Link to='/applications'>
+                            <Button>Check new job applications</Button>
+                        </Link>
+                    </Col>
+                </Row>
             </Container>
 
             <Container style={{ marginTop: '2%' }}>
@@ -158,14 +145,14 @@ function Staff() {
                                     <Toast.Body>
                                         <Container>
                                             <Row>
-                                                <Col className='align-self-center col-xs-1'  align='center'>
+                                                <Col className='align-self-center col-xs-1' align='center'>
                                                     {staffList()[idx].name}<br />
                                                     <StarRating rating={staffList()[idx].rating} />
 
                                                 </Col>
-                                                <Col className='align-self-center col-xs-1'  align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
+                                                <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
                                                     <img src={staffList()[idx].img} className="rounded mr-2" alt="Employee Pic" style={{ height: '50px' }}></img>                                                </Col>
-                                                <Col className='align-self-center col-xs-1'  align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
+                                                <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
                                                     <Button onClick={() => { redirectUserPage(staffList()[idx].id) }}><i className="fa fa-user"></i></Button>
                                                 </Col>
                                             </Row>
