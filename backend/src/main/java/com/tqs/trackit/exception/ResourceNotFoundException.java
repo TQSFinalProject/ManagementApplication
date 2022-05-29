@@ -1,4 +1,4 @@
-package com.tqs.chateauduvin.exception;
+package com.tqs.trackit.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

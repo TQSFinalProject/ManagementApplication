@@ -1,4 +1,4 @@
-package com.tqs.chateauduvin.exception;
+package com.tqs.trackit.exception;
 
 import java.util.Date;
 
