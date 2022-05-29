@@ -12,6 +12,7 @@
     color: #f6f4e6;
     background-color: #dd6911;
     border-color: #dd6911;
+    box-shadow: 0 0 0 0.25rem rgb(221 105 17 / 50%);
 }
 
 .btn-primary:focus {
@@ -40,4 +41,51 @@
     border: 2px solid #FF8C32;
     padding: 20px; 
     width: 200px;
+}
+.riderSuggestion {
+    border-radius: 10rem;
+    background-color: white;
+    color: #06113C;
+}
+
+.acceptApplication {
+    border-radius: 25px;
+    border: 2px solid red;
+    background-color: white;
+    color: red;
+}
+
+.acceptApplication:hover {
+    border: 2px solid red;
+    background-color: red;
+    color: white;
+    box-shadow: 0 0 0 0.25rem rgba(193, 21, 21, 0.5);
+}
+
+.acceptApplication:focus {
+    border: 2px solid red;
+    background-color: red;
+    color: white;
+    box-shadow: 0 0 0 0.25rem rgba(193, 21, 21, 0.5);
+}
+
+.dismissApplication {
+    border-radius: 25px;
+    border: 2px solid green;
+    background-color: white;
+    color: green;
+}
+
+.dismissApplication:hover {
+    border: 2px solid green;
+    background-color: green;
+    color: white;
+    box-shadow: 0 0 0 0.25rem rgba(21, 100, 34, 0.5);
+}
+
+.dismissApplication:focus {
+    border: 2px solid green;
+    background-color: green;
+    color: white;
+    box-shadow: 0 0 0 0.25rem rgba(21, 100, 34, 0.5);
 }

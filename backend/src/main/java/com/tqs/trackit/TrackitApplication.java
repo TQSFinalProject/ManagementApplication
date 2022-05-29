@@ -1,13 +1,13 @@
-package com.tqs.chateauduvin;
+package com.tqs.trackit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChateauduvinApplication {
+public class TrackitApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ChateauduvinApplication.class, args);
+		SpringApplication.run(TrackitApplication.class, args);
 	}
 
 }

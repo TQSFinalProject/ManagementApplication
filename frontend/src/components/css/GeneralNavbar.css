@@ -83,8 +83,8 @@ body {
 }
 
 .navMenu a:nth-child(5):hover ~ .dot {
-  -webkit-transform: translateX(455px);
-  transform: translateX(455px);
+  -webkit-transform: translateX(447px);
+  transform: translateX(447px);
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   opacity: 1;

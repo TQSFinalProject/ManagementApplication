@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tqs</groupId>
-	<artifactId>chateauduvin</artifactId>
+	<artifactId>trackit</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>chateauduvin</name>
-	<description>Final Project for TQS UC</description>
+	<name>trackit</name>
+	<description>Final Project for TQS UC - Management App</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
