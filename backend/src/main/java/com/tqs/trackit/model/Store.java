@@ -1,5 +1,7 @@
 package com.tqs.trackit.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -55,6 +57,24 @@ public class Store {
     public void setStore_address(String store_address) {
         this.store_address = store_address;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Store)) {
+            return false;
+        }
+        Store store = (Store) o;
+        return id == store.id && Objects.equals(shipping_tax, store.shipping_tax) && Objects.equals(store_address, store.store_address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, shipping_tax, store_address);
+    }
+
 
 
     @Override

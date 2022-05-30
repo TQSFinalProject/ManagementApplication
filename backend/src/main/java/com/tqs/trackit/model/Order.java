@@ -1,6 +1,7 @@
 package com.tqs.trackit.model;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,51 +11,58 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "order") 
+@Table(name = "orders")
 public class Order {
-    @Id //The ID will be auto generated
+    @Id // The ID will be auto generated
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Column(name = "order_status", nullable = false)
+    private String order_status;
 
     @Column(name = "delivery_address", nullable = false)
     private String delivery_address;
 
-    @Column(name = "estimated_delivery_time", nullable = false)
+    @Column(name = "estimated_delivery_time")
     private LocalDateTime estimated_delivery_time;
 
     @Column(name = "submited_time", nullable = false)
     private LocalDateTime submited_time;
 
-    @Column(name = "rider_id", nullable = false)
+    @Column(name = "delivery_time")
+    private LocalDateTime delivery_time;
+
+    @Column(name = "rider_id")
     private Long rider_id;
 
-    @Column(name = "store_id", nullable = false)
+    @Column(name = "store_id")
     private Long store_id;
 
-    @Column(name = "details", nullable = false)
-    private String details;
+    @Column(name = "order_details")
+    private String order_details;
 
     @Column(name = "phone", nullable = false)
     private Long phone;
 
+    @Column(name="rating")
+    private Double rating;
 
     public Order() {
     }
 
 
-    public Order(long id, String status, String delivery_address, LocalDateTime estimated_delivery_time, LocalDateTime submited_time, Long rider_id, Long store_id, String details, Long phone) {
+    public Order(long id, String order_status, String delivery_address, LocalDateTime estimated_delivery_time, LocalDateTime submited_time, LocalDateTime delivery_time, Long rider_id, Long store_id, String order_details, Long phone, Double rating) {
         this.id = id;
-        this.status = status;
+        this.order_status = order_status;
         this.delivery_address = delivery_address;
         this.estimated_delivery_time = estimated_delivery_time;
         this.submited_time = submited_time;
+        this.delivery_time = delivery_time;
         this.rider_id = rider_id;
         this.store_id = store_id;
-        this.details = details;
+        this.order_details = order_details;
         this.phone = phone;
+        this.rating = rating;
     }
 
 
@@ -66,12 +74,12 @@ public class Order {
         this.id = id;
     }
 
-    public String getStatus() {
-        return this.status;
+    public String getOrder_status() {
+        return this.order_status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setOrder_status(String order_status) {
+        this.order_status = order_status;
     }
 
     public String getDelivery_address() {
@@ -98,6 +106,14 @@ public class Order {
         this.submited_time = submited_time;
     }
 
+    public LocalDateTime getDelivery_time() {
+        return this.delivery_time;
+    }
+
+    public void setDelivery_time(LocalDateTime delivery_time) {
+        this.delivery_time = delivery_time;
+    }
+
     public Long getRider_id() {
         return this.rider_id;
     }
@@ -114,12 +130,12 @@ public class Order {
         this.store_id = store_id;
     }
 
-    public String getDetails() {
-        return this.details;
+    public String getOrder_details() {
+        return this.order_details;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public void setOrder_details(String order_details) {
+        this.order_details = order_details;
     }
 
     public Long getPhone() {
@@ -130,19 +146,31 @@ public class Order {
         this.phone = phone;
     }
 
+    public Double getRating() {
+        return this.rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
 
     @Override
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", status='" + getStatus() + "'" +
+            ", order_status='" + getOrder_status() + "'" +
             ", delivery_address='" + getDelivery_address() + "'" +
             ", estimated_delivery_time='" + getEstimated_delivery_time() + "'" +
             ", submited_time='" + getSubmited_time() + "'" +
+            ", delivery_time='" + getDelivery_time() + "'" +
             ", rider_id='" + getRider_id() + "'" +
             ", store_id='" + getStore_id() + "'" +
-            ", details='" + getDetails() + "'" +
+            ", order_details='" + getOrder_details() + "'" +
             ", phone='" + getPhone() + "'" +
+            ", rating='" + getRating() + "'" +
             "}";
     }
+
+
 }
