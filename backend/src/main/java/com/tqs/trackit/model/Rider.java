@@ -1,6 +1,10 @@
 package com.tqs.trackit.model;
 
+import java.util.List;
+import java.util.Objects;
+
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -35,12 +39,17 @@ public class Rider {
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
+    @Column(name = "ratings", nullable = false)
+    @ElementCollection
+    private List<Double> ratings;
+
 
     public Rider() {
     }
 
 
-    public Rider(long id, String first_name, String last_name, Long phone, String username, String password, Double latitude, Double longitude) {
+
+    public Rider(long id, String first_name, String last_name, Long phone, String username, String password, Double latitude, Double longitude, List<Double> ratings) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -49,6 +58,7 @@ public class Rider {
         this.password = password;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.ratings = ratings;
     }
 
 
@@ -116,6 +126,30 @@ public class Rider {
         this.longitude = longitude;
     }
 
+    public List<Double> getRatings() {
+        return this.ratings;
+    }
+
+    public void setRatings(List<Double> ratings) {
+        this.ratings = ratings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Rider)) {
+            return false;
+        }
+        Rider rider = (Rider) o;
+        return id == rider.id && Objects.equals(first_name, rider.first_name) && Objects.equals(last_name, rider.last_name) && Objects.equals(phone, rider.phone) && Objects.equals(username, rider.username) && Objects.equals(password, rider.password) && Objects.equals(latitude, rider.latitude) && Objects.equals(longitude, rider.longitude) && Objects.equals(ratings, rider.ratings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, first_name, last_name, phone, username, password, latitude, longitude, ratings);
+    }
+
 
     @Override
     public String toString() {
@@ -128,9 +162,8 @@ public class Rider {
             ", password='" + getPassword() + "'" +
             ", latitude='" + getLatitude() + "'" +
             ", longitude='" + getLongitude() + "'" +
+            ", ratings='" + getRatings() + "'" +
             "}";
     }
-
-
     
 }
