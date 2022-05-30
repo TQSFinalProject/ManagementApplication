@@ -15,9 +15,10 @@ import Toast from 'react-bootstrap/Toast'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Button from 'react-bootstrap/Button'
 
-// Font Awesome
+// // Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faM, faMap } from '@fortawesome/free-solid-svg-icons'
+import { faFile } from '@fortawesome/free-solid-svg-icons'
 
 // CSS
 import DropdownCSS from '../components/css/Dropdowns.css'
@@ -70,9 +71,12 @@ function Staff() {
                     <Col style={{ marginTop: '5%' }} sm={8}>
                         <h1>PERSONNEL MANAGEMENT</h1>
                     </Col>
-                    <Col style={{ marginTop: '10%', paddingLeft: '8%' }} sm={4}>
+                    <Col className="text-center text-md-right" style={{ marginTop: '10%' }} sm={4}>
+                        <Link to='/map'>
+                            <Button style={{ marginRight: '3%' }}><FontAwesomeIcon icon={faMap} /></Button>
+                        </Link>
                         <Link to='/applications'>
-                            <Button>Check new job applications</Button>
+                            <Button><FontAwesomeIcon icon={faFile} /></Button>
                         </Link>
                     </Col>
                 </Row>

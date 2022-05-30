@@ -15,6 +15,7 @@ import Toast from 'react-bootstrap/Toast'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import Badge from 'react-bootstrap/Badge'
 
 // Font Awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -69,49 +70,27 @@ function Tasks() {
                             <span className="focus-bg"></span>
                         </label>
 
-                        <Container style={{ padding: '0%', margin: '0%' }}>
-                            <Row style={{ marginTop: '1%' }}>
-                                <p>Recentness:</p>
-                            </Row>
-                            <Row style={{ marginTop: '-4%' }}>
-                                <Col>
-                                    <label htmlFor="inputRecentnessFrom" className="inp">
-                                        <input type="text" id="inputRecentnessFrom" placeholder="&nbsp;" />
-                                        <span className="label">From</span>
-                                        <span className="focus-bg"></span>
-                                    </label>
-                                </Col>
-                                <Col>
-                                    <label htmlFor="inputRecentnessTo" className="inp">
-                                        <input type="text" id="inputRecentnessTo" placeholder="&nbsp;" />
-                                        <span className="label">To</span>
-                                        <span className="focus-bg"></span>
-                                    </label>
-                                </Col>
-                            </Row>
-                        </Container>
+                        <Dropdown className='filterDropdown'>
+                            <Dropdown.Toggle id="dropdown-basic">
+                                Lateness
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item className="clickable">On time</Dropdown.Item>
+                                <Dropdown.Item className="clickable">Late</Dropdown.Item>
+                                <Dropdown.Item className="clickable">Very late</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
 
-                        <Container style={{ padding: '0%', margin: '0%' }}>
-                            <Row style={{ marginTop: '1%' }}>
-                                <p>Estimated completion time:</p>
-                            </Row>
-                            <Row style={{ marginTop: '-4%' }}>
-                                <Col>
-                                    <label htmlFor="inputCompletionFrom" className="inp">
-                                        <input type="text" id="inputCompletionFrom" placeholder="&nbsp;" />
-                                        <span className="label">From</span>
-                                        <span className="focus-bg"></span>
-                                    </label>
-                                </Col>
-                                <Col>
-                                    <label htmlFor="inputCompletionTo" className="inp">
-                                        <input type="text" id="inputCompletionTo" placeholder="&nbsp;" />
-                                        <span className="label">To</span>
-                                        <span className="focus-bg"></span>
-                                    </label>
-                                </Col>
-                            </Row>
-                        </Container>
+                        <Dropdown className='filterDropdown'>
+                            <Dropdown.Toggle id="dropdown-basic">
+                                Distance
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item className="clickable">Close</Dropdown.Item>
+                                <Dropdown.Item className="clickable">Average</Dropdown.Item>
+                                <Dropdown.Item className="clickable">Far away</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
 
                     </Col>
                     <Col sm={8}>
@@ -120,6 +99,8 @@ function Tasks() {
                                 <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
                                     <Toast.Header closeButton={false}>
                                         <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
+                                        <Badge style={{ marginRight: '5%' }} bg="warning" text="dark">Far Away</Badge>
+                                        <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
                                         <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a>
                                     </Toast.Header>
                                     <Toast.Body>
@@ -131,8 +112,8 @@ function Tasks() {
                                                         <strong>Store: </strong>{stores[tasks[idx].storeId - 1].name}<br />
                                                         <strong>Delivery address: </strong>{tasks[idx].delivery}<br />
                                                         <strong>Distance from store: </strong>{tasks[idx].distance} km<br />
-                                                        <strong>Submitted: </strong>{secsToMins(tasks[idx].time)} ago<br />
-                                                        <strong>Estimated completion time: </strong>{secsToMins(tasks[idx].completion)}<br />
+                                                        {/* <strong>Submitted: </strong>{secsToMins(tasks[idx].time)} ago<br />
+                                                        <strong>Estimated completion time: </strong>{secsToMins(tasks[idx].completion)}<br /> */}
                                                     </span>
                                                 </Col>
                                             </Row>

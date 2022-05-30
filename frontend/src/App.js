@@ -13,6 +13,7 @@ import RiderProfile from './pages/RiderProfile';
 import Login from './pages/Login';
 import NewApplications from './pages/NewApplications';
 import StoreTasks from './pages/StoreTasks';
+import Map from './pages/Map';
 
 export let staff = [
   { id: 1, name: "Afonso Campos", rating: 5, img: 'https://cdn-icons-png.flaticon.com/512/147/147144.png', time: 10, workZone: 'A' },
@@ -66,6 +67,7 @@ function App() {
         <Route path="/login" element={<Login />}></Route>
         <Route path="/applications" element={<NewApplications />}></Route>
         <Route path="/store_tasks/:id" element={<StoreTasks />}></Route>
+        <Route path="/map" element={<Map />}></Route>
       </Routes>
     </BrowserRouter>
   );
