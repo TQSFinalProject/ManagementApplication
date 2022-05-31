@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "rider") 
 public class Rider {
     @Id //The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "first_name", nullable = false)

@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Table(name = "orders")
 public class Order {
     @Id // The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "order_status", nullable = false)

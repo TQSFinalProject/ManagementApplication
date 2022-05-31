@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Table(name = "store") 
 public class Store {
     @Id //The ID will be auto generated
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "shipping_tax", nullable = false)
