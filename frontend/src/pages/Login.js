@@ -44,8 +44,6 @@ export class Login extends Component {
                             </Form>
                         </Col>
                     </Row>
-
-
                 </Container>
             </>
         )
