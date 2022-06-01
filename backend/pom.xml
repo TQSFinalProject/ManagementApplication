@@ -15,11 +15,19 @@
 	<description>Final Project for TQS UC - Management App</description>
 	<properties>
 		<java.version>11</java.version>
+		<sonar.organization>tqsfinalproject</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core-parent</artifactId>
+			<version>2</version>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
