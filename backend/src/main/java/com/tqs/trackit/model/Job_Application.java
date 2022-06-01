@@ -33,6 +33,9 @@ public class Job_Application {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "photo", nullable = false)
+    private String photo;
+
     @Column(name = "cv", nullable = false)
     private String cv;
 
@@ -42,13 +45,15 @@ public class Job_Application {
     }
 
 
-    public Job_Application(long id, String first_name, String last_name, LocalDate date_of_birth, Long phone, String email, String cv) {
+
+    public Job_Application(long id, String first_name, String last_name, LocalDate date_of_birth, Long phone, String email, String photo, String cv) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.date_of_birth = date_of_birth;
         this.phone = phone;
         this.email = email;
+        this.photo = photo;
         this.cv = cv;
     }
 
@@ -101,6 +106,14 @@ public class Job_Application {
         this.email = email;
     }
 
+    public String getPhoto() {
+        return this.photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     public String getCv() {
         return this.cv;
     }
@@ -118,12 +131,12 @@ public class Job_Application {
             return false;
         }
         Job_Application job_Application = (Job_Application) o;
-        return id == job_Application.id && Objects.equals(first_name, job_Application.first_name) && Objects.equals(last_name, job_Application.last_name) && Objects.equals(date_of_birth, job_Application.date_of_birth) && Objects.equals(phone, job_Application.phone) && Objects.equals(email, job_Application.email) && Objects.equals(cv, job_Application.cv);
+        return id == job_Application.id && Objects.equals(first_name, job_Application.first_name) && Objects.equals(last_name, job_Application.last_name) && Objects.equals(date_of_birth, job_Application.date_of_birth) && Objects.equals(phone, job_Application.phone) && Objects.equals(email, job_Application.email) && Objects.equals(photo, job_Application.photo) && Objects.equals(cv, job_Application.cv);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, first_name, last_name, date_of_birth, phone, email, cv);
+        return Objects.hash(id, first_name, last_name, date_of_birth, phone, email, photo, cv);
     }
 
 
@@ -136,9 +149,11 @@ public class Job_Application {
             ", date_of_birth='" + getDate_of_birth() + "'" +
             ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +
+            ", photo='" + getPhoto() + "'" +
             ", cv='" + getCv() + "'" +
             "}";
     }
+    
 
     
 }
