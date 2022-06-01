@@ -1,6 +1,7 @@
 // React
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
@@ -21,11 +22,15 @@ import Badge from 'react-bootstrap/Badge'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsSpin } from '@fortawesome/free-solid-svg-icons'
 
-// Employee data
-import { staff, tasks, stores } from '../App'
+// // Employee data
+// import { staff, tasks, stores } from '../App'
 
 // CSS
 import SearchBar from '../components/css/SearchBar.css'
+
+const endpoint_orders = "api/orders";
+const endpoint_riders = "api/riders";
+const endpoint_stores = "api/stores";
 
 export function secsToMins(secs) {
     var mins = Math.floor(secs / 60);
@@ -37,8 +42,27 @@ function Tasks() {
 
     const [show, setShow] = useState(false);
 
+    const [staff, setStaff] = useState([]);
+    const [tasks, setTasks] = useState([]);
+    const [stores, setStores] = useState([]);
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
+            setStaff(response.data);
+            // console.log(response.data);
+        });
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders).then((response) => {
+            setTasks(response.data);
+            // console.log(response.data);
+        });
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores).then((response) => {
+            setStores(response.data);
+            // console.log(response.data);
+        });
+    }, []);
 
     function handleCallback(page) { // for the pagination buttons
 
@@ -99,8 +123,12 @@ function Tasks() {
                                 <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
                                     <Toast.Header closeButton={false}>
                                         <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
-                                        <Badge style={{ marginRight: '5%' }} bg="warning" text="dark">Far Away</Badge>
-                                        <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
+                                        {/* <Badge style={{ marginRight: '5%' }} bg="warning" text="dark">Far Away</Badge> */}
+                                        {tasks[idx].order_status == 'Late' ?
+                                            <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
+                                            :
+                                            <></>
+                                        }
                                         <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a>
                                     </Toast.Header>
                                     <Toast.Body>
@@ -108,12 +136,9 @@ function Tasks() {
                                             <Row>
                                                 <Col>
                                                     <span>
-                                                        <strong>Rider: </strong>{staff[tasks[idx].riderId - 1].name}<br />
-                                                        <strong>Store: </strong>{stores[tasks[idx].storeId - 1].name}<br />
-                                                        <strong>Delivery address: </strong>{tasks[idx].delivery}<br />
-                                                        <strong>Distance from store: </strong>{tasks[idx].distance} km<br />
-                                                        {/* <strong>Submitted: </strong>{secsToMins(tasks[idx].time)} ago<br />
-                                                        <strong>Estimated completion time: </strong>{secsToMins(tasks[idx].completion)}<br /> */}
+                                                        <strong>Rider: </strong>{staff[tasks[idx].rider_id - 1].first_name + " " + staff[tasks[idx].rider_id - 1].last_name}<br />
+                                                        <strong>Store: </strong>Chateau Du Vin<br />
+                                                        <strong>Delivery address: </strong>{tasks[idx].delivery_address}<br />
                                                     </span>
                                                 </Col>
                                             </Row>
