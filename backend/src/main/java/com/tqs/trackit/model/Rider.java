@@ -33,6 +33,9 @@ public class Rider {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "rider_photo", nullable = false)
+    private String rider_photo;
+
     @Column(name = "latitude", nullable = false)
     private Double latitude;
 
@@ -49,13 +52,14 @@ public class Rider {
 
 
 
-    public Rider(long id, String first_name, String last_name, Long phone, String username, String password, Double latitude, Double longitude, List<Double> ratings) {
+    public Rider(long id, String first_name, String last_name, Long phone, String username, String password, String rider_photo, Double latitude, Double longitude, List<Double> ratings) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.phone = phone;
         this.username = username;
         this.password = password;
+        this.rider_photo = rider_photo;
         this.latitude = latitude;
         this.longitude = longitude;
         this.ratings = ratings;
@@ -110,6 +114,14 @@ public class Rider {
         this.password = password;
     }
 
+    public String getRider_photo() {
+        return this.rider_photo;
+    }
+
+    public void setRider_photo(String rider_photo) {
+        this.rider_photo = rider_photo;
+    }
+
     public Double getLatitude() {
         return this.latitude;
     }
@@ -134,6 +146,7 @@ public class Rider {
         this.ratings = ratings;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -142,12 +155,12 @@ public class Rider {
             return false;
         }
         Rider rider = (Rider) o;
-        return id == rider.id && Objects.equals(first_name, rider.first_name) && Objects.equals(last_name, rider.last_name) && Objects.equals(phone, rider.phone) && Objects.equals(username, rider.username) && Objects.equals(password, rider.password) && Objects.equals(latitude, rider.latitude) && Objects.equals(longitude, rider.longitude) && Objects.equals(ratings, rider.ratings);
+        return id == rider.id && Objects.equals(first_name, rider.first_name) && Objects.equals(last_name, rider.last_name) && Objects.equals(phone, rider.phone) && Objects.equals(username, rider.username) && Objects.equals(password, rider.password) && Objects.equals(rider_photo, rider.rider_photo) && Objects.equals(latitude, rider.latitude) && Objects.equals(longitude, rider.longitude) && Objects.equals(ratings, rider.ratings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, first_name, last_name, phone, username, password, latitude, longitude, ratings);
+        return Objects.hash(id, first_name, last_name, phone, username, password, rider_photo, latitude, longitude, ratings);
     }
 
 
@@ -160,6 +173,7 @@ public class Rider {
             ", phone='" + getPhone() + "'" +
             ", username='" + getUsername() + "'" +
             ", password='" + getPassword() + "'" +
+            ", rider_photo='" + getRider_photo() + "'" +
             ", latitude='" + getLatitude() + "'" +
             ", longitude='" + getLongitude() + "'" +
             ", ratings='" + getRatings() + "'" +
