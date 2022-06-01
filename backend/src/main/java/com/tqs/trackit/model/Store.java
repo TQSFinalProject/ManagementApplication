@@ -16,6 +16,9 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "store_name", nullable = false)
+    private String store_name;
+
     @Column(name = "shipping_tax", nullable = false)
     private Double shipping_tax;
 
@@ -27,8 +30,9 @@ public class Store {
     }
 
 
-    public Store(long id, Double shipping_tax, String store_address) {
+    public Store(long id, String store_name, Double shipping_tax, String store_address) {
         this.id = id;
+        this.store_name = store_name;
         this.shipping_tax = shipping_tax;
         this.store_address = store_address;
     }
@@ -40,6 +44,14 @@ public class Store {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getStore_name() {
+        return this.store_name;
+    }
+
+    public void setStore_name(String store_name) {
+        this.store_name = store_name;
     }
 
     public Double getShipping_tax() {
@@ -67,24 +79,23 @@ public class Store {
             return false;
         }
         Store store = (Store) o;
-        return id == store.id && Objects.equals(shipping_tax, store.shipping_tax) && Objects.equals(store_address, store.store_address);
+        return id == store.id && Objects.equals(store_name, store.store_name) && Objects.equals(shipping_tax, store.shipping_tax) && Objects.equals(store_address, store.store_address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, shipping_tax, store_address);
+        return Objects.hash(id, store_name, shipping_tax, store_address);
     }
-
 
 
     @Override
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
+            ", store_name='" + getStore_name() + "'" +
             ", shipping_tax='" + getShipping_tax() + "'" +
             ", store_address='" + getStore_address() + "'" +
             "}";
     }
 
-    
 }
