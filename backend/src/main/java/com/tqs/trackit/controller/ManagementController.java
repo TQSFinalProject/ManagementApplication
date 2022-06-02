@@ -2,6 +2,7 @@ package com.tqs.trackit.controller;
 
 import java.util.List;
 
+import com.tqs.trackit.model.Job_Application;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.model.Store;
@@ -53,5 +54,15 @@ public class ManagementController {
     @PostMapping("/stores")
     public Store createStore(@RequestBody Store store) {
         return manageServ.saveStore(store);
+    }
+
+    @GetMapping("/job_applications")
+    public ResponseEntity<List<Job_Application>> getApplications() {
+        return ResponseEntity.ok().body(manageServ.getApplications());
+    }
+
+    @PostMapping("/job_applications")
+    public Job_Application createApplication(@RequestBody Job_Application application) {
+        return manageServ.saveApplication(application);
     }
 }

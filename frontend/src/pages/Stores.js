@@ -1,6 +1,7 @@
 // React
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Bootstrap
 import Container from 'react-bootstrap/Container'
@@ -13,12 +14,16 @@ import Button from 'react-bootstrap/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faListCheck } from '@fortawesome/free-solid-svg-icons'
 
-// Employee data
-import { staff, tasks, stores } from '../App'
+// // Employee data
+// import { staff, tasks, stores } from '../App'
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
 import Pagination from '../components/Pagination';
+
+const endpoint_orders = "api/orders";
+const endpoint_riders = "api/riders";
+const endpoint_stores = "api/stores";
 
 function secsToMins(secs) {
     var mins = Math.floor(secs / 60);
@@ -30,12 +35,31 @@ function Stores() {
 
     const [show, setShow] = useState(false);
 
+    const [staff, setStaff] = useState([]);
+    const [tasks, setTasks] = useState([]);
+    const [stores, setStores] = useState([]);
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const collect = require('collect.js');
 
     let navigate = useNavigate();
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
+            setStaff(response.data);
+            // console.log(response.data);
+        });
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders).then((response) => {
+            setTasks(response.data);
+            // console.log(response.data);
+        });
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores).then((response) => {
+            setStores(response.data);
+            console.log(response.data);
+        });
+    }, []);
 
     function handleCallback(page) { // for the pagination buttons
 
@@ -96,8 +120,9 @@ function Stores() {
                                             <Row>
                                                 <Col>
                                                     <span>
-                                                        <strong>Name: </strong>{stores[idx].name}<br />
-                                                        <strong>Address: </strong>{stores[idx].address}<br />
+                                                        <strong>Name: </strong>Chateau Du Vin<br />
+                                                        <strong>Address: </strong>{stores[idx].store_address}<br />
+                                                        <strong>Shipping tax: </strong>{stores[idx].shipping_tax}%<br />
                                                         <strong>Current tasks: </strong>{ collect(tasks).where('storeId', '=', stores[idx].id).count() }<br />
                                                     </span>
                                                 </Col>

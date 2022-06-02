@@ -1,5 +1,5 @@
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 
 // Components
@@ -23,8 +23,9 @@ import { faFile } from '@fortawesome/free-solid-svg-icons'
 // CSS
 import DropdownCSS from '../components/css/Dropdowns.css'
 
-// Employee data
-import { staff } from '../App'
+import axios from "axios";
+
+const endpoint_riders = "api/riders";
 
 function dynamicSort(property) {
     var sortOrder = 1;
@@ -38,24 +39,36 @@ function dynamicSort(property) {
     }
 }
 
+function averageRating(listOfRatings) {
+    let sum = 0;
+    let count = 0;
+    for (let rating of listOfRatings) {
+        count += 1;
+        sum += rating;
+    }
+    let avg = Math.round(sum/count);
+    return avg;
+}
+
 function Staff() {
 
     let navigate = useNavigate();
-    let local_staff = [...staff]; // because the sorting of the filters was changing the original staff and messing things up
+    // let local_staff = [...staff]; // because the sorting of the filters was changing the original staff and messing things up
+
+    const [staff, setStaff] = useState([]);
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
+            setStaff(response.data);
+        });
+    }, []);
 
     function handleCallback(page) { // for the pagination buttons
-        setCurrentPage(page);
+        // setCurrentPage(page);
     }
 
     function redirectUserPage(userId) {
         navigate('/rider/' + userId);
-    }
-
-    let [currentPage, setCurrentPage] = useState(null);
-    let [orderedStaff, setOrderedStaff] = useState(local_staff);
-
-    function staffList() {
-        return orderedStaff.slice(((currentPage - 1) * 6), (currentPage * 6));
     }
 
     function checkBoxFoolery() {
@@ -93,8 +106,9 @@ function Staff() {
                                 Rating
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item className="clickable" onClick={() => { setOrderedStaff(local_staff.sort(dynamicSort("rating"))) }}>1-5</Dropdown.Item>
-                                <Dropdown.Item className="clickable" onClick={() => { setOrderedStaff(local_staff.sort(dynamicSort("-rating"))) }}>5-1</Dropdown.Item>
+                                {/* setOrderedStaff(local_staff.sort(dynamicSort("rating"))) */}
+                                <Dropdown.Item className="clickable" onClick={() => { }}>1-5</Dropdown.Item>
+                                <Dropdown.Item className="clickable" onClick={() => { }}>5-1</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
 
@@ -103,8 +117,8 @@ function Staff() {
                                 Alphabetical Order
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item className="clickable" onClick={() => { setOrderedStaff(local_staff.sort(dynamicSort("name"))) }}>A-Z</Dropdown.Item>
-                                <Dropdown.Item className="clickable" onClick={() => { setOrderedStaff(local_staff.sort(dynamicSort("-name"))) }}>Z-A</Dropdown.Item>
+                                <Dropdown.Item className="clickable" onClick={() => { }}>A-Z</Dropdown.Item>
+                                <Dropdown.Item className="clickable" onClick={() => { }}>Z-A</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
 
@@ -113,8 +127,8 @@ function Staff() {
                                 Time As An Employee
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item className="clickable" onClick={() => { setOrderedStaff(local_staff.sort(dynamicSort("time"))) }}>Up</Dropdown.Item>
-                                <Dropdown.Item className="clickable" onClick={() => { setOrderedStaff(local_staff.sort(dynamicSort("-time"))) }}>Down</Dropdown.Item>
+                                <Dropdown.Item className="clickable" onClick={() => { }}>Up</Dropdown.Item>
+                                <Dropdown.Item className="clickable" onClick={() => { }}>Down</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
 
@@ -141,23 +155,24 @@ function Staff() {
                     </Col>
                     <Col sm={8}>
                         <Row className="d-flex justify-content-center">
-                            {staffList().map((callbackfn, idx) => (
-                                <Toast key={"key" + staffList()[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
+                            {staff.map((callbackfn, idx) => (
+                                <Toast key={"key" + staff[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
                                     <Toast.Header closeButton={false}>
-                                        <strong className="me-auto">Employee #{staffList()[idx].id} </strong>
+                                        <strong className="me-auto">Employee #{staff[idx].id} </strong>
                                     </Toast.Header>
                                     <Toast.Body>
                                         <Container>
                                             <Row>
                                                 <Col className='align-self-center col-xs-1' align='center'>
-                                                    {staffList()[idx].name}<br />
-                                                    <StarRating rating={staffList()[idx].rating} />
+                                                    {staff[idx].first_name + " " + staff[idx].last_name}<br />
+                                                    <StarRating rating={averageRating(staff[idx].ratings)} />
 
                                                 </Col>
                                                 <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                                                    <img src={staffList()[idx].img} className="rounded mr-2" alt="Employee Pic" style={{ height: '50px' }}></img>                                                </Col>
+                                                    <img src='https://cdn-icons-png.flaticon.com/512/147/147144.png' className="rounded mr-2" alt="Employee Pic" style={{ height: '50px' }}></img>
+                                                </Col>
                                                 <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                                                    <Button onClick={() => { redirectUserPage(staffList()[idx].id) }}><i className="fa fa-user"></i></Button>
+                                                    <Button onClick={() => { redirectUserPage(staff[idx].id) }}><i className="fa fa-user"></i></Button>
                                                 </Col>
                                             </Row>
                                         </Container>
@@ -167,7 +182,7 @@ function Staff() {
                         </Row>
                         <Row className="d-flex justify-content-center">
                             {/* 6 employees per page */}
-                            <Pagination pageNumber={Math.ceil(local_staff.length / 6)} parentCallback={handleCallback} />
+                            <Pagination pageNumber={Math.ceil(staff.length / 6)} parentCallback={handleCallback} />
                         </Row>
                     </Col>
                 </Row>

@@ -156,6 +156,23 @@ public class Order {
 
 
     @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Order)) {
+            return false;
+        }
+        Order order = (Order) o;
+        return id == order.id && Objects.equals(order_status, order.order_status) && Objects.equals(delivery_address, order.delivery_address) && Objects.equals(estimated_delivery_time, order.estimated_delivery_time) && Objects.equals(submited_time, order.submited_time) && Objects.equals(delivery_time, order.delivery_time) && Objects.equals(rider_id, order.rider_id) && Objects.equals(store_id, order.store_id) && Objects.equals(order_details, order.order_details) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, order_status, delivery_address, estimated_delivery_time, submited_time, delivery_time, rider_id, store_id, order_details, phone, rating);
+    }
+
+
+    @Override
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
