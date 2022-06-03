@@ -17,24 +17,25 @@ public class Store {
     private long id;
 
     @Column(name = "store_name", nullable = false)
-    private String store_name;
+    private String storeName;
 
     @Column(name = "shipping_tax", nullable = false)
-    private Double shipping_tax;
+    private Double shippingTax;
 
     @Column(name = "store_address", nullable = false)
-    private String store_address;
+    private String storeAddress;
 
 
     public Store() {
     }
 
 
-    public Store(String store_name, Double shipping_tax, String store_address) {
-        this.store_name = store_name;
-        this.shipping_tax = shipping_tax;
-        this.store_address = store_address;
+    public Store(String storeName, Double shippingTax, String storeAddress) {
+        this.storeName = storeName;
+        this.shippingTax = shippingTax;
+        this.storeAddress = storeAddress;
     }
+
 
 
     public long getId() {
@@ -45,28 +46,28 @@ public class Store {
         this.id = id;
     }
 
-    public String getStore_name() {
-        return this.store_name;
+    public String getStoreName() {
+        return this.storeName;
     }
 
-    public void setStore_name(String store_name) {
-        this.store_name = store_name;
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 
-    public Double getShipping_tax() {
-        return this.shipping_tax;
+    public Double getShippingTax() {
+        return this.shippingTax;
     }
 
-    public void setShipping_tax(Double shipping_tax) {
-        this.shipping_tax = shipping_tax;
+    public void setShippingTax(Double shippingTax) {
+        this.shippingTax = shippingTax;
     }
 
-    public String getStore_address() {
-        return this.store_address;
+    public String getStoreAddress() {
+        return this.storeAddress;
     }
 
-    public void setStore_address(String store_address) {
-        this.store_address = store_address;
+    public void setStoreAddress(String storeAddress) {
+        this.storeAddress = storeAddress;
     }
 
 
@@ -78,12 +79,12 @@ public class Store {
             return false;
         }
         Store store = (Store) o;
-        return id == store.id && Objects.equals(store_name, store.store_name) && Objects.equals(shipping_tax, store.shipping_tax) && Objects.equals(store_address, store.store_address);
+        return id == store.id && Objects.equals(storeName, store.storeName) && Objects.equals(shippingTax, store.shippingTax) && Objects.equals(storeAddress, store.storeAddress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, store_name, shipping_tax, store_address);
+        return Objects.hash(id, storeName, shippingTax, storeAddress);
     }
 
 
@@ -91,10 +92,11 @@ public class Store {
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", store_name='" + getStore_name() + "'" +
-            ", shipping_tax='" + getShipping_tax() + "'" +
-            ", store_address='" + getStore_address() + "'" +
+            ", storeName='" + getStoreName() + "'" +
+            ", shippingTax='" + getShippingTax() + "'" +
+            ", storeAddress='" + getStoreAddress() + "'" +
             "}";
     }
+    
 
 }

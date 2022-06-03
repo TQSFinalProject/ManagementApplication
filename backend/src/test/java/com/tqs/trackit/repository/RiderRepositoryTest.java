@@ -29,7 +29,7 @@ public class RiderRepositoryTest {
 
         Rider fromDb = riderRepository.findById(rider1.getId()).orElse(null);
         assertThat(fromDb).isNotNull();
-        assertThat(fromDb.getFirst_name()).isEqualTo(rider1.getFirst_name());
+        assertThat(fromDb.getFirstName()).isEqualTo(rider1.getFirstName());
     }
 
     @Test

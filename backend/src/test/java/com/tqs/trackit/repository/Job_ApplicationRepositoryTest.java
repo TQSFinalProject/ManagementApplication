@@ -26,7 +26,7 @@ public class Job_ApplicationRepositoryTest {
 
         Job_Application fromDb = jobRepository.findById(job_app.getId()).orElse(null);
         assertThat(fromDb).isNotNull();
-        assertThat(fromDb.getFirst_name()).isEqualTo(job_app.getFirst_name());
+        assertThat(fromDb.getFirstName()).isEqualTo(job_app.getFirstName());
     }
 
     @Test

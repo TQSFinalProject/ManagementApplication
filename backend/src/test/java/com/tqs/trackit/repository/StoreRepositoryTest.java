@@ -24,7 +24,7 @@ public class StoreRepositoryTest {
 
         Store fromDb = storeRepository.findById(store1.getId()).orElse(null);
         assertThat(fromDb).isNotNull();
-        assertThat(fromDb.getStore_name()).isEqualTo(store1.getStore_name());
+        assertThat(fromDb.getStoreName()).isEqualTo(store1.getStoreName());
     }
 
     @Test
