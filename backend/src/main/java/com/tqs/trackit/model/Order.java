@@ -21,25 +21,25 @@ public class Order {
     private String orderStatus;
 
     @Column(name = "delivery_address", nullable = false)
-    private String delivery_address;
+    private String deliveryAddress;
 
     @Column(name = "estimated_delivery_time")
-    private LocalDateTime estimated_delivery_time;
+    private LocalDateTime estimatedDeliveryTime;
 
     @Column(name = "submited_time", nullable = false)
-    private LocalDateTime submited_time;
+    private LocalDateTime submitedTime;
 
     @Column(name = "delivery_time")
-    private LocalDateTime delivery_time;
+    private LocalDateTime deliveryTime;
 
     @Column(name = "rider_id")
-    private Long rider_id;
+    private Long riderId;
 
     @Column(name = "store_id")
-    private Long store_id;
+    private Long storeId;
 
     @Column(name = "order_details")
-    private String order_details;
+    private String orderDetails;
 
     @Column(name = "phone", nullable = false)
     private String phone;
@@ -51,15 +51,15 @@ public class Order {
     }
 
 
-    public Order(String orderStatus, String delivery_address, LocalDateTime estimated_delivery_time, LocalDateTime submited_time, LocalDateTime delivery_time, Long rider_id, Long store_id, String order_details, String phone, Double rating) {
+    public Order(String orderStatus, String deliveryAddress, LocalDateTime estimatedDeliveryTime, LocalDateTime submitedTime, LocalDateTime deliveryTime, Long riderId, Long storeId, String orderDetails, String phone, Double rating) {
         this.orderStatus = orderStatus;
-        this.delivery_address = delivery_address;
-        this.estimated_delivery_time = estimated_delivery_time;
-        this.submited_time = submited_time;
-        this.delivery_time = delivery_time;
-        this.rider_id = rider_id;
-        this.store_id = store_id;
-        this.order_details = order_details;
+        this.deliveryAddress = deliveryAddress;
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
+        this.submitedTime = submitedTime;
+        this.deliveryTime = deliveryTime;
+        this.riderId = riderId;
+        this.storeId = storeId;
+        this.orderDetails = orderDetails;
         this.phone = phone;
         this.rating = rating;
     }
@@ -82,60 +82,60 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public String getDelivery_address() {
-        return this.delivery_address;
+    public String getDeliveryAddress() {
+        return this.deliveryAddress;
     }
 
-    public void setDelivery_address(String delivery_address) {
-        this.delivery_address = delivery_address;
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 
-    public LocalDateTime getEstimated_delivery_time() {
-        return this.estimated_delivery_time;
+    public LocalDateTime getEstimatedDeliveryTime() {
+        return this.estimatedDeliveryTime;
     }
 
-    public void setEstimated_delivery_time(LocalDateTime estimated_delivery_time) {
-        this.estimated_delivery_time = estimated_delivery_time;
+    public void setEstimatedDeliveryTime(LocalDateTime estimatedDeliveryTime) {
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
     }
 
-    public LocalDateTime getSubmited_time() {
-        return this.submited_time;
+    public LocalDateTime getSubmitedTime() {
+        return this.submitedTime;
     }
 
-    public void setSubmited_time(LocalDateTime submited_time) {
-        this.submited_time = submited_time;
+    public void setSubmitedTime(LocalDateTime submitedTime) {
+        this.submitedTime = submitedTime;
     }
 
-    public LocalDateTime getDelivery_time() {
-        return this.delivery_time;
+    public LocalDateTime getDeliveryTime() {
+        return this.deliveryTime;
     }
 
-    public void setDelivery_time(LocalDateTime delivery_time) {
-        this.delivery_time = delivery_time;
+    public void setDeliveryTime(LocalDateTime deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 
-    public Long getRider_id() {
-        return this.rider_id;
+    public Long getRiderId() {
+        return this.riderId;
     }
 
-    public void setRider_id(Long rider_id) {
-        this.rider_id = rider_id;
+    public void setRiderId(Long riderId) {
+        this.riderId = riderId;
     }
 
-    public Long getStore_id() {
-        return this.store_id;
+    public Long getStoreId() {
+        return this.storeId;
     }
 
-    public void setStore_id(Long store_id) {
-        this.store_id = store_id;
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
     }
 
-    public String getOrder_details() {
-        return this.order_details;
+    public String getOrderDetails() {
+        return this.orderDetails;
     }
 
-    public void setOrder_details(String order_details) {
-        this.order_details = order_details;
+    public void setOrderDetails(String orderDetails) {
+        this.orderDetails = orderDetails;
     }
 
     public String getPhone() {
@@ -164,12 +164,12 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return id == order.id && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(delivery_address, order.delivery_address) && Objects.equals(estimated_delivery_time, order.estimated_delivery_time) && Objects.equals(submited_time, order.submited_time) && Objects.equals(delivery_time, order.delivery_time) && Objects.equals(rider_id, order.rider_id) && Objects.equals(store_id, order.store_id) && Objects.equals(order_details, order.order_details) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
+        return id == order.id && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(deliveryAddress, order.deliveryAddress) && Objects.equals(estimatedDeliveryTime, order.estimatedDeliveryTime) && Objects.equals(submitedTime, order.submitedTime) && Objects.equals(deliveryTime, order.deliveryTime) && Objects.equals(riderId, order.riderId) && Objects.equals(storeId, order.storeId) && Objects.equals(orderDetails, order.orderDetails) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderStatus, delivery_address, estimated_delivery_time, submited_time, delivery_time, rider_id, store_id, order_details, phone, rating);
+        return Objects.hash(id, orderStatus, deliveryAddress, estimatedDeliveryTime, submitedTime, deliveryTime, riderId, storeId, orderDetails, phone, rating);
     }
 
 
@@ -178,14 +178,14 @@ public class Order {
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", order_status='" + getOrderStatus() + "'" +
-            ", delivery_address='" + getDelivery_address() + "'" +
-            ", estimated_delivery_time='" + getEstimated_delivery_time() + "'" +
-            ", submited_time='" + getSubmited_time() + "'" +
-            ", delivery_time='" + getDelivery_time() + "'" +
-            ", rider_id='" + getRider_id() + "'" +
-            ", store_id='" + getStore_id() + "'" +
-            ", order_details='" + getOrder_details() + "'" +
+            ", orderStatus='" + getOrderStatus() + "'" +
+            ", deliveryAddress='" + getDeliveryAddress() + "'" +
+            ", estimatedDeliveryTime='" + getEstimatedDeliveryTime() + "'" +
+            ", submitedTime='" + getSubmitedTime() + "'" +
+            ", deliveryTime='" + getDeliveryTime() + "'" +
+            ", riderId='" + getRiderId() + "'" +
+            ", storeId='" + getStoreId() + "'" +
+            ", orderDetails='" + getOrderDetails() + "'" +
             ", phone='" + getPhone() + "'" +
             ", rating='" + getRating() + "'" +
             "}";
