@@ -18,7 +18,7 @@ public class Order {
     private long id;
 
     @Column(name = "order_status", nullable = false)
-    private String order_status;
+    private String orderStatus;
 
     @Column(name = "delivery_address", nullable = false)
     private String delivery_address;
@@ -42,7 +42,7 @@ public class Order {
     private String order_details;
 
     @Column(name = "phone", nullable = false)
-    private Long phone;
+    private String phone;
 
     @Column(name="rating")
     private Double rating;
@@ -51,9 +51,8 @@ public class Order {
     }
 
 
-    public Order(long id, String order_status, String delivery_address, LocalDateTime estimated_delivery_time, LocalDateTime submited_time, LocalDateTime delivery_time, Long rider_id, Long store_id, String order_details, Long phone, Double rating) {
-        this.id = id;
-        this.order_status = order_status;
+    public Order(String orderStatus, String delivery_address, LocalDateTime estimated_delivery_time, LocalDateTime submited_time, LocalDateTime delivery_time, Long rider_id, Long store_id, String order_details, String phone, Double rating) {
+        this.orderStatus = orderStatus;
         this.delivery_address = delivery_address;
         this.estimated_delivery_time = estimated_delivery_time;
         this.submited_time = submited_time;
@@ -66,6 +65,7 @@ public class Order {
     }
 
 
+
     public long getId() {
         return this.id;
     }
@@ -74,12 +74,12 @@ public class Order {
         this.id = id;
     }
 
-    public String getOrder_status() {
-        return this.order_status;
+    public String getOrderStatus() {
+        return this.orderStatus;
     }
 
-    public void setOrder_status(String order_status) {
-        this.order_status = order_status;
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public String getDelivery_address() {
@@ -138,11 +138,11 @@ public class Order {
         this.order_details = order_details;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -154,6 +154,7 @@ public class Order {
         this.rating = rating;
     }
 
+    
 
     @Override
     public boolean equals(Object o) {
@@ -163,20 +164,21 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return id == order.id && Objects.equals(order_status, order.order_status) && Objects.equals(delivery_address, order.delivery_address) && Objects.equals(estimated_delivery_time, order.estimated_delivery_time) && Objects.equals(submited_time, order.submited_time) && Objects.equals(delivery_time, order.delivery_time) && Objects.equals(rider_id, order.rider_id) && Objects.equals(store_id, order.store_id) && Objects.equals(order_details, order.order_details) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
+        return id == order.id && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(delivery_address, order.delivery_address) && Objects.equals(estimated_delivery_time, order.estimated_delivery_time) && Objects.equals(submited_time, order.submited_time) && Objects.equals(delivery_time, order.delivery_time) && Objects.equals(rider_id, order.rider_id) && Objects.equals(store_id, order.store_id) && Objects.equals(order_details, order.order_details) && Objects.equals(phone, order.phone) && Objects.equals(rating, order.rating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, order_status, delivery_address, estimated_delivery_time, submited_time, delivery_time, rider_id, store_id, order_details, phone, rating);
+        return Objects.hash(id, orderStatus, delivery_address, estimated_delivery_time, submited_time, delivery_time, rider_id, store_id, order_details, phone, rating);
     }
+
 
 
     @Override
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", order_status='" + getOrder_status() + "'" +
+            ", order_status='" + getOrderStatus() + "'" +
             ", delivery_address='" + getDelivery_address() + "'" +
             ", estimated_delivery_time='" + getEstimated_delivery_time() + "'" +
             ", submited_time='" + getSubmited_time() + "'" +

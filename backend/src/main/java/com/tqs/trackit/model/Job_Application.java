@@ -27,7 +27,7 @@ public class Job_Application {
     private LocalDate date_of_birth;
 
     @Column(name = "phone", nullable = false)
-    private Long phone;
+    private String phone;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -45,8 +45,7 @@ public class Job_Application {
 
 
 
-    public Job_Application(long id, String first_name, String last_name, LocalDate date_of_birth, Long phone, String email, String photo, String cv) {
-        this.id = id;
+    public Job_Application(String first_name, String last_name, LocalDate date_of_birth, String phone, String email, String photo, String cv) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.date_of_birth = date_of_birth;
@@ -89,11 +88,11 @@ public class Job_Application {
         this.date_of_birth = date_of_birth;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -122,6 +121,7 @@ public class Job_Application {
     }
 
 
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -139,6 +139,7 @@ public class Job_Application {
     }
 
 
+
     @Override
     public String toString() {
         return "{" +
@@ -152,7 +153,7 @@ public class Job_Application {
             ", cv='" + getCv() + "'" +
             "}";
     }
-    
+
 
     
 }

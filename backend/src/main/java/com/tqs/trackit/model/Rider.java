@@ -25,7 +25,7 @@ public class Rider {
     private String last_name;
 
     @Column(name = "phone", nullable = false)
-    private Long phone;
+    private String phone;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -52,8 +52,7 @@ public class Rider {
 
 
 
-    public Rider(long id, String first_name, String last_name, Long phone, String username, String password, String rider_photo, Double latitude, Double longitude, List<Double> ratings) {
-        this.id = id;
+    public Rider(String first_name, String last_name, String phone, String username, String password, String rider_photo, Double latitude, Double longitude, List<Double> ratings) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.phone = phone;
@@ -90,11 +89,11 @@ public class Rider {
         this.last_name = last_name;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -179,5 +178,6 @@ public class Rider {
             ", ratings='" + getRatings() + "'" +
             "}";
     }
+    
     
 }
