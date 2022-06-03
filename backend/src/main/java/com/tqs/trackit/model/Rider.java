@@ -19,13 +19,13 @@ public class Rider {
     private long id;
 
     @Column(name = "first_name", nullable = false)
-    private String first_name;
+    private String firstName;
 
     @Column(name = "last_name", nullable = false)
-    private String last_name;
+    private String lastName;
 
     @Column(name = "phone", nullable = false)
-    private Long phone;
+    private String phone;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -34,7 +34,7 @@ public class Rider {
     private String password;
 
     @Column(name = "rider_photo", nullable = false)
-    private String rider_photo;
+    private String riderPhoto;
 
     @Column(name = "latitude", nullable = false)
     private Double latitude;
@@ -52,18 +52,18 @@ public class Rider {
 
 
 
-    public Rider(long id, String first_name, String last_name, Long phone, String username, String password, String rider_photo, Double latitude, Double longitude, List<Double> ratings) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+    public Rider(String firstName, String lastName, String phone, String username, String password, String riderPhoto, Double latitude, Double longitude, List<Double> ratings) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.phone = phone;
         this.username = username;
         this.password = password;
-        this.rider_photo = rider_photo;
+        this.riderPhoto = riderPhoto;
         this.latitude = latitude;
         this.longitude = longitude;
         this.ratings = ratings;
     }
+
 
 
     public long getId() {
@@ -74,27 +74,27 @@ public class Rider {
         this.id = id;
     }
 
-    public String getFirst_name() {
-        return this.first_name;
+    public String getFirstName() {
+        return this.firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return this.last_name;
+    public String getLastName() {
+        return this.lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -114,12 +114,12 @@ public class Rider {
         this.password = password;
     }
 
-    public String getRider_photo() {
-        return this.rider_photo;
+    public String getRiderPhoto() {
+        return this.riderPhoto;
     }
 
-    public void setRider_photo(String rider_photo) {
-        this.rider_photo = rider_photo;
+    public void setRiderPhoto(String riderPhoto) {
+        this.riderPhoto = riderPhoto;
     }
 
     public Double getLatitude() {
@@ -146,6 +146,7 @@ public class Rider {
         this.ratings = ratings;
     }
 
+    
 
     @Override
     public boolean equals(Object o) {
@@ -155,29 +156,32 @@ public class Rider {
             return false;
         }
         Rider rider = (Rider) o;
-        return id == rider.id && Objects.equals(first_name, rider.first_name) && Objects.equals(last_name, rider.last_name) && Objects.equals(phone, rider.phone) && Objects.equals(username, rider.username) && Objects.equals(password, rider.password) && Objects.equals(rider_photo, rider.rider_photo) && Objects.equals(latitude, rider.latitude) && Objects.equals(longitude, rider.longitude) && Objects.equals(ratings, rider.ratings);
+        return id == rider.id && Objects.equals(firstName, rider.firstName) && Objects.equals(lastName, rider.lastName) && Objects.equals(phone, rider.phone) && Objects.equals(username, rider.username) && Objects.equals(password, rider.password) && Objects.equals(riderPhoto, rider.riderPhoto) && Objects.equals(latitude, rider.latitude) && Objects.equals(longitude, rider.longitude) && Objects.equals(ratings, rider.ratings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, first_name, last_name, phone, username, password, rider_photo, latitude, longitude, ratings);
+        return Objects.hash(id, firstName, lastName, phone, username, password, riderPhoto, latitude, longitude, ratings);
     }
+
 
 
     @Override
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", first_name='" + getFirst_name() + "'" +
-            ", last_name='" + getLast_name() + "'" +
+            ", firstName='" + getFirstName() + "'" +
+            ", lastName='" + getLastName() + "'" +
             ", phone='" + getPhone() + "'" +
             ", username='" + getUsername() + "'" +
             ", password='" + getPassword() + "'" +
-            ", rider_photo='" + getRider_photo() + "'" +
+            ", riderPhoto='" + getRiderPhoto() + "'" +
             ", latitude='" + getLatitude() + "'" +
             ", longitude='" + getLongitude() + "'" +
             ", ratings='" + getRatings() + "'" +
             "}";
     }
+
+    
     
 }

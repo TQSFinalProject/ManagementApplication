@@ -18,16 +18,16 @@ public class Job_Application {
     private long id;
 
     @Column(name = "first_name", nullable = false)
-    private String first_name;
+    private String firstName;
 
     @Column(name = "last_name", nullable = false)
-    private String last_name;
+    private String lastName;
 
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate date_of_birth;
+    private LocalDate dateOfBirth;
 
     @Column(name = "phone", nullable = false)
-    private Long phone;
+    private String phone;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -45,11 +45,10 @@ public class Job_Application {
 
 
 
-    public Job_Application(long id, String first_name, String last_name, LocalDate date_of_birth, Long phone, String email, String photo, String cv) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.date_of_birth = date_of_birth;
+    public Job_Application(String firstName, String lastName, LocalDate dateOfBirth, String phone, String email, String photo, String cv) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
         this.phone = phone;
         this.email = email;
         this.photo = photo;
@@ -65,35 +64,35 @@ public class Job_Application {
         this.id = id;
     }
 
-    public String getFirst_name() {
-        return this.first_name;
+    public String getFirstName() {
+        return this.firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return this.last_name;
+    public String getLastName() {
+        return this.lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public LocalDate getDate_of_birth() {
-        return this.date_of_birth;
+    public LocalDate getDateOfBirth() {
+        return this.dateOfBirth;
     }
 
-    public void setDate_of_birth(LocalDate date_of_birth) {
-        this.date_of_birth = date_of_birth;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -122,6 +121,7 @@ public class Job_Application {
     }
 
 
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -130,29 +130,30 @@ public class Job_Application {
             return false;
         }
         Job_Application job_Application = (Job_Application) o;
-        return id == job_Application.id && Objects.equals(first_name, job_Application.first_name) && Objects.equals(last_name, job_Application.last_name) && Objects.equals(date_of_birth, job_Application.date_of_birth) && Objects.equals(phone, job_Application.phone) && Objects.equals(email, job_Application.email) && Objects.equals(photo, job_Application.photo) && Objects.equals(cv, job_Application.cv);
+        return id == job_Application.id && Objects.equals(firstName, job_Application.firstName) && Objects.equals(lastName, job_Application.lastName) && Objects.equals(dateOfBirth, job_Application.dateOfBirth) && Objects.equals(phone, job_Application.phone) && Objects.equals(email, job_Application.email) && Objects.equals(photo, job_Application.photo) && Objects.equals(cv, job_Application.cv);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, first_name, last_name, date_of_birth, phone, email, photo, cv);
+        return Objects.hash(id, firstName, lastName, dateOfBirth, phone, email, photo, cv);
     }
+
 
 
     @Override
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", first_name='" + getFirst_name() + "'" +
-            ", last_name='" + getLast_name() + "'" +
-            ", date_of_birth='" + getDate_of_birth() + "'" +
+            ", firstName='" + getFirstName() + "'" +
+            ", lastName='" + getLastName() + "'" +
+            ", dateOfBirth='" + getDateOfBirth() + "'" +
             ", phone='" + getPhone() + "'" +
             ", email='" + getEmail() + "'" +
             ", photo='" + getPhoto() + "'" +
             ", cv='" + getCv() + "'" +
             "}";
     }
-    
+
 
     
 }
