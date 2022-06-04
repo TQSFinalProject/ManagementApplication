@@ -29,6 +29,14 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Generate Coverage Report
+        run: mvn clean verify
+      - name: Archive Jacoco reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-reports
+          path: test-coverage/target/site/jacoco-aggregate
+
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
