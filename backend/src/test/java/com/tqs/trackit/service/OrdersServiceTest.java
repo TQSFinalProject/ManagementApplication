@@ -56,14 +56,14 @@ public class OrdersServiceTest {
     }
 
     @Test
-    void whenInValidId_thenOrderShouldNotBeFound() {
+    void whenInvalidId_thenOrderShouldNotBeFound() {
         Order fromDb = orderService.getOrderById(-1L);
         verifyFindByIdIsCalledOnce();
         assertThat(fromDb).isNull();
     }
 
     @Test
-    void given2Orders_whenGetAllOrders_thenReturn3Orders() {
+    void given2Orders_whenGetAllOrders_thenReturn2Orders() {
         Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);

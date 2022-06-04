@@ -2,12 +2,11 @@ package com.tqs.trackit.controller;
 
 import java.util.List;
 
-import com.tqs.trackit.model.Job_Application;
+import com.tqs.trackit.model.JobApplication;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.model.Store;
-import com.tqs.trackit.service.Job_ApplicationsService;
-import com.tqs.trackit.service.ManagementService;
+import com.tqs.trackit.service.JobApplicationsService;
 import com.tqs.trackit.service.OrdersService;
 import com.tqs.trackit.service.RidersService;
 import com.tqs.trackit.service.StoresService;
@@ -37,7 +36,7 @@ public class ManagementController {
     private StoresService storesServ;
 
     @Autowired
-    private Job_ApplicationsService jobServ;
+    private JobApplicationsService jobServ;
 
     @GetMapping("/orders")
     public ResponseEntity<List<Order>> getOrders() {
@@ -70,12 +69,12 @@ public class ManagementController {
     }
 
     @GetMapping("/job_applications")
-    public ResponseEntity<List<Job_Application>> getApplications() {
+    public ResponseEntity<List<JobApplication>> getApplications() {
         return ResponseEntity.ok().body(jobServ.getApplications());
     }
 
     @PostMapping("/job_applications")
-    public Job_Application createApplication(@RequestBody Job_Application application) {
+    public JobApplication createApplication(@RequestBody JobApplication application) {
         return jobServ.saveApplication(application);
     }
 }

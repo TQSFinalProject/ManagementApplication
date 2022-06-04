@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "job_application") 
-public class Job_Application {
+public class JobApplication {
     @Id //The ID will be auto generated
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -40,12 +40,12 @@ public class Job_Application {
 
 
 
-    public Job_Application() {
+    public JobApplication() {
     }
 
 
 
-    public Job_Application(String firstName, String lastName, LocalDate dateOfBirth, String phone, String email, String photo, String cv) {
+    public JobApplication(String firstName, String lastName, LocalDate dateOfBirth, String phone, String email, String photo, String cv) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -126,10 +126,10 @@ public class Job_Application {
     public boolean equals(Object o) {
         if (o == this)
             return true;
-        if (!(o instanceof Job_Application)) {
+        if (!(o instanceof JobApplication)) {
             return false;
         }
-        Job_Application job_Application = (Job_Application) o;
+        JobApplication job_Application = (JobApplication) o;
         return id == job_Application.id && Objects.equals(firstName, job_Application.firstName) && Objects.equals(lastName, job_Application.lastName) && Objects.equals(dateOfBirth, job_Application.dateOfBirth) && Objects.equals(phone, job_Application.phone) && Objects.equals(email, job_Application.email) && Objects.equals(photo, job_Application.photo) && Objects.equals(cv, job_Application.cv);
     }
 
