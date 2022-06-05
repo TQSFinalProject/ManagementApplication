@@ -13,13 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.tqs.trackit.JsonUtils;
 import com.tqs.trackit.TrackitApplication;
 import com.tqs.trackit.model.JobApplication;
-import com.tqs.trackit.model.Order;
 import com.tqs.trackit.repository.JobApplicationRepository;
-import com.tqs.trackit.repository.OrderRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,8 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK, classes = TrackitApplication.class)
@@ -73,6 +68,19 @@ public class JobApplicationControllerTest {
                 .andExpect(jsonPath("$", hasSize(equalTo(2))))
                 .andExpect(jsonPath("$[0].firstName", is("Paulo")))
                 .andExpect(jsonPath("$[1].firstName", is("Miguel")));
+    }
+
+    @Test
+    void givenJobApplicationId_whenGetJobApplicationById_thenStatus200() throws Exception {
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobRepository.saveAndFlush(jobApp1);
+
+        mvc.perform(get("/api/job_applications/{jobApplicationId}",jobApp1.getId()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", equalTo(8)))
+                .andExpect(jsonPath("$.firstName", is("Paulo")));
     }
 
 

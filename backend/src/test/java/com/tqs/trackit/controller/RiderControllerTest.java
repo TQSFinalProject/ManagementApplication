@@ -12,14 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.tqs.trackit.JsonUtils;
 import com.tqs.trackit.TrackitApplication;
-import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
-import com.tqs.trackit.repository.OrderRepository;
 import com.tqs.trackit.repository.RiderRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,8 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +78,23 @@ public class RiderControllerTest {
                 .andExpect(jsonPath("$[0].firstName", is("Miguel")))
                 .andExpect(jsonPath("$[1].firstName", is("Afonso")))
                 .andExpect(jsonPath("$[2].firstName", is("Ana")));
+    }
+
+    @Test
+    void givenRiderId_whenGetRiderById_thenStatus200() throws Exception {
+        List<Double> ratings = new ArrayList<>();
+        ratings.add(4.5);
+        ratings.add(4.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings);
+        
+        riderRepository.saveAndFlush(rider1);
+
+        mvc.perform(get("/api/riders/{riderId}",rider1.getId()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", equalTo(10)))
+                .andExpect(jsonPath("$.firstName", is("Miguel")));
     }
 
 

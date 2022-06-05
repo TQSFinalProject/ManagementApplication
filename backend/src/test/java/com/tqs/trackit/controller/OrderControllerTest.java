@@ -17,7 +17,6 @@ import com.tqs.trackit.repository.OrderRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -74,6 +73,22 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$", hasSize(equalTo(2))))
                 .andExpect(jsonPath("$[0].orderStatus", is("Late")))
                 .andExpect(jsonPath("$[1].orderStatus", is("On Time")));
+    }
+
+    @Test
+    void givenOrderId_whenGetOrderById_thenStatus200() throws Exception {
+        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+
+        orderRepository.saveAndFlush(order1);
+
+        mvc.perform(get("/api/orders/{orderId}",order1.getId()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", equalTo(11)))
+                .andExpect(jsonPath("$.orderStatus", is("Late")));
     }
 
 

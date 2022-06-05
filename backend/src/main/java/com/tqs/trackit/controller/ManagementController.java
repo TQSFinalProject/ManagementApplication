@@ -2,6 +2,7 @@ package com.tqs.trackit.controller;
 
 import java.util.List;
 
+import com.tqs.trackit.exception.ResourceNotFoundException;
 import com.tqs.trackit.model.JobApplication;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
@@ -43,6 +44,16 @@ public class ManagementController {
         return ResponseEntity.ok().body(ordersServ.getOrders());
     }
 
+    @GetMapping("/orders/{orderId}") 
+    public ResponseEntity<Order> getOrderById(@PathVariable(value = "orderId") Long orderId)
+        throws ResourceNotFoundException {
+        Order order1 = ordersServ.getOrderById(orderId);
+        if(order1==null) {
+            throw new ResourceNotFoundException("Order not found for this id :: " + orderId);
+        }
+        return ResponseEntity.ok().body(order1);
+    }
+
     @PostMapping("/orders")
     public Order createOrder(@RequestBody Order order) {
         return ordersServ.saveOrder(order);
@@ -51,6 +62,16 @@ public class ManagementController {
     @GetMapping("/riders")
     public ResponseEntity<List<Rider>> getRiders() {
         return ResponseEntity.ok().body(ridersServ.getRiders());
+    }
+
+    @GetMapping("/riders/{riderId}") 
+    public ResponseEntity<Rider> getRiderById(@PathVariable(value = "riderId") Long riderId)
+        throws ResourceNotFoundException {
+        Rider rider1 = ridersServ.getRiderById(riderId);
+        if(rider1==null) {
+            throw new ResourceNotFoundException("Rider not found for this id :: " + riderId);
+        }
+        return ResponseEntity.ok().body(rider1);
     }
 
     @PostMapping("/riders")
@@ -63,6 +84,16 @@ public class ManagementController {
         return ResponseEntity.ok().body(storesServ.getStores());
     }
 
+    @GetMapping("/stores/{storeId}") 
+    public ResponseEntity<Store> getStoreById(@PathVariable(value = "storeId") Long storeId)
+        throws ResourceNotFoundException {
+        Store store1 = storesServ.getStoreById(storeId);
+        if(store1==null) {
+            throw new ResourceNotFoundException("Store not found for this id :: " + storeId);
+        }
+        return ResponseEntity.ok().body(store1);
+    }
+
     @PostMapping("/stores")
     public Store createStore(@RequestBody Store store) {
         return storesServ.saveStore(store);
@@ -71,6 +102,16 @@ public class ManagementController {
     @GetMapping("/job_applications")
     public ResponseEntity<List<JobApplication>> getApplications() {
         return ResponseEntity.ok().body(jobServ.getApplications());
+    }
+
+    @GetMapping("/job_applications/{jobApplicationId}") 
+    public ResponseEntity<JobApplication> getJobApplicationById(@PathVariable(value = "jobApplicationId") Long jobApplicationId)
+        throws ResourceNotFoundException {
+        JobApplication jobApplication1 = jobServ.getApplicationById(jobApplicationId);
+        if(jobApplication1==null) {
+            throw new ResourceNotFoundException("JobApplication not found for this id :: " + jobApplicationId);
+        }
+        return ResponseEntity.ok().body(jobApplication1);
     }
 
     @PostMapping("/job_applications")
