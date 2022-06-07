@@ -98,6 +98,36 @@ public class RiderControllerTest {
     }
 
     @Test
+    void givenRiders_whenGetRidersOrderedAlphabetically_thenStatus200() throws Exception {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        List<Double> ratings2 = new ArrayList<>();
+        ratings2.add(2.5);
+        ratings2.add(3.5);
+        List<Double> ratings3 = new ArrayList<>();
+        ratings3.add(5.0);
+        ratings3.add(3.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings2);
+        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings3);
+
+        riderRepository.saveAndFlush(rider1);
+        riderRepository.saveAndFlush(rider2);
+        riderRepository.saveAndFlush(rider3);
+
+        mvc.perform(get("/api/riders/sortByName").contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(equalTo(3))))
+        .andExpect(jsonPath("$[0].firstName", is("Afonso")))
+        .andExpect(jsonPath("$[1].firstName", is("Ana")))
+        .andExpect(jsonPath("$[2].firstName", is("Miguel")));
+
+    }
+
+    @Test
     void givenRiders_whenGetRidersOrderedByRating_thenStatus200() throws Exception {
         List<Double> ratings1 = new ArrayList<>();
         ratings1.add(4.5);

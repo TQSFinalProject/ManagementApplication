@@ -79,6 +79,11 @@ public class ManagementController {
         return ResponseEntity.ok().body(ridersServ.getRidersByRating());
     }
 
+    @GetMapping("/riders/sortByName") 
+    public ResponseEntity<List<Rider>> getRidersAlphabetically() {
+        return ResponseEntity.ok().body(ridersServ.getRidersAlphabetically());
+    }
+
     @PostMapping("/riders")
     public Rider createRider(@RequestBody Rider rider) {
         return ridersServ.saveRider(rider);
