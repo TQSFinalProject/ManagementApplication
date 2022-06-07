@@ -31,12 +31,18 @@ public class RidersServiceTest {
 
     @BeforeEach
     public void setUp() {
-        List<Double> ratings = new ArrayList<>();
-        ratings.add(4.5);
-        ratings.add(4.0);
-        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings);
-        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings);
-        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings);
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        List<Double> ratings2 = new ArrayList<>();
+        ratings2.add(2.5);
+        ratings2.add(3.5);
+        List<Double> ratings3 = new ArrayList<>();
+        ratings3.add(5.0);
+        ratings3.add(3.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings2);
+        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings3);
 
         rider1.setId(10L);
 
@@ -73,6 +79,31 @@ public class RidersServiceTest {
         List<Rider> allRiders = riderService.getRiders();
         verifyFindRidersIsCalledOnce();
         assertThat(allRiders).hasSize(3).extracting(Rider::getFirstName).contains(rider1.getFirstName(), rider2.getFirstName(), rider3.getFirstName());
+
+    }
+
+    @Test
+    void whenGetAllRidersOrderedByMean_thenReturnAllRidersOrderedByMean() {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        List<Double> ratings2 = new ArrayList<>();
+        ratings2.add(2.5);
+        ratings2.add(3.5);
+        List<Double> ratings3 = new ArrayList<>();
+        ratings3.add(5.0);
+        ratings3.add(3.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings2);
+        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings3);
+
+        rider1.setId(10L);
+        
+        List<Rider> orderedRiders = Arrays.asList(rider2,rider3,rider1);
+
+        assertThat(riderService.getRidersByRating()).isEqualTo(orderedRiders);
+
+        verifyFindRidersIsCalledOnce();
 
     }
 
