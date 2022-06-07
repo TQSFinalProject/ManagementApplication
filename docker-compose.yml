@@ -33,6 +33,15 @@ services:
       - spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
       - spring.jpa.hibernate.ddl-auto=update
 
+  client:
+        build:
+            context: frontend
+            dockerfile: Dockerfile
+        ports:
+            - "3001:3001"
+        depends_on: 
+            - ti
+
 volumes:
   mysql-ti:
     driver: local
