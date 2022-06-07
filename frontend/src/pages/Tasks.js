@@ -73,7 +73,7 @@ function Tasks() {
             <GeneralNavbar />
 
             <Container>
-                <h1 style={{ marginTop: '5%' }}>UNDONE TASKS</h1>
+                <h1 style={{ marginTop: '5%' }}>ALL TASKS</h1>
             </Container>
 
             <Container style={{ marginTop: '2%' }}>
@@ -124,7 +124,7 @@ function Tasks() {
                                     <Toast.Header closeButton={false}>
                                         <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
                                         {/* <Badge style={{ marginRight: '5%' }} bg="warning" text="dark">Far Away</Badge> */}
-                                        {tasks[idx].order_status == 'Late' ?
+                                        {tasks[idx].orderStatus == 'Late' ?
                                             <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
                                             :
                                             <></>
@@ -136,9 +136,9 @@ function Tasks() {
                                             <Row>
                                                 <Col>
                                                     <span>
-                                                        <strong>Rider: </strong>{staff[tasks[idx].rider_id - 1].first_name + " " + staff[tasks[idx].rider_id - 1].last_name}<br />
+                                                        <strong>Rider: </strong>{staff[tasks[idx].rider_id - 1].firstName + " " + staff[tasks[idx].riderId - 1].lastName}<br />
                                                         <strong>Store: </strong>Chateau Du Vin<br />
-                                                        <strong>Delivery address: </strong>{tasks[idx].delivery_address}<br />
+                                                        <strong>Delivery address: </strong>{tasks[idx].deliveryAddress}<br />
                                                     </span>
                                                 </Col>
                                             </Row>

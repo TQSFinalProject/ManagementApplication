@@ -164,7 +164,7 @@ function Staff() {
                                         <Container>
                                             <Row>
                                                 <Col className='align-self-center col-xs-1' align='center'>
-                                                    {staff[idx].first_name + " " + staff[idx].last_name}<br />
+                                                    {staff[idx].firstName + " " + staff[idx].lastName}<br />
                                                     <StarRating rating={averageRating(staff[idx].ratings)} />
 
                                                 </Col>

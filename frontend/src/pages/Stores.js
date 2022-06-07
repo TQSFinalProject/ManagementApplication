@@ -120,9 +120,9 @@ function Stores() {
                                             <Row>
                                                 <Col>
                                                     <span>
-                                                        <strong>Name: </strong>Chateau Du Vin<br />
-                                                        <strong>Address: </strong>{stores[idx].store_address}<br />
-                                                        <strong>Shipping tax: </strong>{stores[idx].shipping_tax}%<br />
+                                                        <strong>Name: </strong>{stores[idx].storeName}<br />
+                                                        <strong>Address: </strong>{stores[idx].storeAddress}<br />
+                                                        <strong>Shipping tax: </strong>{stores[idx].shippingTax}%<br />
                                                         <strong>Current tasks: </strong>{ collect(tasks).where('storeId', '=', stores[idx].id).count() }<br />
                                                     </span>
                                                 </Col>
