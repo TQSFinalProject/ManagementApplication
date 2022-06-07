@@ -74,6 +74,11 @@ public class ManagementController {
         return ResponseEntity.ok().body(rider1);
     }
 
+    @GetMapping("/riders/sortByRating") 
+    public ResponseEntity<List<Rider>> getRidersByRatingMean() {
+        return ResponseEntity.ok().body(ridersServ.getRidersByRating());
+    }
+
     @PostMapping("/riders")
     public Rider createRider(@RequestBody Rider rider) {
         return ridersServ.saveRider(rider);
