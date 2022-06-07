@@ -37,7 +37,7 @@ public class RidersService {
         Map<Rider,Double> ridersByRating = new HashMap<>();
         
         for(Rider r : allRiders) {
-            ridersByRating.put(r, r.getRatingMean());
+            ridersByRating.put(r, r.ratingMean());
         }
 
         List<Entry<Rider,Double>> list = new ArrayList<>(ridersByRating.entrySet());

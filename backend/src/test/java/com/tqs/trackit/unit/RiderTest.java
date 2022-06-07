@@ -25,7 +25,7 @@ public class RiderTest {
 
     @Test
     public void testMeanCalculation() {
-        assertThat(rider.getRatingMean()).isEqualTo(4.25);
+        assertThat(rider.ratingMean()).isEqualTo(4.25);
     }
 }
 
