@@ -164,6 +164,13 @@ public class Rider {
         return Objects.hash(id, firstName, lastName, phone, username, password, riderPhoto, latitude, longitude, ratings);
     }
 
+    public Double ratingMean() {
+        Double ratingSum = 0.0;
+        for(Double r : this.ratings) {
+            ratingSum+=r;
+        }
+        return ratingSum/this.ratings.size();
+    }
 
 
     @Override
