@@ -1,6 +1,7 @@
 package com.tqs.trackit.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,12 @@ public class RidersService {
 
         return orderedRiders;
 
+    }
+
+    public List<Rider> getRidersAlphabetically() {
+        List<Rider> allRiders = riderRep.findAll();
+        allRiders.sort(Comparator.comparing(Rider::getFirstName));
+        return allRiders;
     }
     
 }
