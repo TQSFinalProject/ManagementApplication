@@ -25,5 +25,9 @@ public class OrdersService {
     public Order saveOrder(Order order) {
         return orderRep.save(order);
     }
+
+    public List<Order> getOrdersByRiderId(Long riderId) {
+        return orderRep.findByRiderId(riderId);
+    }
     
 }
