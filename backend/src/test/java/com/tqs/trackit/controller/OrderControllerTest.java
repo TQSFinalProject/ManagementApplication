@@ -91,6 +91,28 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.orderStatus", is("Late")));
     }
 
+    @Test
+    void givenRiderId_whenGetOrdersByRiderId_thenStatus200() throws Exception {
+        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine Y", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
+        order1.setId(1L);
+        orderRepository.saveAndFlush(order1);
+        orderRepository.saveAndFlush(order2);
+        orderRepository.saveAndFlush(order3);
 
-    
+        mvc.perform(get("/api/orders/rider/{riderId}",1L).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(equalTo(2))))
+                .andExpect(jsonPath("$[0].orderDetails", is("Wine X")))
+                .andExpect(jsonPath("$[1].orderDetails", is("Wine Y")));
+
+
+    }
 }

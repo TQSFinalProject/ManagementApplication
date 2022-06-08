@@ -38,7 +38,7 @@ public class OrdersServiceTest {
         Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
-        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine >", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
         order1.setId(10L);
 
         List<Order> allOrders = Arrays.asList(order1, order2,order3);

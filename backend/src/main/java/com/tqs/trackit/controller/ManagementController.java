@@ -54,6 +54,12 @@ public class ManagementController {
         return ResponseEntity.ok().body(order1);
     }
 
+    @GetMapping("/orders/rider/{riderId}") 
+    public ResponseEntity<List<Order>> getOrderByRiderId(@PathVariable(value = "riderId") Long riderId) {
+        List<Order> ordersByRider = ordersServ.getOrdersByRiderId(riderId);
+        return ResponseEntity.ok().body(ordersByRider);
+    }
+
     @PostMapping("/orders")
     public Order createOrder(@RequestBody Order order) {
         return ordersServ.saveOrder(order);
