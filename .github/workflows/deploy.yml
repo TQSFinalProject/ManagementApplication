@@ -1,9 +1,9 @@
 name: Deploy
 on:
   push:
-    branches: [main]
+    branches: [main,release-*]
   pull_request:
-    branches: [main,develop]
+    branches: [main]
 jobs:
   build:
     name: Deploy
