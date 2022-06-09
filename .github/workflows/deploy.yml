@@ -18,7 +18,7 @@ jobs:
           java-version: 11
 
       - name: Start containers
-        run: docker-compose -f "docker-compose.yml" up -d --build
+        run: docker compose -f "docker-compose.yml" up -d --build
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
@@ -48,4 +48,4 @@ jobs:
 
       - name: Stop containers
         if: always()
-        run: docker-compose -f "docker-compose.yml" down
+        run: docker compose -f "docker-compose.yml" down
