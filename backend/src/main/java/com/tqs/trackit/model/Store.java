@@ -37,10 +37,8 @@ public class Store {
     }
 
     public Store(String storeName, Double shippingTax, String storeAddress,Long id) {
+        this(storeName,shippingTax,storeAddress);
         this.id = id;
-        this.storeName = storeName;
-        this.shippingTax = shippingTax;
-        this.storeAddress = storeAddress;
     }
 
 
