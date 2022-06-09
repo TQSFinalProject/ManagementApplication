@@ -55,6 +55,17 @@ public class JobApplication {
         this.cv = cv;
     }
 
+    public JobApplication(String firstName, String lastName, LocalDate dateOfBirth, String phone, String email, String photo, String cv, Long id) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.phone = phone;
+        this.email = email;
+        this.photo = photo;
+        this.cv = cv;
+        this.id = id;
+    }
+
 
     public long getId() {
         return this.id;

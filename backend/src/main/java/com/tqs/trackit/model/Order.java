@@ -64,6 +64,20 @@ public class Order {
         this.rating = rating;
     }
 
+    public Order(String orderStatus, String deliveryAddress, LocalDateTime estimatedDeliveryTime, LocalDateTime submitedTime, LocalDateTime deliveryTime, Long riderId, Long storeId, String orderDetails, String phone, Double rating, Long id) {
+        this.orderStatus = orderStatus;
+        this.deliveryAddress = deliveryAddress;
+        this.estimatedDeliveryTime = estimatedDeliveryTime;
+        this.submitedTime = submitedTime;
+        this.deliveryTime = deliveryTime;
+        this.riderId = riderId;
+        this.storeId = storeId;
+        this.orderDetails = orderDetails;
+        this.phone = phone;
+        this.rating = rating;
+        this.id = id;
+    }
+
 
 
     public long getId() {

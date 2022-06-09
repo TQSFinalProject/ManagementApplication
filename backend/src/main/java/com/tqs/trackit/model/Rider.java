@@ -64,6 +64,19 @@ public class Rider {
         this.ratings = ratings;
     }
 
+    public Rider(String firstName, String lastName, String phone, String username, String password, String riderPhoto, Double latitude, Double longitude, List<Double> ratings,Long id) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.username = username;
+        this.password = password;
+        this.riderPhoto = riderPhoto;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.ratings = ratings;
+        this.id = id;
+    }
+
 
 
     public long getId() {
