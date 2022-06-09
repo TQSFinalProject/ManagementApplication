@@ -136,7 +136,7 @@ function Tasks() {
                                             <Row>
                                                 <Col>
                                                     <span>
-                                                        <strong>Rider: </strong>{staff[tasks[idx].rider_id - 1].firstName + " " + staff[tasks[idx].riderId - 1].lastName}<br />
+                                                        <strong>Rider: </strong>{staff[tasks[idx].riderId - 1].firstName + " " + staff[tasks[idx].riderId - 1].lastName}<br />
                                                         <strong>Store: </strong>Chateau Du Vin<br />
                                                         <strong>Delivery address: </strong>{tasks[idx].deliveryAddress}<br />
                                                     </span>
