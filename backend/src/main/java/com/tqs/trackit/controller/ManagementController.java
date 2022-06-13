@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.tqs.trackit.exception.ResourceNotFoundException;
 import com.tqs.trackit.model.JobApplication;
-import com.tqs.trackit.model.JobApplicationDTO;
+import com.tqs.trackit.dtos.JobApplicationDTO;
 import com.tqs.trackit.model.Order;
-import com.tqs.trackit.model.OrderDTO;
+import com.tqs.trackit.dtos.OrderDTO;
 import com.tqs.trackit.model.Rider;
-import com.tqs.trackit.model.RiderDTO;
+import com.tqs.trackit.dtos.RiderDTO;
 import com.tqs.trackit.model.Store;
-import com.tqs.trackit.model.StoreDTO;
+import com.tqs.trackit.dtos.StoreDTO;
 import com.tqs.trackit.service.JobApplicationsService;
 import com.tqs.trackit.service.OrdersService;
 import com.tqs.trackit.service.RidersService;

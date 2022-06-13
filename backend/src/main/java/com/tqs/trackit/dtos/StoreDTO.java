@@ -1,4 +1,6 @@
-package com.tqs.trackit.model;
+package com.tqs.trackit.dtos;
+
+import com.tqs.trackit.model.Store;
 
 public class StoreDTO {
     private long id;

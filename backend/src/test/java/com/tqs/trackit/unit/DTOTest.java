@@ -6,17 +6,16 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import com.tqs.trackit.model.JobApplication;
-import com.tqs.trackit.model.JobApplicationDTO;
+import com.tqs.trackit.dtos.JobApplicationDTO;
 import com.tqs.trackit.model.Order;
-import com.tqs.trackit.model.OrderDTO;
+import com.tqs.trackit.dtos.OrderDTO;
 import com.tqs.trackit.model.Rider;
-import com.tqs.trackit.model.RiderDTO;
+import com.tqs.trackit.dtos.RiderDTO;
 import com.tqs.trackit.model.Store;
-import com.tqs.trackit.model.StoreDTO;
+import com.tqs.trackit.dtos.StoreDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
