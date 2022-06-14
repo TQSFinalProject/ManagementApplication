@@ -4,9 +4,13 @@ import java.util.List;
 
 import com.tqs.trackit.exception.ResourceNotFoundException;
 import com.tqs.trackit.model.JobApplication;
+import com.tqs.trackit.dtos.JobApplicationDTO;
 import com.tqs.trackit.model.Order;
+import com.tqs.trackit.dtos.OrderDTO;
 import com.tqs.trackit.model.Rider;
+import com.tqs.trackit.dtos.RiderDTO;
 import com.tqs.trackit.model.Store;
+import com.tqs.trackit.dtos.StoreDTO;
 import com.tqs.trackit.service.JobApplicationsService;
 import com.tqs.trackit.service.OrdersService;
 import com.tqs.trackit.service.RidersService;
@@ -22,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
+@CrossOrigin("http://localhost:3001")
 @RestController
 @RequestMapping("/api")
 public class ManagementController {
@@ -55,8 +59,8 @@ public class ManagementController {
     }
 
     @PostMapping("/orders")
-    public Order createOrder(@RequestBody Order order) {
-        return ordersServ.saveOrder(order);
+    public Order createOrder(@RequestBody OrderDTO order) {
+        return ordersServ.saveOrder(order.toOrderEntity());
     }
 
     @GetMapping("/riders")
@@ -85,8 +89,8 @@ public class ManagementController {
     }
 
     @PostMapping("/riders")
-    public Rider createRider(@RequestBody Rider rider) {
-        return ridersServ.saveRider(rider);
+    public Rider createRider(@RequestBody RiderDTO rider) {
+        return ridersServ.saveRider(rider.toRiderEntity());
     }
 
     @GetMapping("/stores")
@@ -105,8 +109,8 @@ public class ManagementController {
     }
 
     @PostMapping("/stores")
-    public Store createStore(@RequestBody Store store) {
-        return storesServ.saveStore(store);
+    public Store createStore(@RequestBody StoreDTO store) {
+        return storesServ.saveStore(store.toStoreEntity());
     }
 
     @GetMapping("/job_applications")
@@ -125,7 +129,7 @@ public class ManagementController {
     }
 
     @PostMapping("/job_applications")
-    public JobApplication createApplication(@RequestBody JobApplication application) {
-        return jobServ.saveApplication(application);
+    public JobApplication createApplication(@RequestBody JobApplicationDTO application) {
+        return jobServ.saveApplication(application.toJobApplicationEntity());
     }
 }
