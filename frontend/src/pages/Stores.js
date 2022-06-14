@@ -110,7 +110,7 @@ function Stores() {
                     <Col sm={8}>
                         <Row className="d-flex justify-content-center">
                             {stores.map((callbackfn, idx) => (
-                                <Toast key={"key" + stores[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
+                                <Toast key={"key" + stores[idx].id} id={"store_card" + stores[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
                                     <Toast.Header closeButton={false}>
                                         <strong className="me-auto">Store #{stores[idx].id} </strong><br />
                                         {/* <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a> */}
@@ -119,7 +119,7 @@ function Stores() {
                                         <Container>
                                             <Row>
                                                 <Col>
-                                                    <span>
+                                                    <span id={"store_card_info" + stores[idx].id}>
                                                         <strong>Name: </strong>{stores[idx].storeName}<br />
                                                         <strong>Address: </strong>{stores[idx].storeAddress}<br />
                                                         <strong>Shipping tax: </strong>{stores[idx].shippingTax}%<br />
