@@ -48,26 +48,40 @@ public class JobApplicationControllerTest {
      void whenValidInput_thenCreateJobApplication() throws IOException, Exception {
         JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
 
-        mvc.perform(post("/api/job_applications").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(jobApp1)));
+        mvc.perform(post("/api/jobApplications").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(jobApp1)));
 
         List<JobApplication> found = jobRepository.findAll();
         assertThat(found).extracting(JobApplication::getFirstName).containsOnly("Paulo");
     }
 
     @Test
-     void givenJobApplications_whenGetJobApplications_thenStatus200() throws Exception {
+     void givenJobApplications_whenGetJobApplicationsFromPage0_thenStatus200() throws Exception {
         JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
         JobApplication jobApp2 = new JobApplication("Miguel","Marques",LocalDate.of(1999, 4, 21),"943583746","miguelm@ua.pt","link_to_photo","link_to_cv");
         jobRepository.saveAndFlush(jobApp1);
         jobRepository.saveAndFlush(jobApp2);
 
-        mvc.perform(get("/api/job_applications").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/jobApplications?page=0").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(equalTo(2))))
-                .andExpect(jsonPath("$[0].firstName", is("Paulo")))
-                .andExpect(jsonPath("$[1].firstName", is("Miguel")));
+                .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
+                .andExpect(jsonPath("$.content[0].firstName", is("Paulo")))
+                .andExpect(jsonPath("$.content[1].firstName", is("Miguel")));
+    }
+
+    @Test
+     void givenJobApplications_whenGetJobApplicationsFromPage1_thenStatus200() throws Exception {
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        JobApplication jobApp2 = new JobApplication("Miguel","Marques",LocalDate.of(1999, 4, 21),"943583746","miguelm@ua.pt","link_to_photo","link_to_cv");
+        jobRepository.saveAndFlush(jobApp1);
+        jobRepository.saveAndFlush(jobApp2);
+
+        mvc.perform(get("/api/jobApplications?page=1").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content", hasSize(equalTo(0))));
     }
 
     @Test
@@ -75,7 +89,7 @@ public class JobApplicationControllerTest {
         JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
         jobRepository.saveAndFlush(jobApp1);
 
-        mvc.perform(get("/api/job_applications/{jobApplicationId}",jobApp1.getId()).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/jobApplications/{jobApplicationId}",jobApp1.getId()).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

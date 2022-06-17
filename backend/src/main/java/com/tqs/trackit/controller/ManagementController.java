@@ -1,7 +1,5 @@
 package com.tqs.trackit.controller;
 
-import java.util.List;
-
 import com.tqs.trackit.exception.ResourceNotFoundException;
 import com.tqs.trackit.model.JobApplication;
 import com.tqs.trackit.dtos.JobApplicationDTO;
@@ -117,18 +115,6 @@ public class ManagementController {
         return ResponseEntity.ok().body(rider1);
     }
 
-
-
-    // @GetMapping("/riders/sortByRating") 
-    // public ResponseEntity<List<Rider>> getRidersByRatingMean() {
-    //     return ResponseEntity.ok().body(ridersServ.getRidersByRating());
-    // }
-
-    // @GetMapping("/riders/sortByName") 
-    // public ResponseEntity<List<Rider>> getRidersAlphabetically() {
-    //     return ResponseEntity.ok().body(ridersServ.getRidersAlphabetically());
-    // }
-
     @PostMapping("/riders")
     public Rider createRider(@RequestBody RiderDTO rider) {
         return ridersServ.saveRider(rider.toRiderEntity());
@@ -157,12 +143,15 @@ public class ManagementController {
         return storesServ.saveStore(store.toStoreEntity());
     }
 
-    @GetMapping("/job_applications")
-    public ResponseEntity<List<JobApplication>> getApplications() {
-        return ResponseEntity.ok().body(jobServ.getApplications());
+    @GetMapping("/jobApplications")
+    public ResponseEntity<Page<JobApplication>> getApplications(@RequestParam(required = false) Integer page) {
+        if(page==null) {
+            page=0;
+        }
+        return ResponseEntity.ok().body(jobServ.getApplications(page));
     }
 
-    @GetMapping("/job_applications/{jobApplicationId}") 
+    @GetMapping("/jobApplications/{jobApplicationId}") 
     public ResponseEntity<JobApplication> getJobApplicationById(@PathVariable(value = "jobApplicationId") Long jobApplicationId)
         throws ResourceNotFoundException {
         JobApplication jobApplication1 = jobServ.getApplicationById(jobApplicationId);
@@ -172,7 +161,7 @@ public class ManagementController {
         return ResponseEntity.ok().body(jobApplication1);
     }
 
-    @PostMapping("/job_applications")
+    @PostMapping("/jobApplications")
     public JobApplication createApplication(@RequestBody JobApplicationDTO application) {
         return jobServ.saveApplication(application.toJobApplicationEntity());
     }

@@ -58,7 +58,7 @@ public class RiderControllerTest {
     }
 
     @Test
-     void givenRiders_whenGetRiders_thenStatus200() throws Exception {
+     void givenRiders_whenGetRiders_thenStatus200FromPage0() throws Exception {
         List<Double> ratings = new ArrayList<>();
         ratings.add(4.5);
         ratings.add(4.0);
@@ -70,7 +70,7 @@ public class RiderControllerTest {
         riderRepository.saveAndFlush(rider2);
         riderRepository.saveAndFlush(rider3);
 
-        mvc.perform(get("/api/riders").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/riders?page=0").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -78,6 +78,26 @@ public class RiderControllerTest {
                 .andExpect(jsonPath("$.content[0].firstName", is("Miguel")))
                 .andExpect(jsonPath("$.content[1].firstName", is("Afonso")))
                 .andExpect(jsonPath("$.content[2].firstName", is("Ana")));
+    }
+
+    @Test
+     void givenRiders_whenGetRiders_thenStatus200FromPage1() throws Exception {
+        List<Double> ratings = new ArrayList<>();
+        ratings.add(4.5);
+        ratings.add(4.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings);
+        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings);
+
+        riderRepository.saveAndFlush(rider1);
+        riderRepository.saveAndFlush(rider2);
+        riderRepository.saveAndFlush(rider3);
+
+        mvc.perform(get("/api/riders?page=1").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content", hasSize(equalTo(0))));
     }
 
     @Test

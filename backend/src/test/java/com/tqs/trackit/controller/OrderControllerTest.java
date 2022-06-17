@@ -56,7 +56,7 @@ public class OrderControllerTest {
     }
 
     @Test
-     void givenOrders_whenGetOrders_thenStatus200() throws Exception {
+     void givenOrders_whenGetOrders_thenStatus200FromPage0() throws Exception {
         Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
@@ -66,13 +66,31 @@ public class OrderControllerTest {
         orderRepository.saveAndFlush(order1);
         orderRepository.saveAndFlush(order2);
 
-        mvc.perform(get("/api/orders").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/orders?page=0").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
                 .andExpect(jsonPath("$.content[0].orderStatus", is("Late")))
                 .andExpect(jsonPath("$.content[1].orderStatus", is("On Time")));
+    }
+
+    @Test
+     void givenOrders_whenGetOrders_thenStatus200FromPage1() throws Exception {
+        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
+        orderRepository.saveAndFlush(order1);
+        orderRepository.saveAndFlush(order2);
+
+        mvc.perform(get("/api/orders?page=1").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content", hasSize(equalTo(0))));
     }
 
     @Test
