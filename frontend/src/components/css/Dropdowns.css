@@ -48,42 +48,42 @@
     color: #06113C;
 }
 
-.acceptApplication {
+.dismissApplication {
     border-radius: 25px;
     border: 2px solid red;
     background-color: white;
     color: red;
 }
 
-.acceptApplication:hover {
+.dismissApplication:hover {
     border: 2px solid red;
     background-color: red;
     color: white;
     box-shadow: 0 0 0 0.25rem rgba(193, 21, 21, 0.5);
 }
 
-.acceptApplication:focus {
+.dismissApplication:focus {
     border: 2px solid red;
     background-color: red;
     color: white;
     box-shadow: 0 0 0 0.25rem rgba(193, 21, 21, 0.5);
 }
 
-.dismissApplication {
+.acceptApplication {
     border-radius: 25px;
     border: 2px solid green;
     background-color: white;
     color: green;
 }
 
-.dismissApplication:hover {
+.acceptApplication:hover {
     border: 2px solid green;
     background-color: green;
     color: white;
     box-shadow: 0 0 0 0.25rem rgba(21, 100, 34, 0.5);
 }
 
-.dismissApplication:focus {
+.acceptApplication:focus {
     border: 2px solid green;
     background-color: green;
     color: white;
