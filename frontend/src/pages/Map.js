@@ -1,5 +1,5 @@
 // React
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 // Components
@@ -26,6 +26,11 @@ import { staff } from '../App'
 // Map
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
 
+// axios
+import axios from "axios";
+
+const endpoint_riders = "api/riders";
+
 function RiderProfile() {
 
     // const params = useParams();
@@ -40,6 +45,16 @@ function RiderProfile() {
     //     staff.splice(riderId-1, 1) // remove rider from staff array
     //     navigate('/staff')
     // }
+
+    const [staff, setStaff] = useState([]);
+    const [location, setLocation] = useState([51.505, -0.09]);
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
+            setStaff(response.data);
+            setLocation([response.data[0].latitude, response.data[0].longitude]);
+        });
+    }, []);
 
     return (
         <>
@@ -58,16 +73,18 @@ function RiderProfile() {
                     </Col>
                     <Col sm={8}>
 
-                        <MapContainer style={{ height: '60vh', width: '60vw', marginLeft: '-10%' }} center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+                        <MapContainer style={{ height: '60vh', width: '60vw', marginLeft: '-10%' }} center={location} zoom={13} scrollWheelZoom={true}>
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            <Marker position={[51.505, -0.09]}>
-                                <Popup>
-                                    A pretty CSS3 popup. <br /> Easily customizable.
-                                </Popup>
-                            </Marker>
+                            {staff.map((callbackfn, idx) => (
+                                <Marker key={"key" + staff[idx].id} position={[staff[idx].latitude, staff[idx].longitude]}>
+                                    <Popup>
+                                        {staff[idx].firstName + " " + staff[idx].lastName}
+                                    </Popup>
+                                </Marker>
+                            ))}
                         </MapContainer>
 
                         {/* <Container className='informationSheet'>
