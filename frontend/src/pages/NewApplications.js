@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
 
 // Components
@@ -15,29 +15,42 @@ import Button from 'react-bootstrap/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
-// Employee data
-import { applications } from '../App'
+import axios from "axios";
 
-export class NewApplications extends Component {
-    render() {
-        return (
-            <>
-                <GeneralNavbar />
+const endpoint_applications = "api/job_applications";
 
-                <Container>
-                    <h1 style={{ marginTop: '5%' }}>NEW JOB APPLICATIONS</h1>
-                </Container>
+function NewApplications() {
 
-                <Container style={{ marginTop: '2%' }}>
-                    <Row>
-                        <Col sm={4}>
-                            <Link to="/staff">
-                                <FontAwesomeIcon icon={faArrowLeft} style={{ fontSize: '30px', textDecoration: 'none', color: '#06113C' }} />
-                            </Link>
-                        </Col>
-                        <Col sm={8}>
-                            <Row className="d-flex justify-content-center">
-                                {applications.map((callbackfn, idx) => (
+    const [applications, setApplications] = useState([]);
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_applications).then((response) => {
+            setApplications(response.data);
+        });
+    }, []);
+
+    return (
+        <>
+            <GeneralNavbar />
+
+            <Container>
+                <h1 style={{ marginTop: '5%' }}>NEW JOB APPLICATIONS</h1>
+            </Container>
+
+            <Container style={{ marginTop: '2%' }}>
+                <Row>
+                    <Col sm={4}>
+                        <Link to="/staff">
+                            <FontAwesomeIcon icon={faArrowLeft} style={{ fontSize: '30px', textDecoration: 'none', color: '#06113C' }} />
+                        </Link>
+                    </Col>
+                    <Col sm={8}>
+                        <Row className="d-flex justify-content-center">
+                            {applications.length == 0 ?
+
+                                <h5>No applications currently.</h5>
+                                :
+                                applications.map((callbackfn, idx) => (
                                     <Toast key={"key" + applications[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
                                         <Toast.Header closeButton={false}>
                                             <strong className="me-auto">Application #{applications[idx].id} </strong><br />
@@ -48,28 +61,31 @@ export class NewApplications extends Component {
                                                 <Row>
                                                     <Col>
                                                         <span>
-                                                            <strong>Name: </strong>{applications[idx].name}<br />
-                                                            <strong>Age: </strong>{applications[idx].age}<br />
+                                                            <strong>Name: </strong>{applications[idx].firstName + " " + applications[idx].lastName}<br />
+                                                            {/* TODO: calculate age from this */}
+                                                            <strong>Date of birth: </strong>{applications[idx].dateOfBirth}<br />
+                                                            <strong>Phone: </strong>{applications[idx].phone}<br />
+                                                            <strong>E-mail: </strong>{applications[idx].email}<br />
+                                                            {/* TODO: photo and cv */}
                                                         </span>
                                                     </Col>
                                                 </Row>
                                                 <Row style={{ marginTop: '5%' }}>
                                                     <Col className='align-self-center col-xs-1' align='center'>
-                                                        <Button className='acceptApplication' style={{ marginRight: '1%'}} >Accept</Button>
-                                                        <Button className='dismissApplication' style={{ marginLeft: '1%'}} >Dismiss</Button>
+                                                        <Button className='acceptApplication' style={{ marginRight: '1%' }} >Accept</Button>
+                                                        <Button className='dismissApplication' style={{ marginLeft: '1%' }} >Dismiss</Button>
                                                     </Col>
                                                 </Row>
                                             </Container>
                                         </Toast.Body>
                                     </Toast>
                                 ))}
-                            </Row>
-                        </Col>
-                    </Row>
-                </Container>
-            </>
-        )
-    }
+                        </Row>
+                    </Col>
+                </Row>
+            </Container>
+        </>
+    )
 }
 
 export default NewApplications
