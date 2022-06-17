@@ -64,17 +64,17 @@ public class OrdersServiceTest {
     }
 
     @Test
-    void given2Orders_whenGetAllOrders_thenReturn2Orders() {
+    void given3Orders_whenGetAllOrders_thenRetur3Orders() {
         Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
         Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
-
+        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
         List<Order> allOrders = orderService.getOrders();
         verifyFindOrdersIsCalledOnce();
-        assertThat(allOrders).hasSize(2).extracting(Order::getDeliveryAddress).contains(order1.getDeliveryAddress(), order2.getDeliveryAddress());
+        assertThat(allOrders).hasSize(3).extracting(Order::getDeliveryAddress).contains(order1.getDeliveryAddress(), order2.getDeliveryAddress(),order3.getDeliveryAddress());
 
     }
 

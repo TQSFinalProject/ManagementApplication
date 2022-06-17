@@ -1,13 +1,10 @@
 package com.tqs.trackit.service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.tqs.trackit.model.Rider;
@@ -19,8 +16,9 @@ public class RidersService {
     @Autowired
     RiderRepository riderRep;
 
-    public List<Rider> getRiders() {
-        return riderRep.findAll();
+    public Page<Rider> getRiders(Integer page) {
+        Pageable elements = PageRequest.of(page, 6);
+        return riderRep.findAll(elements);
     }
 
     public Rider getRiderById(Long id) {
@@ -31,30 +29,50 @@ public class RidersService {
         return riderRep.save(rider);
     }
 
-    public List<Rider> getRidersByRating() {
-        List<Rider> allRiders = riderRep.findAll();
-        List<Rider> orderedRiders = new ArrayList<>();
-        Map<Rider,Double> ridersByRating = new HashMap<>();
-        
-        for(Rider r : allRiders) {
-            ridersByRating.put(r, r.ratingMean());
-        }
-
-        List<Entry<Rider,Double>> list = new ArrayList<>(ridersByRating.entrySet());
-        list.sort(Entry.comparingByValue());
-        
-        for(Entry<Rider,Double> e : list) {
-            orderedRiders.add(e.getKey());
-        }
-
-        return orderedRiders;
-
+    public Page<Rider> getRidersByNameAtoZ(Integer page) {
+        Pageable elements = PageRequest.of(page, 6,Sort.by("firstName"));
+        return riderRep.findAll(elements);
     }
 
-    public List<Rider> getRidersAlphabetically() {
-        List<Rider> allRiders = riderRep.findAll();
-        allRiders.sort(Comparator.comparing(Rider::getFirstName));
-        return allRiders;
+    public Page<Rider> getRidersByNameZtoA(Integer page) {
+        Pageable elements = PageRequest.of(page, 6,Sort.by("firstName").descending());
+        return riderRep.findAll(elements);
     }
+
+    public Page<Rider> getRidersByRating0to5(Integer page) {
+        Pageable elements = PageRequest.of(page, 6,Sort.by("ratingMean"));
+        return riderRep.findAll(elements);
+    }
+
+    public Page<Rider> getRidersByRating5to0(Integer page) {
+        Pageable elements = PageRequest.of(page, 6,Sort.by("ratingMean").descending());
+        return riderRep.findAll(elements);
+    }
+
+    // public List<Rider> getRidersByRating() {
+    //     List<Rider> allRiders = riderRep.findAll();
+    //     List<Rider> orderedRiders = new ArrayList<>();
+    //     Map<Rider,Double> ridersByRating = new HashMap<>();
+        
+    //     for(Rider r : allRiders) {
+    //         ridersByRating.put(r, r.ratingMean());
+    //     }
+
+    //     List<Entry<Rider,Double>> list = new ArrayList<>(ridersByRating.entrySet());
+    //     list.sort(Entry.comparingByValue());
+        
+    //     for(Entry<Rider,Double> e : list) {
+    //         orderedRiders.add(e.getKey());
+    //     }
+
+    //     return orderedRiders;
+
+    // }
+
+    // public List<Rider> getRidersAlphabetically() {
+    //     List<Rider> allRiders = riderRep.findAll();
+    //     allRiders.sort(Comparator.comparing(Rider::getFirstName));
+    //     return allRiders;
+    // }
     
 }

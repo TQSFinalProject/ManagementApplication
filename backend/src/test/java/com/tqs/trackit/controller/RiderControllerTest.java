@@ -74,10 +74,10 @@ public class RiderControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(equalTo(3))))
-                .andExpect(jsonPath("$[0].firstName", is("Miguel")))
-                .andExpect(jsonPath("$[1].firstName", is("Afonso")))
-                .andExpect(jsonPath("$[2].firstName", is("Ana")));
+                .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
+                .andExpect(jsonPath("$.content[0].firstName", is("Miguel")))
+                .andExpect(jsonPath("$.content[1].firstName", is("Afonso")))
+                .andExpect(jsonPath("$.content[2].firstName", is("Ana")));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class RiderControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()", equalTo(10)))
+                .andExpect(jsonPath("$.length()", equalTo(11)))
                 .andExpect(jsonPath("$.firstName", is("Miguel")));
     }
 
@@ -116,14 +116,44 @@ public class RiderControllerTest {
         riderRepository.saveAndFlush(rider2);
         riderRepository.saveAndFlush(rider3);
 
-        mvc.perform(get("/api/riders/sortByName").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/riders?sort=name").contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$", hasSize(equalTo(3))))
-        .andExpect(jsonPath("$[0].firstName", is("Afonso")))
-        .andExpect(jsonPath("$[1].firstName", is("Ana")))
-        .andExpect(jsonPath("$[2].firstName", is("Miguel")));
+        .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
+        .andExpect(jsonPath("$.content[0].firstName", is("Afonso")))
+        .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
+        .andExpect(jsonPath("$.content[2].firstName", is("Miguel")));
+
+    }
+
+    @Test
+    void givenRiders_whenGetRidersOrderedAlphabeticallyDescending_thenStatus200() throws Exception {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        List<Double> ratings2 = new ArrayList<>();
+        ratings2.add(2.5);
+        ratings2.add(3.5);
+        List<Double> ratings3 = new ArrayList<>();
+        ratings3.add(5.0);
+        ratings3.add(3.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings2);
+        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings3);
+
+        riderRepository.saveAndFlush(rider1);
+        riderRepository.saveAndFlush(rider2);
+        riderRepository.saveAndFlush(rider3);
+
+        mvc.perform(get("/api/riders?sort=name&desc=true").contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
+        .andExpect(jsonPath("$.content[0].firstName", is("Miguel")))
+        .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
+        .andExpect(jsonPath("$.content[2].firstName", is("Afonso")));
 
     }
 
@@ -146,14 +176,44 @@ public class RiderControllerTest {
         riderRepository.saveAndFlush(rider2);
         riderRepository.saveAndFlush(rider3);
 
-        mvc.perform(get("/api/riders/sortByRating").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/riders?sort=rating").contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$", hasSize(equalTo(3))))
-        .andExpect(jsonPath("$[0].firstName", is("Afonso")))
-        .andExpect(jsonPath("$[1].firstName", is("Ana")))
-        .andExpect(jsonPath("$[2].firstName", is("Miguel")));
+        .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
+        .andExpect(jsonPath("$.content[0].firstName", is("Afonso")))
+        .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
+        .andExpect(jsonPath("$.content[2].firstName", is("Miguel")));
+
+    }
+
+    @Test
+    void givenRiders_whenGetRidersOrderedByRatingDescending_thenStatus200() throws Exception {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        List<Double> ratings2 = new ArrayList<>();
+        ratings2.add(2.5);
+        ratings2.add(3.5);
+        List<Double> ratings3 = new ArrayList<>();
+        ratings3.add(5.0);
+        ratings3.add(3.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings2);
+        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings3);
+
+        riderRepository.saveAndFlush(rider1);
+        riderRepository.saveAndFlush(rider2);
+        riderRepository.saveAndFlush(rider3);
+
+        mvc.perform(get("/api/riders?sort=rating&desc=true").contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
+        .andExpect(jsonPath("$.content[0].firstName", is("Miguel")))
+        .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
+        .andExpect(jsonPath("$.content[2].firstName", is("Afonso")));
 
     }
 

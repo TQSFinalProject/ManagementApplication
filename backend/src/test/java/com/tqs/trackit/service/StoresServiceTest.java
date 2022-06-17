@@ -11,13 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import com.tqs.trackit.model.Store;
 import com.tqs.trackit.repository.StoreRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,7 +69,6 @@ public class StoresServiceTest {
         
 
         Page<Store> allStores = storeService.getStores(0);
-        System.out.println(allStores);
         List<Store> elements = allStores.getContent();
         verifyFindStoresIsCalledOnce();
         assertThat(elements).hasSize(3).extracting(Store::getStoreName).contains(store1.getStoreName(),store2.getStoreName(),store3.getStoreName());

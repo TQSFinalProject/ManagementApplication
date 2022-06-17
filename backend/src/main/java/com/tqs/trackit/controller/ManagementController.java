@@ -72,17 +72,23 @@ public class ManagementController {
     }
 
     @GetMapping("/riders")
-    public ResponseEntity<List<Rider>> getRiders(@RequestParam(required = false) String sort) throws ResourceNotFoundException {
+    public ResponseEntity<Page<Rider>> getRiders(@RequestParam(required = false) String sort, @RequestParam(required = false) String desc) throws ResourceNotFoundException {
         if(sort==null) {
-            return ResponseEntity.ok().body(ridersServ.getRiders());
+            return ResponseEntity.ok().body(ridersServ.getRiders(0));
         }
         
         switch(sort) {
             case "rating":
-                return ResponseEntity.ok().body(ridersServ.getRidersByRating());
+                if(desc!=null && desc.equals("true")) {
+                    return ResponseEntity.ok().body(ridersServ.getRidersByRating5to0(0));
+                }
+                return ResponseEntity.ok().body(ridersServ.getRidersByRating0to5(0));
 
             case "name":
-                return ResponseEntity.ok().body(ridersServ.getRidersAlphabetically());
+                if(desc!=null && desc.equals("true")) {
+                    return ResponseEntity.ok().body(ridersServ.getRidersByNameZtoA(0));
+                }
+                return ResponseEntity.ok().body(ridersServ.getRidersByNameAtoZ(0));
             
             default:
                 throw new ResourceNotFoundException("Not a filter :: " + sort);
