@@ -62,14 +62,14 @@ public class StoreControllerTest {
         storeRepository.saveAndFlush(store2);
         storeRepository.saveAndFlush(store3);
 
-        mvc.perform(get("/api/stores").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/stores?page=0").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(equalTo(3))))
-                .andExpect(jsonPath("$[0].storeName", is("Store X")))
-                .andExpect(jsonPath("$[1].storeName", is("Store Y")))
-                .andExpect(jsonPath("$[2].storeName", is("Store Z")));
+                .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
+                .andExpect(jsonPath("$.content[0].storeName", is("Store X")))
+                .andExpect(jsonPath("$.content[1].storeName", is("Store Y")))
+                .andExpect(jsonPath("$.content[2].storeName", is("Store Z")));
     }
 
     @Test

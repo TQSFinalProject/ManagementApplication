@@ -17,6 +17,7 @@ import com.tqs.trackit.service.RidersService;
 import com.tqs.trackit.service.StoresService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -117,8 +118,8 @@ public class ManagementController {
     }
 
     @GetMapping("/stores")
-    public ResponseEntity<List<Store>> getStores() {
-        return ResponseEntity.ok().body(storesServ.getStores());
+    public ResponseEntity<Page<Store>> getStores(@RequestParam(required = false) Integer page) {
+        return ResponseEntity.ok().body(storesServ.getStores(page));
     }
 
     @GetMapping("/stores/{storeId}") 
