@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
@@ -66,8 +67,22 @@ public class ManagementController {
     }
 
     @GetMapping("/riders")
-    public ResponseEntity<List<Rider>> getRiders() {
-        return ResponseEntity.ok().body(ridersServ.getRiders());
+    public ResponseEntity<List<Rider>> getRiders(@RequestParam(required = false) String sort) throws ResourceNotFoundException {
+        if(sort==null) {
+            return ResponseEntity.ok().body(ridersServ.getRiders());
+        }
+        
+        switch(sort) {
+            case "rating":
+                return ResponseEntity.ok().body(ridersServ.getRidersByRating());
+
+            case "name":
+                return ResponseEntity.ok().body(ridersServ.getRidersAlphabetically());
+            
+            default:
+                throw new ResourceNotFoundException("Not a filter :: " + sort);
+                
+        }
     }
 
     @GetMapping("/riders/{riderId}") 
@@ -80,15 +95,17 @@ public class ManagementController {
         return ResponseEntity.ok().body(rider1);
     }
 
-    @GetMapping("/riders/sortByRating") 
-    public ResponseEntity<List<Rider>> getRidersByRatingMean() {
-        return ResponseEntity.ok().body(ridersServ.getRidersByRating());
-    }
 
-    @GetMapping("/riders/sortByName") 
-    public ResponseEntity<List<Rider>> getRidersAlphabetically() {
-        return ResponseEntity.ok().body(ridersServ.getRidersAlphabetically());
-    }
+
+    // @GetMapping("/riders/sortByRating") 
+    // public ResponseEntity<List<Rider>> getRidersByRatingMean() {
+    //     return ResponseEntity.ok().body(ridersServ.getRidersByRating());
+    // }
+
+    // @GetMapping("/riders/sortByName") 
+    // public ResponseEntity<List<Rider>> getRidersAlphabetically() {
+    //     return ResponseEntity.ok().body(ridersServ.getRidersAlphabetically());
+    // }
 
     @PostMapping("/riders")
     public Rider createRider(@RequestBody Rider rider) {
