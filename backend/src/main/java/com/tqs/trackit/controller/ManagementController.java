@@ -46,8 +46,12 @@ public class ManagementController {
     private JobApplicationsService jobServ;
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> getOrders() {
-        return ResponseEntity.ok().body(ordersServ.getOrders());
+    public ResponseEntity<Page<Order>> getOrders(@RequestParam(required = false) Integer page) {
+        if(page==null) 
+        {
+            page=0;
+        }
+        return ResponseEntity.ok().body(ordersServ.getOrders(page));
     }
 
     @GetMapping("/orders/{orderId}") 
@@ -61,8 +65,11 @@ public class ManagementController {
     }
 
     @GetMapping("/orders/rider/{riderId}") 
-    public ResponseEntity<List<Order>> getOrderByRiderId(@PathVariable(value = "riderId") Long riderId) {
-        List<Order> ordersByRider = ordersServ.getOrdersByRiderId(riderId);
+    public ResponseEntity<Page<Order>> getOrderByRiderId(@RequestParam(required = false) Integer page, @PathVariable(value = "riderId") Long riderId) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Order> ordersByRider = ordersServ.getOrdersByRiderId(riderId,page);
         return ResponseEntity.ok().body(ordersByRider);
     }
 
@@ -72,23 +79,27 @@ public class ManagementController {
     }
 
     @GetMapping("/riders")
-    public ResponseEntity<Page<Rider>> getRiders(@RequestParam(required = false) String sort, @RequestParam(required = false) String desc) throws ResourceNotFoundException {
+    public ResponseEntity<Page<Rider>> getRiders(@RequestParam(required = false) Integer page,@RequestParam(required = false) String sort, @RequestParam(required = false) String desc) throws ResourceNotFoundException {
+        if(page==null) {
+            page=0;
+        }
+        
         if(sort==null) {
-            return ResponseEntity.ok().body(ridersServ.getRiders(0));
+            return ResponseEntity.ok().body(ridersServ.getRiders(page));
         }
         
         switch(sort) {
             case "rating":
                 if(desc!=null && desc.equals("true")) {
-                    return ResponseEntity.ok().body(ridersServ.getRidersByRating5to0(0));
+                    return ResponseEntity.ok().body(ridersServ.getRidersByRating5to0(page));
                 }
-                return ResponseEntity.ok().body(ridersServ.getRidersByRating0to5(0));
+                return ResponseEntity.ok().body(ridersServ.getRidersByRating0to5(page));
 
             case "name":
                 if(desc!=null && desc.equals("true")) {
-                    return ResponseEntity.ok().body(ridersServ.getRidersByNameZtoA(0));
+                    return ResponseEntity.ok().body(ridersServ.getRidersByNameZtoA(page));
                 }
-                return ResponseEntity.ok().body(ridersServ.getRidersByNameAtoZ(0));
+                return ResponseEntity.ok().body(ridersServ.getRidersByNameAtoZ(page));
             
             default:
                 throw new ResourceNotFoundException("Not a filter :: " + sort);
@@ -125,6 +136,9 @@ public class ManagementController {
 
     @GetMapping("/stores")
     public ResponseEntity<Page<Store>> getStores(@RequestParam(required = false) Integer page) {
+        if(page==null) {
+            page=0;
+        }
         return ResponseEntity.ok().body(storesServ.getStores(page));
     }
 

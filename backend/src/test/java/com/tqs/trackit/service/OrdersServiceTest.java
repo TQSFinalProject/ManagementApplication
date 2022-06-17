@@ -8,6 +8,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.repository.OrderRepository;
@@ -45,8 +48,8 @@ public class OrdersServiceTest {
 
         Mockito.when(orderRepository.findById(order1.getId())).thenReturn(Optional.of(order1));
         Mockito.when(orderRepository.findById(-1L)).thenReturn(Optional.empty());
-        Mockito.when(orderRepository.findAll()).thenReturn(allOrders);
-        Mockito.when(orderRepository.findByRiderId(1L)).thenReturn(Arrays.asList(order1,order2));
+        Mockito.when(orderRepository.findAll(PageRequest.of(0, 4))).thenReturn(new PageImpl<>(allOrders));
+        Mockito.when(orderRepository.findByRiderId(1L,PageRequest.of(0, 4))).thenReturn(new PageImpl<>(Arrays.asList(order1,order2)));
     }
     
     @Test
@@ -72,9 +75,9 @@ public class OrdersServiceTest {
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
         Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
-        List<Order> allOrders = orderService.getOrders();
+        Page<Order> allOrders = orderService.getOrders(0);
         verifyFindOrdersIsCalledOnce();
-        assertThat(allOrders).hasSize(3).extracting(Order::getDeliveryAddress).contains(order1.getDeliveryAddress(), order2.getDeliveryAddress(),order3.getDeliveryAddress());
+        assertThat(allOrders.getContent()).hasSize(3).extracting(Order::getDeliveryAddress).contains(order1.getDeliveryAddress(), order2.getDeliveryAddress(),order3.getDeliveryAddress());
 
     }
 
@@ -87,9 +90,9 @@ public class OrdersServiceTest {
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
 
-        List<Order> riderOrders = orderService.getOrdersByRiderId(1L);
+        Page<Order> riderOrders = orderService.getOrdersByRiderId(1L,0);
         verifyFindOrdersByRiderIdIsCalledOnce();
-        assertThat(riderOrders).hasSize(2).extracting(Order::getOrderDetails).contains(order1.getOrderDetails(), order2.getOrderDetails());
+        assertThat(riderOrders.getContent()).hasSize(2).extracting(Order::getOrderDetails).contains(order1.getOrderDetails(), order2.getOrderDetails());
 
     }
 
@@ -98,11 +101,11 @@ public class OrdersServiceTest {
     }
 
     private void verifyFindOrdersIsCalledOnce() {
-        Mockito.verify(orderRepository, VerificationModeFactory.times(1)).findAll();
+        Mockito.verify(orderRepository, VerificationModeFactory.times(1)).findAll(PageRequest.of(0, 4));
     }
 
     private void verifyFindOrdersByRiderIdIsCalledOnce() {
-        Mockito.verify(orderRepository, VerificationModeFactory.times(1)).findByRiderId(Mockito.anyLong());
+        Mockito.verify(orderRepository, VerificationModeFactory.times(1)).findByRiderId(1L,(PageRequest.of(0, 4)));
     }
 
 }

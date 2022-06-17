@@ -70,9 +70,9 @@ public class OrderControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(equalTo(2))))
-                .andExpect(jsonPath("$[0].orderStatus", is("Late")))
-                .andExpect(jsonPath("$[1].orderStatus", is("On Time")));
+                .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
+                .andExpect(jsonPath("$.content[0].orderStatus", is("Late")))
+                .andExpect(jsonPath("$.content[1].orderStatus", is("On Time")));
     }
 
     @Test
@@ -109,9 +109,9 @@ public class OrderControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(equalTo(2))))
-                .andExpect(jsonPath("$[0].orderDetails", is("Wine X")))
-                .andExpect(jsonPath("$[1].orderDetails", is("Wine Y")));
+                .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
+                .andExpect(jsonPath("$.content[0].orderDetails", is("Wine X")))
+                .andExpect(jsonPath("$.content[1].orderDetails", is("Wine Y")));
 
 
     }
