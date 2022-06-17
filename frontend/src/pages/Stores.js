@@ -14,9 +14,6 @@ import Button from 'react-bootstrap/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faListCheck } from '@fortawesome/free-solid-svg-icons'
 
-// // Employee data
-// import { staff, tasks, stores } from '../App'
-
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
 import Pagination from '../components/Pagination';
@@ -89,60 +86,66 @@ function Stores() {
             </Container>
 
             <Container style={{ marginTop: '2%' }}>
-                <Row>
-                    <Col sm={4}>
+                {stores.length == 0 ?
+                    <Row>
+                        <h5 style={{ textAlign: 'center' }}>There are no affiliated stores.</h5>
+                    </Row>
+                    :
+                    <Row>
+                        <Col sm={4}>
 
-                        <p><strong>Filters:</strong></p>
+                            <p><strong>Filters:</strong></p>
 
-                        <label htmlFor="searchAssignedRider" className="inp">
-                            <input type="text" id="searchAssignedRider" placeholder="&nbsp;" />
-                            <span className="label">Name</span>
-                            <span className="focus-bg"></span>
-                        </label>
+                            <label htmlFor="searchAssignedRider" className="inp">
+                                <input type="text" id="searchAssignedRider" placeholder="&nbsp;" />
+                                <span className="label">Name</span>
+                                <span className="focus-bg"></span>
+                            </label>
 
-                        <label htmlFor="searchStore" className="inp">
-                            <input type="text" id="searchStore" placeholder="&nbsp;" />
-                            <span className="label">Address</span>
-                            <span className="focus-bg"></span>
-                        </label>
+                            <label htmlFor="searchStore" className="inp">
+                                <input type="text" id="searchStore" placeholder="&nbsp;" />
+                                <span className="label">Address</span>
+                                <span className="focus-bg"></span>
+                            </label>
 
-                    </Col>
-                    <Col sm={8}>
-                        <Row className="d-flex justify-content-center">
-                            {stores.map((callbackfn, idx) => (
-                                <Toast key={"key" + stores[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
-                                    <Toast.Header closeButton={false}>
-                                        <strong className="me-auto">Store #{stores[idx].id} </strong><br />
-                                        {/* <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a> */}
-                                    </Toast.Header>
-                                    <Toast.Body>
-                                        <Container>
-                                            <Row>
-                                                <Col>
-                                                    <span>
-                                                        <strong>Name: </strong>{stores[idx].storeName}<br />
-                                                        <strong>Address: </strong>{stores[idx].storeAddress}<br />
-                                                        <strong>Shipping tax: </strong>{stores[idx].shippingTax}%<br />
-                                                        <strong>Current tasks: </strong>{ collect(tasks).where('storeId', '=', stores[idx].id).count() }<br />
-                                                    </span>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col className="d-flex justify-content-center">
-                                                    <Button style={{ marginTop: '3%' }} onClick={() => { redirectStoreTasksPage(stores[idx].id) }}><FontAwesomeIcon icon={faListCheck} /></Button>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                    </Toast.Body>
-                                </Toast>
-                            ))}
-                        </Row>
-                        <Row className="d-flex justify-content-center">
-                            {/* ? stores per page: TODO: elements per page as pagination input */}
-                            <Pagination pageNumber={1} parentCallback={handleCallback} />
-                        </Row>
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col sm={8}>
+                            <Row className="d-flex justify-content-center">
+                                {stores.map((callbackfn, idx) => (
+                                    <Toast key={"key" + stores[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
+                                        <Toast.Header closeButton={false}>
+                                            <strong className="me-auto">Store #{stores[idx].id} </strong><br />
+                                            {/* <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a> */}
+                                        </Toast.Header>
+                                        <Toast.Body>
+                                            <Container>
+                                                <Row>
+                                                    <Col>
+                                                        <span>
+                                                            <strong>Name: </strong>{stores[idx].storeName}<br />
+                                                            <strong>Address: </strong>{stores[idx].storeAddress}<br />
+                                                            <strong>Shipping tax: </strong>{stores[idx].shippingTax}%<br />
+                                                            <strong>Current tasks: </strong>{collect(tasks).where('storeId', '=', stores[idx].id).count()}<br />
+                                                        </span>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col className="d-flex justify-content-center">
+                                                        <Button style={{ marginTop: '3%' }} onClick={() => { redirectStoreTasksPage(stores[idx].id) }}><FontAwesomeIcon icon={faListCheck} /></Button>
+                                                    </Col>
+                                                </Row>
+                                            </Container>
+                                        </Toast.Body>
+                                    </Toast>
+                                ))}
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                {/* ? stores per page: TODO: elements per page as pagination input */}
+                                <Pagination pageNumber={1} parentCallback={handleCallback} />
+                            </Row>
+                        </Col>
+                    </Row>
+                }
             </Container>
 
         </>);

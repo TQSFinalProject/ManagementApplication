@@ -46,7 +46,7 @@ function averageRating(listOfRatings) {
         count += 1;
         sum += rating;
     }
-    let avg = Math.round(sum/count);
+    let avg = Math.round(sum / count);
     return avg;
 }
 
@@ -96,96 +96,101 @@ function Staff() {
             </Container>
 
             <Container style={{ marginTop: '2%' }}>
-                <Row>
-                    <Col sm={4}>
+                {staff.length == 0 ?
+                    <Row>
+                        <h5 style={{textAlign:'center'}}>There is no hired staff.</h5>
+                    </Row>
+                    :
+                    <Row>
+                        <Col sm={4}>
 
-                        <p><strong>Filters:</strong></p>
+                            <p><strong>Filters:</strong></p>
 
-                        <Dropdown className='filterDropdown'>
-                            <Dropdown.Toggle id="dropdown-basic">
-                                Rating
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                {/* setOrderedStaff(local_staff.sort(dynamicSort("rating"))) */}
-                                <Dropdown.Item className="clickable" onClick={() => { }}>1-5</Dropdown.Item>
-                                <Dropdown.Item className="clickable" onClick={() => { }}>5-1</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                            <Dropdown className='filterDropdown'>
+                                <Dropdown.Toggle id="dropdown-basic">
+                                    Rating
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {/* setOrderedStaff(local_staff.sort(dynamicSort("rating"))) */}
+                                    <Dropdown.Item className="clickable" onClick={() => { }}>1-5</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { }}>5-1</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
 
-                        <Dropdown className='filterDropdown'>
-                            <Dropdown.Toggle id="dropdown-basic">
-                                Alphabetical Order
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item className="clickable" onClick={() => { }}>A-Z</Dropdown.Item>
-                                <Dropdown.Item className="clickable" onClick={() => { }}>Z-A</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                            <Dropdown className='filterDropdown'>
+                                <Dropdown.Toggle id="dropdown-basic">
+                                    Alphabetical Order
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item className="clickable" onClick={() => { }}>A-Z</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { }}>Z-A</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
 
-                        <Dropdown className='filterDropdown'>
-                            <Dropdown.Toggle id="dropdown-basic">
-                                Time As An Employee
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item className="clickable" onClick={() => { }}>Up</Dropdown.Item>
-                                <Dropdown.Item className="clickable" onClick={() => { }}>Down</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                            <Dropdown className='filterDropdown'>
+                                <Dropdown.Toggle id="dropdown-basic">
+                                    Time As An Employee
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item className="clickable" onClick={() => { }}>Up</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { }}>Down</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
 
-                        <div className='checkboxGroup' style={{ verticalAlign: 'middle', marginTop: '3%' }}>
-                            <p>Work Zone:</p>
-                            <label className="container">
-                                <input id='checkboxA' type="checkbox" onChange={checkBoxFoolery} />
-                                &nbsp; A
-                            </label>
-                            <label className="container">
-                                <input id='checkboxB' type="checkbox" onChange={checkBoxFoolery} />
-                                &nbsp; B
-                            </label>
-                            <label className="container">
-                                <input id='checkboxC' type="checkbox" onChange={checkBoxFoolery} />
-                                &nbsp; C
-                            </label>
-                            <label className="container">
-                                <input id='checkboxD' type="checkbox" onChange={checkBoxFoolery} />
-                                &nbsp; D
-                            </label>
-                        </div>
+                            <div className='checkboxGroup' style={{ verticalAlign: 'middle', marginTop: '3%' }}>
+                                <p>Work Zone:</p>
+                                <label className="container">
+                                    <input id='checkboxA' type="checkbox" onChange={checkBoxFoolery} />
+                                    &nbsp; A
+                                </label>
+                                <label className="container">
+                                    <input id='checkboxB' type="checkbox" onChange={checkBoxFoolery} />
+                                    &nbsp; B
+                                </label>
+                                <label className="container">
+                                    <input id='checkboxC' type="checkbox" onChange={checkBoxFoolery} />
+                                    &nbsp; C
+                                </label>
+                                <label className="container">
+                                    <input id='checkboxD' type="checkbox" onChange={checkBoxFoolery} />
+                                    &nbsp; D
+                                </label>
+                            </div>
 
-                    </Col>
-                    <Col sm={8}>
-                        <Row className="d-flex justify-content-center">
-                            {staff.map((callbackfn, idx) => (
-                                <Toast key={"key" + staff[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
-                                    <Toast.Header closeButton={false}>
-                                        <strong className="me-auto">Employee #{staff[idx].id} </strong>
-                                    </Toast.Header>
-                                    <Toast.Body>
-                                        <Container>
-                                            <Row>
-                                                <Col className='align-self-center col-xs-1' align='center'>
-                                                    {staff[idx].firstName + " " + staff[idx].lastName}<br />
-                                                    <StarRating rating={averageRating(staff[idx].ratings)} />
+                        </Col>
+                        <Col sm={8}>
+                            <Row className="d-flex justify-content-center">
+                                {staff.map((callbackfn, idx) => (
+                                    <Toast key={"key" + staff[idx].id} style={{ margin: '1%', width: '20vw' }} className="employeeCard">
+                                        <Toast.Header closeButton={false}>
+                                            <strong className="me-auto">Employee #{staff[idx].id} </strong>
+                                        </Toast.Header>
+                                        <Toast.Body>
+                                            <Container>
+                                                <Row>
+                                                    <Col className='align-self-center col-xs-1' align='center'>
+                                                        {staff[idx].firstName + " " + staff[idx].lastName}<br />
+                                                        <StarRating rating={averageRating(staff[idx].ratings)} />
 
-                                                </Col>
-                                                <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                                                    <img src='https://cdn-icons-png.flaticon.com/512/147/147144.png' className="rounded mr-2" alt="Employee Pic" style={{ height: '50px' }}></img>
-                                                </Col>
-                                                <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
-                                                    <Button onClick={() => { redirectUserPage(staff[idx].id) }}><i className="fa fa-user"></i></Button>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                    </Toast.Body>
-                                </Toast>
-                            ))}
-                        </Row>
-                        <Row className="d-flex justify-content-center">
-                            {/* 6 employees per page */}
-                            <Pagination pageNumber={Math.ceil(staff.length / 6)} parentCallback={handleCallback} />
-                        </Row>
-                    </Col>
-                </Row>
+                                                    </Col>
+                                                    <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
+                                                        <img src='https://cdn-icons-png.flaticon.com/512/147/147144.png' className="rounded mr-2" alt="Employee Pic" style={{ height: '50px' }}></img>
+                                                    </Col>
+                                                    <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
+                                                        <Button onClick={() => { redirectUserPage(staff[idx].id) }}><i className="fa fa-user"></i></Button>
+                                                    </Col>
+                                                </Row>
+                                            </Container>
+                                        </Toast.Body>
+                                    </Toast>
+                                ))}
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Pagination pageNumber={Math.ceil(staff.length / 6)} parentCallback={handleCallback} />
+                            </Row>
+                        </Col>
+                    </Row>
+                }
             </Container>
         </>);
 }

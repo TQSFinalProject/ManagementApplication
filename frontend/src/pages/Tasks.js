@@ -22,9 +22,6 @@ import Badge from 'react-bootstrap/Badge'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsSpin } from '@fortawesome/free-solid-svg-icons'
 
-// // Employee data
-// import { staff, tasks, stores } from '../App'
-
 // CSS
 import SearchBar from '../components/css/SearchBar.css'
 
@@ -77,82 +74,88 @@ function Tasks() {
             </Container>
 
             <Container style={{ marginTop: '2%' }}>
-                <Row>
-                    <Col sm={4}>
+                {tasks.length == 0 ?
+                    <Row>
+                        <h5 style={{ textAlign: 'center' }}>There are no orders currently.</h5>
+                    </Row>
+                    :
+                    <Row>
+                        <Col sm={4}>
 
-                        <p><strong>Filters:</strong></p>
+                            <p><strong>Filters:</strong></p>
 
-                        <label htmlFor="searchAssignedRider" className="inp">
-                            <input type="text" id="searchAssignedRider" placeholder="&nbsp;" />
-                            <span className="label">Assigned rider</span>
-                            <span className="focus-bg"></span>
-                        </label>
+                            <label htmlFor="searchAssignedRider" className="inp">
+                                <input type="text" id="searchAssignedRider" placeholder="&nbsp;" />
+                                <span className="label">Assigned rider</span>
+                                <span className="focus-bg"></span>
+                            </label>
 
-                        <label htmlFor="searchStore" className="inp">
-                            <input type="text" id="searchStore" placeholder="&nbsp;" />
-                            <span className="label">Store/Restaurant</span>
-                            <span className="focus-bg"></span>
-                        </label>
+                            <label htmlFor="searchStore" className="inp">
+                                <input type="text" id="searchStore" placeholder="&nbsp;" />
+                                <span className="label">Store/Restaurant</span>
+                                <span className="focus-bg"></span>
+                            </label>
 
-                        <Dropdown className='filterDropdown'>
-                            <Dropdown.Toggle id="dropdown-basic">
-                                Lateness
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item className="clickable">On time</Dropdown.Item>
-                                <Dropdown.Item className="clickable">Late</Dropdown.Item>
-                                <Dropdown.Item className="clickable">Very late</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                            <Dropdown className='filterDropdown'>
+                                <Dropdown.Toggle id="dropdown-basic">
+                                    Lateness
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item className="clickable">On time</Dropdown.Item>
+                                    <Dropdown.Item className="clickable">Late</Dropdown.Item>
+                                    <Dropdown.Item className="clickable">Very late</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
 
-                        <Dropdown className='filterDropdown'>
-                            <Dropdown.Toggle id="dropdown-basic">
-                                Distance
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item className="clickable">Close</Dropdown.Item>
-                                <Dropdown.Item className="clickable">Average</Dropdown.Item>
-                                <Dropdown.Item className="clickable">Far away</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                            <Dropdown className='filterDropdown'>
+                                <Dropdown.Toggle id="dropdown-basic">
+                                    Distance
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item className="clickable">Close</Dropdown.Item>
+                                    <Dropdown.Item className="clickable">Average</Dropdown.Item>
+                                    <Dropdown.Item className="clickable">Far away</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
 
-                    </Col>
-                    <Col sm={8}>
-                        <Row className="d-flex justify-content-center">
-                            {tasks.map((callbackfn, idx) => (
-                                <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
-                                    <Toast.Header closeButton={false}>
-                                        <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
-                                        {/* <Badge style={{ marginRight: '5%' }} bg="warning" text="dark">Far Away</Badge> */}
-                                        {tasks[idx].orderStatus == 'Late' ?
-                                            <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
-                                            :
-                                            <></>
-                                        }
-                                        <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a>
-                                    </Toast.Header>
-                                    <Toast.Body>
-                                        <Container>
-                                            <Row>
-                                                <Col>
-                                                    <span>
-                                                        <strong>Rider: </strong>{staff[tasks[idx].riderId - 1].firstName + " " + staff[tasks[idx].riderId - 1].lastName}<br />
-                                                        <strong>Store: </strong>Chateau Du Vin<br />
-                                                        <strong>Delivery address: </strong>{tasks[idx].deliveryAddress}<br />
-                                                    </span>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                    </Toast.Body>
-                                </Toast>
-                            ))}
-                        </Row>
-                        <Row className="d-flex justify-content-center">
-                            {/* 4 tasks per page: TODO: elements per page as pagination input */}
-                            <Pagination pageNumber={1} parentCallback={handleCallback} />
-                        </Row>
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col sm={8}>
+                            <Row className="d-flex justify-content-center">
+                                {tasks.map((callbackfn, idx) => (
+                                    <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
+                                        <Toast.Header closeButton={false}>
+                                            <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
+                                            {/* <Badge style={{ marginRight: '5%' }} bg="warning" text="dark">Far Away</Badge> */}
+                                            {tasks[idx].orderStatus == 'Late' ?
+                                                <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
+                                                :
+                                                <></>
+                                            }
+                                            <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a>
+                                        </Toast.Header>
+                                        <Toast.Body>
+                                            <Container>
+                                                <Row>
+                                                    <Col>
+                                                        <span>
+                                                            <strong>Rider: </strong>{staff[tasks[idx].riderId - 1].firstName + " " + staff[tasks[idx].riderId - 1].lastName}<br />
+                                                            <strong>Store: </strong>Chateau Du Vin<br />
+                                                            <strong>Delivery address: </strong>{tasks[idx].deliveryAddress}<br />
+                                                        </span>
+                                                    </Col>
+                                                </Row>
+                                            </Container>
+                                        </Toast.Body>
+                                    </Toast>
+                                ))}
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                {/* 4 tasks per page: TODO: elements per page as pagination input */}
+                                <Pagination pageNumber={1} parentCallback={handleCallback} />
+                            </Row>
+                        </Col>
+                    </Row>
+                }
             </Container>
 
             <Modal show={show} onHide={handleClose}>
