@@ -8,6 +8,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.tqs.trackit.model.Store;
 import com.tqs.trackit.repository.StoreRepository;
@@ -37,9 +40,11 @@ public class StoresServiceTest {
 
         List<Store> allStores = Arrays.asList(store1, store2, store3);
 
+        Page<Store> page = new PageImpl<>(allStores);
+
         Mockito.when(storeRepository.findById(store1.getId())).thenReturn(Optional.of(store1));
         Mockito.when(storeRepository.findById(-1L)).thenReturn(Optional.empty());
-        Mockito.when(storeRepository.findAll()).thenReturn(allStores);
+        Mockito.when(storeRepository.findAll(PageRequest.of(0, 6))).thenReturn(page);
     }
 
     @Test
@@ -63,9 +68,10 @@ public class StoresServiceTest {
         Store store3 = new Store("Store Z",4.5,"Avenue Z");
         
 
-        List<Store> allStores = storeService.getStores();
+        Page<Store> allStores = storeService.getStores(0);
+        List<Store> elements = allStores.getContent();
         verifyFindStoresIsCalledOnce();
-        assertThat(allStores).hasSize(3).extracting(Store::getStoreName).contains(store1.getStoreName(),store2.getStoreName(),store3.getStoreName());
+        assertThat(elements).hasSize(3).extracting(Store::getStoreName).contains(store1.getStoreName(),store2.getStoreName(),store3.getStoreName());
 
     }
 
@@ -76,7 +82,7 @@ public class StoresServiceTest {
     }
 
     private void verifyFindStoresIsCalledOnce() {
-        Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findAll();
+        Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findAll(PageRequest.of(0, 6));
     }
     
 }

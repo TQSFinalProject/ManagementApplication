@@ -8,6 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.repository.RiderRepository;
@@ -47,10 +51,21 @@ public class RidersServiceTest {
         rider1.setId(10L);
 
         List<Rider> allRiders = Arrays.asList(rider1, rider2, rider3);
+        Page<Rider> page = new PageImpl<>(allRiders);
+
+        List<Rider> allRiders2 = Arrays.asList(rider2, rider3, rider1);
+        Page<Rider> page2 = new PageImpl<>(allRiders2);
+
+        List<Rider> allRiders3 = Arrays.asList(rider1, rider3, rider2);
+        Page<Rider> page3 = new PageImpl<>(allRiders3);
 
         Mockito.when(riderRepository.findById(rider1.getId())).thenReturn(Optional.of(rider1));
         Mockito.when(riderRepository.findById(-1L)).thenReturn(Optional.empty());
-        Mockito.when(riderRepository.findAll()).thenReturn(allRiders);
+        Mockito.when(riderRepository.findAll(PageRequest.of(0, 6))).thenReturn(page);
+        Mockito.when(riderRepository.findAll(PageRequest.of(0, 6,Sort.by("firstName")))).thenReturn(page2);
+        Mockito.when(riderRepository.findAll(PageRequest.of(0, 6,Sort.by("ratingMean")))).thenReturn(page2);
+        Mockito.when(riderRepository.findAll(PageRequest.of(0, 6,Sort.by("firstName").descending()))).thenReturn(page3);
+        Mockito.when(riderRepository.findAll(PageRequest.of(0, 6,Sort.by("ratingMean").descending()))).thenReturn(page3);
     }
 
     @Test
@@ -76,9 +91,10 @@ public class RidersServiceTest {
         Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings);
         Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings);
 
-        List<Rider> allRiders = riderService.getRiders();
+        Page<Rider> allRiders = riderService.getRiders(0);
+        List<Rider> elements = allRiders.getContent();
         verifyFindRidersIsCalledOnce();
-        assertThat(allRiders).hasSize(3).extracting(Rider::getFirstName).contains(rider1.getFirstName(), rider2.getFirstName(), rider3.getFirstName());
+        assertThat(elements).hasSize(3).extracting(Rider::getFirstName).contains(rider1.getFirstName(), rider2.getFirstName(), rider3.getFirstName());
 
     }
 
@@ -101,9 +117,34 @@ public class RidersServiceTest {
 
         List<Rider> orderedRiders = Arrays.asList(rider2,rider3,rider1);
 
-        assertThat(riderService.getRidersAlphabetically()).isEqualTo(orderedRiders);
+        assertThat(riderService.getRidersByNameAtoZ(0).getContent()).isEqualTo(orderedRiders);
 
-        verifyFindRidersIsCalledOnce();
+        Mockito.verify(riderRepository, VerificationModeFactory.times(1)).findAll(PageRequest.of(0, 6,Sort.by("firstName")));
+
+    }
+
+    @Test
+    void whenGetAllRidersOrderedAlphabeticallyDescending_thenReturnAllRidersOrderedAlphabeticallyDescending() {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        List<Double> ratings2 = new ArrayList<>();
+        ratings2.add(2.5);
+        ratings2.add(3.5);
+        List<Double> ratings3 = new ArrayList<>();
+        ratings3.add(5.0);
+        ratings3.add(3.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings2);
+        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings3);
+
+        rider1.setId(10L);
+
+        List<Rider> orderedRiders = Arrays.asList(rider1,rider3,rider2);
+
+        assertThat(riderService.getRidersByNameZtoA(0).getContent()).isEqualTo(orderedRiders);
+
+        Mockito.verify(riderRepository, VerificationModeFactory.times(1)).findAll(PageRequest.of(0, 6,Sort.by("firstName").descending()));
 
     }
 
@@ -126,9 +167,34 @@ public class RidersServiceTest {
         
         List<Rider> orderedRiders = Arrays.asList(rider2,rider3,rider1);
 
-        assertThat(riderService.getRidersByRating()).isEqualTo(orderedRiders);
+        assertThat(riderService.getRidersByRating0to5(0).getContent()).isEqualTo(orderedRiders);
 
-        verifyFindRidersIsCalledOnce();
+        Mockito.verify(riderRepository, VerificationModeFactory.times(1)).findAll(PageRequest.of(0, 6,Sort.by("ratingMean")));
+
+    }
+
+    @Test
+    void whenGetAllRidersOrderedByMeanDescending_thenReturnAllRidersOrderedByMeanDescending() {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        List<Double> ratings2 = new ArrayList<>();
+        ratings2.add(2.5);
+        ratings2.add(3.5);
+        List<Double> ratings3 = new ArrayList<>();
+        ratings3.add(5.0);
+        ratings3.add(3.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings2);
+        Rider rider3 = new Rider("Ana","Monteiro","9153726384","anam","password","link",39.4455,12.93284,ratings3);
+
+        rider1.setId(10L);
+        
+        List<Rider> orderedRiders = Arrays.asList(rider1,rider3,rider2);
+
+        assertThat(riderService.getRidersByRating5to0(0).getContent()).isEqualTo(orderedRiders);
+
+        Mockito.verify(riderRepository, VerificationModeFactory.times(1)).findAll(PageRequest.of(0, 6,Sort.by("ratingMean").descending()));
 
     }
 
@@ -139,7 +205,7 @@ public class RidersServiceTest {
     }
 
     private void verifyFindRidersIsCalledOnce() {
-        Mockito.verify(riderRepository, VerificationModeFactory.times(1)).findAll();
+        Mockito.verify(riderRepository, VerificationModeFactory.times(1)).findAll(PageRequest.of(0, 6));
     }
 
     

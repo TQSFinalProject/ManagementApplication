@@ -54,7 +54,7 @@ public class StoreControllerTest {
     }
 
     @Test
-     void givenStores_whenGetStores_thenStatus200() throws Exception {
+     void givenStores_whenGetStores_thenStatus200FromPage0() throws Exception {
         Store store1 = new Store("Store X",2.5,"Avenue X");
         Store store2 = new Store("Store Y",3.0,"Avenue Y");
         Store store3 = new Store("Store Z",4.5,"Avenue Z");
@@ -62,14 +62,30 @@ public class StoreControllerTest {
         storeRepository.saveAndFlush(store2);
         storeRepository.saveAndFlush(store3);
 
-        mvc.perform(get("/api/stores").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/stores?page=0").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(equalTo(3))))
-                .andExpect(jsonPath("$[0].storeName", is("Store X")))
-                .andExpect(jsonPath("$[1].storeName", is("Store Y")))
-                .andExpect(jsonPath("$[2].storeName", is("Store Z")));
+                .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
+                .andExpect(jsonPath("$.content[0].storeName", is("Store X")))
+                .andExpect(jsonPath("$.content[1].storeName", is("Store Y")))
+                .andExpect(jsonPath("$.content[2].storeName", is("Store Z")));
+    }
+
+    @Test
+     void givenStores_whenGetStores_thenStatus200FromPage1() throws Exception {
+        Store store1 = new Store("Store X",2.5,"Avenue X");
+        Store store2 = new Store("Store Y",3.0,"Avenue Y");
+        Store store3 = new Store("Store Z",4.5,"Avenue Z");
+        storeRepository.saveAndFlush(store1);
+        storeRepository.saveAndFlush(store2);
+        storeRepository.saveAndFlush(store3);
+
+        mvc.perform(get("/api/stores?page=1").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content", hasSize(equalTo(0))));
     }
 
     @Test

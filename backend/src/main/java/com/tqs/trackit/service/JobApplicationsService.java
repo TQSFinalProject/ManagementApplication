@@ -1,8 +1,10 @@
 package com.tqs.trackit.service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.tqs.trackit.model.JobApplication;
@@ -14,8 +16,9 @@ public class JobApplicationsService {
     @Autowired
     JobApplicationRepository jobRep;
 
-    public List<JobApplication> getApplications() {
-        return jobRep.findAll();
+    public Page<JobApplication> getApplications(Integer page) {
+        Pageable elements = PageRequest.of(page, 4);
+        return jobRep.findAll(elements);
     }
 
     public JobApplication getApplicationById(Long id) {

@@ -1,7 +1,5 @@
 package com.tqs.trackit.controller;
 
-import java.util.List;
-
 import com.tqs.trackit.exception.ResourceNotFoundException;
 import com.tqs.trackit.model.JobApplication;
 import com.tqs.trackit.dtos.JobApplicationDTO;
@@ -17,6 +15,7 @@ import com.tqs.trackit.service.RidersService;
 import com.tqs.trackit.service.StoresService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("http://localhost:3001")
@@ -44,8 +44,12 @@ public class ManagementController {
     private JobApplicationsService jobServ;
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> getOrders() {
-        return ResponseEntity.ok().body(ordersServ.getOrders());
+    public ResponseEntity<Page<Order>> getOrders(@RequestParam(required = false) Integer page) {
+        if(page==null) 
+        {
+            page=0;
+        }
+        return ResponseEntity.ok().body(ordersServ.getOrders(page));
     }
 
     @GetMapping("/orders/{orderId}") 
@@ -58,14 +62,47 @@ public class ManagementController {
         return ResponseEntity.ok().body(order1);
     }
 
+    @GetMapping("/orders/rider/{riderId}") 
+    public ResponseEntity<Page<Order>> getOrderByRiderId(@RequestParam(required = false) Integer page, @PathVariable(value = "riderId") Long riderId) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Order> ordersByRider = ordersServ.getOrdersByRiderId(riderId,page);
+        return ResponseEntity.ok().body(ordersByRider);
+    }
+
     @PostMapping("/orders")
     public Order createOrder(@RequestBody OrderDTO order) {
         return ordersServ.saveOrder(order.toOrderEntity());
     }
 
     @GetMapping("/riders")
-    public ResponseEntity<List<Rider>> getRiders() {
-        return ResponseEntity.ok().body(ridersServ.getRiders());
+    public ResponseEntity<Page<Rider>> getRiders(@RequestParam(required = false) Integer page,@RequestParam(required = false) String sort, @RequestParam(required = false) String desc) throws ResourceNotFoundException {
+        if(page==null) {
+            page=0;
+        }
+        
+        if(sort==null) {
+            return ResponseEntity.ok().body(ridersServ.getRiders(page));
+        }
+        
+        switch(sort) {
+            case "rating":
+                if(desc!=null && desc.equals("true")) {
+                    return ResponseEntity.ok().body(ridersServ.getRidersByRating5to0(page));
+                }
+                return ResponseEntity.ok().body(ridersServ.getRidersByRating0to5(page));
+
+            case "name":
+                if(desc!=null && desc.equals("true")) {
+                    return ResponseEntity.ok().body(ridersServ.getRidersByNameZtoA(page));
+                }
+                return ResponseEntity.ok().body(ridersServ.getRidersByNameAtoZ(page));
+            
+            default:
+                throw new ResourceNotFoundException("Not a filter :: " + sort);
+                
+        }
     }
 
     @GetMapping("/riders/{riderId}") 
@@ -78,24 +115,17 @@ public class ManagementController {
         return ResponseEntity.ok().body(rider1);
     }
 
-    @GetMapping("/riders/sortByRating") 
-    public ResponseEntity<List<Rider>> getRidersByRatingMean() {
-        return ResponseEntity.ok().body(ridersServ.getRidersByRating());
-    }
-
-    @GetMapping("/riders/sortByName") 
-    public ResponseEntity<List<Rider>> getRidersAlphabetically() {
-        return ResponseEntity.ok().body(ridersServ.getRidersAlphabetically());
-    }
-
     @PostMapping("/riders")
     public Rider createRider(@RequestBody RiderDTO rider) {
         return ridersServ.saveRider(rider.toRiderEntity());
     }
 
     @GetMapping("/stores")
-    public ResponseEntity<List<Store>> getStores() {
-        return ResponseEntity.ok().body(storesServ.getStores());
+    public ResponseEntity<Page<Store>> getStores(@RequestParam(required = false) Integer page) {
+        if(page==null) {
+            page=0;
+        }
+        return ResponseEntity.ok().body(storesServ.getStores(page));
     }
 
     @GetMapping("/stores/{storeId}") 
@@ -113,12 +143,15 @@ public class ManagementController {
         return storesServ.saveStore(store.toStoreEntity());
     }
 
-    @GetMapping("/job_applications")
-    public ResponseEntity<List<JobApplication>> getApplications() {
-        return ResponseEntity.ok().body(jobServ.getApplications());
+    @GetMapping("/jobApplications")
+    public ResponseEntity<Page<JobApplication>> getApplications(@RequestParam(required = false) Integer page) {
+        if(page==null) {
+            page=0;
+        }
+        return ResponseEntity.ok().body(jobServ.getApplications(page));
     }
 
-    @GetMapping("/job_applications/{jobApplicationId}") 
+    @GetMapping("/jobApplications/{jobApplicationId}") 
     public ResponseEntity<JobApplication> getJobApplicationById(@PathVariable(value = "jobApplicationId") Long jobApplicationId)
         throws ResourceNotFoundException {
         JobApplication jobApplication1 = jobServ.getApplicationById(jobApplicationId);
@@ -128,7 +161,7 @@ public class ManagementController {
         return ResponseEntity.ok().body(jobApplication1);
     }
 
-    @PostMapping("/job_applications")
+    @PostMapping("/jobApplications")
     public JobApplication createApplication(@RequestBody JobApplicationDTO application) {
         return jobServ.saveApplication(application.toJobApplicationEntity());
     }

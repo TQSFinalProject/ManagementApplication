@@ -46,6 +46,9 @@ public class Rider {
     @ElementCollection
     private List<Double> ratings;
 
+    @Column(name = "ratingMean", nullable = false)
+    private Double ratingMean;
+
 
     public Rider() {
     }
@@ -62,6 +65,7 @@ public class Rider {
         this.latitude = latitude;
         this.longitude = longitude;
         this.ratings = ratings;
+        this.ratingMean = this.ratingMean();
     }
 
     public Rider(String firstName, String lastName, String phone, String username, String password, String riderPhoto, Double latitude, Double longitude, List<Double> ratings,Long id) {
@@ -151,6 +155,10 @@ public class Rider {
         this.ratings = ratings;
     }
 
+    public Double getRatingMean() {
+        return this.ratingMean;
+    }
+
     
 
     @Override
@@ -161,21 +169,27 @@ public class Rider {
             return false;
         }
         Rider rider = (Rider) o;
-        return id == rider.id && Objects.equals(firstName, rider.firstName) && Objects.equals(lastName, rider.lastName) && Objects.equals(phone, rider.phone) && Objects.equals(username, rider.username) && Objects.equals(password, rider.password) && Objects.equals(riderPhoto, rider.riderPhoto) && Objects.equals(latitude, rider.latitude) && Objects.equals(longitude, rider.longitude) && Objects.equals(ratings, rider.ratings);
+        return id == rider.id && Objects.equals(firstName, rider.firstName) && Objects.equals(lastName, rider.lastName) && Objects.equals(phone, rider.phone) && Objects.equals(username, rider.username) && Objects.equals(password, rider.password) && Objects.equals(riderPhoto, rider.riderPhoto) && Objects.equals(latitude, rider.latitude) && Objects.equals(longitude, rider.longitude) && Objects.equals(ratings, rider.ratings) && Objects.equals(ratingMean, rider.ratingMean);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, phone, username, password, riderPhoto, latitude, longitude, ratings);
+        return Objects.hash(id, firstName, lastName, phone, username, password, riderPhoto, latitude, longitude, ratings, ratingMean);
     }
 
+    
+
     public Double ratingMean() {
+        if(this.ratings.size()==0) {
+            return 0.0;
+        }
         Double ratingSum = 0.0;
         for(Double r : this.ratings) {
             ratingSum+=r;
         }
         return ratingSum/this.ratings.size();
     }
+
 
 
     @Override
@@ -191,8 +205,10 @@ public class Rider {
             ", latitude='" + getLatitude() + "'" +
             ", longitude='" + getLongitude() + "'" +
             ", ratings='" + getRatings() + "'" +
+            ", ratingMean='" + getRatingMean() + "'" +
             "}";
     }
+    
 
     
     
