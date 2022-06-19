@@ -16,6 +16,8 @@ services:
         - MYSQL_USER=ti
         - MYSQL_DATABASE=ti
         - MYSQL_PASSWORD=trackit2
+      networks:
+        - management_network
 
   ti:
     depends_on:
@@ -32,6 +34,8 @@ services:
       - spring.datasource.password=trackit2
       - spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
       - spring.jpa.hibernate.ddl-auto=update
+    networks:
+      - management_network
 
   client:
         build:
@@ -45,3 +49,7 @@ services:
 volumes:
   mysql-ti:
     driver: local
+
+networks:
+  management_network:
+    driver: bridge
