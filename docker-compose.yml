@@ -38,15 +38,15 @@ services:
       - management_network
 
   client:
-        build:
-            context: frontend
-            dockerfile: Dockerfile
-        ports:
-            - "3001:3001"
-        depends_on: 
-            - ti
-        networks:
-            - management_network
+    build:
+        context: frontend
+        dockerfile: Dockerfile
+    ports:
+        - "3001:3001"
+    depends_on: 
+        - ti
+    networks:
+        - management_network
 
 volumes:
   mysql-ti:
