@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 @Entity
 @Table(name = "store") 
 public class Store {
@@ -25,23 +27,24 @@ public class Store {
     @Column(name = "store_address", nullable = false)
     private String storeAddress;
 
+    @Column(name = "password", nullable = false)
+    private String password;
 
     public Store() {
     }
 
-
-    public Store(String storeName, Double shippingTax, String storeAddress) {
+    public Store(String storeName, Double shippingTax, String storeAddress, String password) {
+        BCryptPasswordEncoder bcryptEncoder = new BCryptPasswordEncoder();
         this.storeName = storeName;
         this.shippingTax = shippingTax;
         this.storeAddress = storeAddress;
+        this.password = bcryptEncoder.encode(password);
     }
 
-    public Store(String storeName, Double shippingTax, String storeAddress,Long id) {
-        this(storeName,shippingTax,storeAddress);
+    public Store(String storeName, Double shippingTax, String storeAddress, String password, Long id) {
+        this(storeName,shippingTax,storeAddress,password);
         this.id = id;
     }
-
-
 
     public long getId() {
         return this.id;
@@ -75,6 +78,13 @@ public class Store {
         this.storeAddress = storeAddress;
     }
 
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -89,9 +99,8 @@ public class Store {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, storeName, shippingTax, storeAddress);
+        return Objects.hash(id, storeName, shippingTax, storeAddress, password);
     }
-
 
     @Override
     public String toString() {
@@ -100,8 +109,8 @@ public class Store {
             ", storeName='" + getStoreName() + "'" +
             ", shippingTax='" + getShippingTax() + "'" +
             ", storeAddress='" + getStoreAddress() + "'" +
+            ", password='" + getPassword() + "'" +
             "}";
     }
-    
 
 }

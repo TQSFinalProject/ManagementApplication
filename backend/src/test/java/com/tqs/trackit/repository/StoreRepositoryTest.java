@@ -19,7 +19,7 @@ public class StoreRepositoryTest {
 
     @Test
     void whenFindStoreByExistingId_thenReturnStore() {
-        Store store1 = new Store("Store X",2.5,"Avenue X");
+        Store store1 = new Store("Store X",2.5,"Avenue X","passwordX");
         entityManager.persistAndFlush(store1);
 
         Store fromDb = storeRepository.findById(store1.getId()).orElse(null);

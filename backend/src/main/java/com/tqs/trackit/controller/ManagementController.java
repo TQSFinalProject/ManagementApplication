@@ -9,6 +9,8 @@ import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.dtos.RiderDTO;
 import com.tqs.trackit.model.Store;
 import com.tqs.trackit.dtos.StoreDTO;
+import com.tqs.trackit.dtos.StorePrivateDTO;
+import com.tqs.trackit.dtos.StoreRegistrationDTO;
 import com.tqs.trackit.service.JobApplicationsService;
 import com.tqs.trackit.service.OrdersService;
 import com.tqs.trackit.service.RidersService;
@@ -73,6 +75,7 @@ public class ManagementController {
 
     @PostMapping("/orders")
     public Order createOrder(@RequestBody OrderDTO order) {
+        System.out.println("Bleep");
         return ordersServ.saveOrder(order.toOrderEntity());
     }
 
@@ -139,8 +142,9 @@ public class ManagementController {
     }
 
     @PostMapping("/stores")
-    public Store createStore(@RequestBody StoreDTO store) {
-        return storesServ.saveStore(store.toStoreEntity());
+    public ResponseEntity<StorePrivateDTO> createStore(@RequestBody StoreRegistrationDTO store) {
+        Store savedStore = storesServ.saveStore(store.toStoreEntity());
+        return ResponseEntity.ok().body(StorePrivateDTO.fromStoreEntity(savedStore));
     }
 
     @GetMapping("/jobApplications")
