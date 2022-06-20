@@ -19,7 +19,7 @@ import { faFile } from '@fortawesome/free-solid-svg-icons'
 
 import axios from "axios";
 
-const endpoint_applications = "api/job_applications";
+const endpoint_applications = "api/jobApplications";
 
 function getAge(birthDate) {
     const dateElements = birthDate.split("-");
@@ -35,7 +35,7 @@ function NewApplications() {
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_applications).then((response) => {
-            setApplications(response.data);
+            setApplications(response.data.content);
         });
     }, []);
 
@@ -100,9 +100,13 @@ function NewApplications() {
                             }
                         </Row>
 
-                        <Row className="d-flex justify-content-center">
-                            <Pagination pageNumber={1} parentCallback={handleCallback} />
-                        </Row>
+                        {applications.length == 0 ?
+                            <></>
+                            :
+                            <Row className="d-flex justify-content-center">
+                                <Pagination pageNumber={1} parentCallback={handleCallback} />
+                            </Row>
+                        }
                     </Col>
                 </Row>
             </Container>

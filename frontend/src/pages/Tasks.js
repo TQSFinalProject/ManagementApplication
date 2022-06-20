@@ -48,16 +48,13 @@ function Tasks() {
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
-            setStaff(response.data);
-            // console.log(response.data);
+            setStaff(response.data.content);
         });
         axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders).then((response) => {
-            setTasks(response.data);
-            // console.log(response.data);
+            setTasks(response.data.content);
         });
         axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores).then((response) => {
-            setStores(response.data);
-            // console.log(response.data);
+            setStores(response.data.content);
         });
     }, []);
 

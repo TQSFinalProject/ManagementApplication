@@ -53,13 +53,12 @@ function averageRating(listOfRatings) {
 function Staff() {
 
     let navigate = useNavigate();
-    // let local_staff = [...staff]; // because the sorting of the filters was changing the original staff and messing things up
 
     const [staff, setStaff] = useState([]);
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
-            setStaff(response.data);
+            setStaff(response.data.content);
         });
     }, []);
 
@@ -98,7 +97,7 @@ function Staff() {
             <Container style={{ marginTop: '2%' }}>
                 {staff.length == 0 ?
                     <Row>
-                        <h5 style={{textAlign:'center'}}>There is no hired staff.</h5>
+                        <h5 style={{ textAlign: 'center' }}>There is no hired staff.</h5>
                     </Row>
                     :
                     <Row>
