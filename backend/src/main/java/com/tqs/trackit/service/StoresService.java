@@ -25,6 +25,10 @@ public class StoresService {
         return storeRep.findById(id).orElse(null);
     }
 
+    public Store getStoreByName(String name) {
+        return storeRep.findByStoreName(name);
+    }
+
     public Store saveStore(Store store) {
         return storeRep.save(store);
     }

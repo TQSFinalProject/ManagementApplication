@@ -139,8 +139,10 @@ public class ManagementController {
     }
 
     @PostMapping("/stores")
-    public Store createStore(@RequestBody StoreDTO store) {
-        return storesServ.saveStore(store.toStoreEntity());
+    public ResponseEntity<Store> createStore(@RequestBody StoreDTO store) {
+        Store otherStore = storesServ.getStoreByName(store.getStoreName());
+        if(otherStore != null) return ResponseEntity.status(409).body(otherStore);
+        return ResponseEntity.ok().body(storesServ.saveStore(store.toStoreEntity()));
     }
 
     @GetMapping("/jobApplications")
