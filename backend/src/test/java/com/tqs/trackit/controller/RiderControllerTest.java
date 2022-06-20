@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.tqs.trackit.JsonUtils;
 import com.tqs.trackit.TrackitApplication;
+import com.tqs.trackit.dtos.RiderCreationDTO;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.repository.RiderRepository;
 
@@ -45,13 +46,13 @@ public class RiderControllerTest {
     }
 
     @Test
-     void whenValidInput_thenCreateRider() throws IOException, Exception {
+    void whenValidInput_thenCreateRider() throws IOException, Exception {
         List<Double> ratings = new ArrayList<>();
         ratings.add(4.5);
         ratings.add(4.0);
-        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings);
+        RiderCreationDTO rider1 = new RiderCreationDTO("Miguel","Ferreira","937485748","miguelf","password","link");
         
-        mvc.perform(post("/api/riders").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(rider1)));
+        mvc.perform(post("/registration/rider").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(rider1)));
 
         List<Rider> found = riderRepository.findAll();
         assertThat(found).extracting(Rider::getFirstName).containsOnly("Miguel");
@@ -113,7 +114,7 @@ public class RiderControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()", equalTo(11)))
+                .andExpect(jsonPath("$.length()", equalTo(10)))
                 .andExpect(jsonPath("$.firstName", is("Miguel")));
     }
 

@@ -2,11 +2,14 @@ package com.tqs.trackit.model;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -31,19 +34,24 @@ public class Store {
     @Column(name = "store_long", nullable = false)
     private Double storeLong;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userid")
+    private User user;
+
     public Store() {
     }
 
-    public Store(String storeName, Double shippingTax, String storeAddress, Double storeLat, Double storeLong) {
+    public Store(String storeName, Double shippingTax, String storeAddress, Double storeLat, Double storeLong, String username, String password) {
         this.storeName = storeName;
         this.shippingTax = shippingTax;
         this.storeAddress = storeAddress;
         this.storeLat = storeLat;
         this.storeLong = storeLong;
+        this.user = new User(username, password);
     }
 
-    public Store(String storeName, Double shippingTax, String storeAddress, Double storeLat, Double storeLong, Long id) {
-        this(storeName,shippingTax,storeAddress,storeLat,storeLong);
+    public Store(String storeName, Double shippingTax, String storeAddress, Double storeLat, Double storeLong, String username, String password, Long id) {
+        this(storeName,shippingTax,storeAddress,storeLat,storeLong,username,password);
         this.id = id;
     }
 
@@ -95,6 +103,14 @@ public class Store {
         this.storeLong = storeLong;
     }
 
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -103,7 +119,7 @@ public class Store {
             return false;
         }
         Store store = (Store) o;
-        return id == store.id && Objects.equals(storeName, store.storeName) && Objects.equals(shippingTax, store.shippingTax) && Objects.equals(storeAddress, store.storeAddress) && Objects.equals(storeLat, store.storeLat) && Objects.equals(storeLong, store.storeLong);
+        return id == store.id && Objects.equals(storeName, store.storeName) && Objects.equals(shippingTax, store.shippingTax) && Objects.equals(storeAddress, store.storeAddress) && Objects.equals(storeLat, store.storeLat) && Objects.equals(storeLong, store.storeLong) && Objects.equals(user, store.user);
     }
 
     @Override
@@ -120,6 +136,7 @@ public class Store {
             ", storeAddress='" + getStoreAddress() + "'" +
             ", storeLat='" + getStoreLat() + "'" +
             ", storeLong='" + getStoreLong() + "'" +
+            ", user='" + getUser() + "'" +
             "}";
     }
 }

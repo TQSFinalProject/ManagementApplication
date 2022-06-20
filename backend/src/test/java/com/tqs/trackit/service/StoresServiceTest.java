@@ -32,9 +32,9 @@ public class StoresServiceTest {
 
     @BeforeEach
     public void setUp() {
-        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
-        Store store2 = new Store("Store Y",3.0,"Avenue Y", 10.0, 10.0);
-        Store store3 = new Store("Store Z",4.5,"Avenue Z", 10.0, 10.0);
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0,"X","X");
+        Store store2 = new Store("Store Y",3.0,"Avenue Y", 10.0, 10.0,"X","X");
+        Store store3 = new Store("Store Z",4.5,"Avenue Z", 10.0, 10.0,"X","X");
 
         store1.setId(10L);
 
@@ -63,9 +63,9 @@ public class StoresServiceTest {
 
     @Test
     void given3Stores_whenGetAllStores_thenReturn3Stores() {
-        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
-        Store store2 = new Store("Store Y",3.0,"Avenue Y", 10.0, 10.0);
-        Store store3 = new Store("Store Z",4.5,"Avenue Z", 10.0, 10.0);
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0,"X","X");
+        Store store2 = new Store("Store Y",3.0,"Avenue Y", 10.0, 10.0,"X","X");
+        Store store3 = new Store("Store Z",4.5,"Avenue Z", 10.0, 10.0,"X","X");
         
 
         Page<Store> allStores = storeService.getStores(0);
