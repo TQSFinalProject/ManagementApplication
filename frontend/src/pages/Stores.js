@@ -32,9 +32,10 @@ function Stores() {
 
     const [show, setShow] = useState(false);
 
-    const [staff, setStaff] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [stores, setStores] = useState([]);
+
+    const [totalPages, setTotalPages] = useState(0);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -44,23 +45,20 @@ function Stores() {
     let navigate = useNavigate();
 
     useEffect(() => {
-        // axios.interceptors.request.use(request => {
-        //     console.log('Starting Request', JSON.stringify(request, null, 2))
-        //     return request
-        // })
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
-            setStaff(response.data.content);
-        });
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders).then((response) => {
-            setTasks(response.data.content);
-        });
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores).then((response) => {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + 0).then((response) => {
             setStores(response.data.content);
+            setTotalPages(response.data.totalPages);
         });
     }, []);
 
-    function handleCallback(page) { // for the pagination buttons
+    useEffect(() => {
+        // TODO: fetch each store's number of tasks
+    }, [stores]);
 
+    function handleCallback(page) { // for the pagination buttons
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + (page-1)).then((response) => {
+            setStores(response.data.content);
+        });
     }
 
     function getNumberOfTasks(idx) {
@@ -113,7 +111,7 @@ function Stores() {
                         <Col sm={8}>
                             <Row className="d-flex justify-content-center">
                                 {stores.map((callbackfn, idx) => (
-                                    <Toast key={"key" + stores[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
+                                    <Toast key={"key" + stores[idx].id} style={{ margin: '1%', width: '22vw' }} className="employeeCard">
                                         <Toast.Header closeButton={false}>
                                             <strong className="me-auto">Store #{stores[idx].id} </strong><br />
                                             {/* <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a> */}
@@ -141,8 +139,7 @@ function Stores() {
                                 ))}
                             </Row>
                             <Row className="d-flex justify-content-center">
-                                {/* ? stores per page: TODO: elements per page as pagination input */}
-                                <Pagination pageNumber={1} parentCallback={handleCallback} />
+                                <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
                             </Row>
                         </Col>
                     </Row>
