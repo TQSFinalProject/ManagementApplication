@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -133,4 +134,93 @@ public class OrderControllerTest {
 
 
     }
+
+    @Test
+    void givenStoreId_whenGetOrdersByStoreId_thenStatus200() throws Exception {
+        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine Y", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
+        order1.setId(1L);
+        orderRepository.saveAndFlush(order1);
+        orderRepository.saveAndFlush(order2);
+        orderRepository.saveAndFlush(order3);
+
+        mvc.perform(get("/api/orders/store/{storeId}",1L).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
+                .andExpect(jsonPath("$.content[0].orderDetails", is("Wine X")))
+                .andExpect(jsonPath("$.content[1].orderDetails", is("Wine Y")))
+                .andExpect(jsonPath("$.content[2].orderDetails", is("Wine Z")));
+    }
+
+    @Test
+    void givenStatus_whenGetOrdersByStatus_thenStatus200() throws Exception {
+        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine Y", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
+        order1.setId(1L);
+        orderRepository.saveAndFlush(order1);
+        orderRepository.saveAndFlush(order2);
+        orderRepository.saveAndFlush(order3);
+
+        mvc.perform(get("/api/orders/status/{status}","On Time").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
+                .andExpect(jsonPath("$.content[0].orderDetails", is("Wine Y")))
+                .andExpect(jsonPath("$.content[1].orderDetails", is("Wine Z")));
+    }
+
+    @Test
+    void whenDeleteOrderById_thenStatus200() throws Exception {
+        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        order1.setId(1L);
+        orderRepository.saveAndFlush(order1);
+
+        mvc.perform(delete("/api/orders/{orderId}","1").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is("Deleted")));
+    }
+
+    @Test
+    void whenDeleteOrderByMalformedId_thenStatus200() throws Exception {
+        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        order1.setId(1L);
+        orderRepository.saveAndFlush(order1);
+
+        mvc.perform(delete("/api/orders/{orderId}","NotAnId").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", is("Not a Valid ID")));
+    }
+
+    @Test
+    void whenDeleteOrderByNonExistentId_thenStatus500() throws Exception {
+        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        order1.setId(1L);
+        orderRepository.saveAndFlush(order1);
+
+        mvc.perform(delete("/api/orders/{orderId}","5").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
+    }
+
 }
