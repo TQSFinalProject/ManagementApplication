@@ -45,7 +45,7 @@ public class StoreControllerTest {
 
     @Test
      void whenValidInput_thenCreateOrder() throws IOException, Exception {
-        Store store1 = new Store("Store X",2.5,"Avenue X");
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
         
         mvc.perform(post("/api/stores").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(store1)));
 
@@ -55,9 +55,9 @@ public class StoreControllerTest {
 
     @Test
      void givenStores_whenGetStores_thenStatus200FromPage0() throws Exception {
-        Store store1 = new Store("Store X",2.5,"Avenue X");
-        Store store2 = new Store("Store Y",3.0,"Avenue Y");
-        Store store3 = new Store("Store Z",4.5,"Avenue Z");
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        Store store2 = new Store("Store Y",3.0,"Avenue Y", 10.0, 10.0);
+        Store store3 = new Store("Store Z",4.5,"Avenue Z", 10.0, 10.0);
         storeRepository.saveAndFlush(store1);
         storeRepository.saveAndFlush(store2);
         storeRepository.saveAndFlush(store3);
@@ -74,9 +74,9 @@ public class StoreControllerTest {
 
     @Test
      void givenStores_whenGetStores_thenStatus200FromPage1() throws Exception {
-        Store store1 = new Store("Store X",2.5,"Avenue X");
-        Store store2 = new Store("Store Y",3.0,"Avenue Y");
-        Store store3 = new Store("Store Z",4.5,"Avenue Z");
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        Store store2 = new Store("Store Y",3.0,"Avenue Y", 10.0, 10.0);
+        Store store3 = new Store("Store Z",4.5,"Avenue Z", 10.0, 10.0);
         storeRepository.saveAndFlush(store1);
         storeRepository.saveAndFlush(store2);
         storeRepository.saveAndFlush(store3);
@@ -90,17 +90,14 @@ public class StoreControllerTest {
 
     @Test
     void givenStoreId_whenGetStoreById_thenStatus200() throws Exception {
-        Store store1 = new Store("Store X",2.5,"Avenue X");
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
         storeRepository.saveAndFlush(store1);
 
         mvc.perform(get("/api/stores/{storeId}",store1.getId()).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()", equalTo(4)))
+                .andExpect(jsonPath("$.length()", equalTo(6)))
                 .andExpect(jsonPath("$.storeName", is("Store X")));
     }
-
-
-    
 }

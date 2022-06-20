@@ -8,6 +8,8 @@ public class OrderDTO {
     private long id;
     private String orderStatus;
     private String deliveryAddress;
+    private Double deliveryLat;
+    private Double deliveryLong;
     private LocalDateTime estimatedDeliveryTime;
     private LocalDateTime submitedTime;
     private LocalDateTime deliveryTime;
@@ -18,18 +20,20 @@ public class OrderDTO {
     private Double rating;
 
     public static OrderDTO fromOrderEntity(Order order){
-        return new OrderDTO(order.getOrderStatus(),order.getDeliveryAddress(),order.getEstimatedDeliveryTime(),order.getSubmitedTime(),order.getDeliveryTime(),order.getRiderId(),order.getStoreId(),order.getOrderDetails(),order.getPhone(),order.getRating(),order.getId());
+        return new OrderDTO(order.getOrderStatus(),order.getDeliveryAddress(),order.getDeliveryLat(),order.getDeliveryLong(),order.getEstimatedDeliveryTime(),order.getSubmitedTime(),order.getDeliveryTime(),order.getRiderId(),order.getStoreId(),order.getOrderDetails(),order.getPhone(),order.getRating(),order.getId());
     }
     public Order toOrderEntity(){
-        return new Order(getOrderStatus(),getDeliveryAddress(),getEstimatedDeliveryTime(),getSubmitedTime(),getDeliveryTime(),getRiderId(),getStoreId(),getOrderDetails(),getPhone(),getRating(),getId());
+        return new Order(getOrderStatus(),getDeliveryAddress(),getDeliveryLat(),getDeliveryLong(),getEstimatedDeliveryTime(),getSubmitedTime(),getDeliveryTime(),getRiderId(),getStoreId(),getOrderDetails(),getPhone(),getRating(),getId());
     }
 
     public OrderDTO() {
     }
 
-    public OrderDTO(String orderStatus, String deliveryAddress, LocalDateTime estimatedDeliveryTime, LocalDateTime submitedTime, LocalDateTime deliveryTime, Long riderId, Long storeId, String orderDetails, String phone, Double rating, Long id) {
+    public OrderDTO(String orderStatus, String deliveryAddress, Double deliveryLat, Double deliveryLong, LocalDateTime estimatedDeliveryTime, LocalDateTime submitedTime, LocalDateTime deliveryTime, Long riderId, Long storeId, String orderDetails, String phone, Double rating, Long id) {
         this.orderStatus = orderStatus;
         this.deliveryAddress = deliveryAddress;
+        this.deliveryLat = deliveryLat;
+        this.deliveryLong = deliveryLong;
         this.estimatedDeliveryTime = estimatedDeliveryTime;
         this.submitedTime = submitedTime;
         this.deliveryTime = deliveryTime;
@@ -130,4 +134,19 @@ public class OrderDTO {
         this.rating = rating;
     }
 
+    public Double getDeliveryLat() {
+        return this.deliveryLat;
+    }
+
+    public void setDeliveryLat(Double deliveryLat) {
+        this.deliveryLat = deliveryLat;
+    }
+
+    public Double getDeliveryLong() {
+        return this.deliveryLong;
+    }
+
+    public void setDeliveryLong(Double deliveryLong) {
+        this.deliveryLong = deliveryLong;
+    }
 }
