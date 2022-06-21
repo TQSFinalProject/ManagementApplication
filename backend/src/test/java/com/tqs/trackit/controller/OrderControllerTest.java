@@ -1,6 +1,6 @@
 package com.tqs.trackit.controller;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -41,7 +41,7 @@ public class OrderControllerTest {
     @Autowired
     private OrderRepository orderRepository;
 
-    @AfterEach
+    @BeforeEach
     public void resetDb() {
         orderRepository.deleteAll();
     }
@@ -187,17 +187,19 @@ public class OrderControllerTest {
         Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        order1.setId(1L);
         orderRepository.saveAndFlush(order1);
 
-        mvc.perform(delete("/api/orders/{orderId}","1").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/orders").contentType(MediaType.APPLICATION_JSON))
+        .andDo(print());
+
+        mvc.perform(delete("/api/orders/{orderId}",order1.getId()).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("Deleted")));
     }
 
     @Test
-    void whenDeleteOrderByMalformedId_thenStatus200() throws Exception {
+    void whenDeleteOrderByMalformedId_thenStatus400() throws Exception {
         Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
