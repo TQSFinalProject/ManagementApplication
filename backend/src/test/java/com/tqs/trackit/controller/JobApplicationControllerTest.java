@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -95,6 +96,39 @@ public class JobApplicationControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", equalTo(8)))
                 .andExpect(jsonPath("$.firstName", is("Paulo")));
+    }
+
+
+    @Test
+    void whenDeleteJobApplicationById_thenStatus200() throws Exception {
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobRepository.saveAndFlush(jobApp1);
+
+        mvc.perform(delete("/api/jobApplications/{jobApplicationId}",jobApp1.getId()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is("Deleted")));
+    }
+
+    @Test
+    void whenDeleteStoreByMalformedId_thenStatus400() throws Exception {
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobRepository.saveAndFlush(jobApp1);
+
+        mvc.perform(delete("/api/jobApplications/{jobApplicationId}","NotAnId").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", is("Not a Valid ID")));
+    }
+
+    @Test
+    void whenDeleteStoreByNonExistentId_thenStatus500() throws Exception {
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobRepository.saveAndFlush(jobApp1);
+
+        mvc.perform(delete("/api/jobApplications/{jobApplicationId}","5").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
     }
 
 

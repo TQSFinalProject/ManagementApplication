@@ -28,5 +28,9 @@ public class JobApplicationsService {
     public JobApplication saveApplication(JobApplication application) {
         return jobRep.save(application);
     }
+
+    public void deleteApplication(Long applicationId) {
+        jobRep.deleteById(applicationId);
+    }
     
 }

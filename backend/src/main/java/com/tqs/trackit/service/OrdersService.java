@@ -32,5 +32,19 @@ public class OrdersService {
         Pageable elements = PageRequest.of(page, 4);
         return orderRep.findByRiderId(riderId,elements);
     }
+
+    public Page<Order> getOrdersByStoreId(Long storeId,Integer page) {
+        Pageable elements = PageRequest.of(page, 4);
+        return orderRep.findByStoreId(storeId,elements);
+    }
+
+    public Page<Order> getOrdersByStatus(String status,Integer page) {
+        Pageable elements = PageRequest.of(page, 4);
+        return orderRep.findByOrderStatus(status,elements);
+    }
+
+    public void deleteOrder(Long orderId) {
+        orderRep.deleteById(orderId);
+    }
     
 }
