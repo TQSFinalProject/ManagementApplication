@@ -57,6 +57,9 @@ function Staff() {
     const [staff, setStaff] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
 
+    const [ratingSort, setRatingSort] = useState(null);
+    const [nameSort, setNameSort] = useState(null);
+
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?page=" + 0).then((response) => {
             setStaff(response.data.content);
@@ -65,13 +68,66 @@ function Staff() {
     }, []);
 
     function handleCallback(page) {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?page=" + (page-1)).then((response) => {
+
+        let url;
+
+        if (ratingSort!=null) {
+            url = process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?sort=rating&desc=" + (!ratingSort) +"&page=" + (page-1);
+        }
+        else if (nameSort!=null) {
+            url = process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?sort=name&desc=" + (!nameSort) +"&page=" + (page-1);
+        }
+        else {
+            url = process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?page=" + (page-1);
+        }
+
+        axios.get(url).then((response) => {
             setStaff(response.data.content);
         });
     }
 
     function redirectUserPage(userId) {
         navigate('/rider/' + userId);
+    }
+
+    function sortBy(parameter, order) {
+
+        if (parameter=="rating") {
+            if (order=="asc") {
+                setRatingSort(true);
+            }
+            else if (order=="desc") {
+                setRatingSort(false);
+            }
+            setNameSort(null);
+        }
+        else if (parameter=="name") {
+            if (order=="asc") {
+                setNameSort(true);
+            }
+            else if (order=="desc") {
+                setNameSort(false);
+            }
+            setRatingSort(null);
+        }
+
+        let desc = false;
+        if (order=="desc") { desc = true; }
+
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?sort=" + parameter + "&desc=" + desc +"&page=" + 0).then((response) => {
+            setStaff(response.data.content);
+            setTotalPages(response.data.totalPages);
+        });
+    }
+
+    function clearSorting() {
+        setRatingSort(null);
+        setNameSort(null);
+
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?page=" + 0).then((response) => {
+            setStaff(response.data.content);
+            setTotalPages(response.data.totalPages);
+        });
     }
 
     return (
@@ -103,7 +159,7 @@ function Staff() {
                     <Row>
                         <Col sm={4}>
 
-                            <p><strong>Filters:</strong></p>
+                            <p><strong>Sorting:</strong></p>
 
                             <Dropdown className='filterDropdown'>
                                 <Dropdown.Toggle id="dropdown-basic">
@@ -111,8 +167,8 @@ function Staff() {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     {/* setOrderedStaff(local_staff.sort(dynamicSort("rating"))) */}
-                                    <Dropdown.Item className="clickable" onClick={() => { }}>1-5</Dropdown.Item>
-                                    <Dropdown.Item className="clickable" onClick={() => { }}>5-1</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortBy("rating","asc") }}>1-5</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortBy("rating","desc") }}>5-1</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
 
@@ -121,10 +177,12 @@ function Staff() {
                                     Alphabetical Order
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item className="clickable" onClick={() => { }}>A-Z</Dropdown.Item>
-                                    <Dropdown.Item className="clickable" onClick={() => { }}>Z-A</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortBy("name","asc") }}>A-Z</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortBy("name","desc") }}>Z-A</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
+
+                            <Button className='submitBtn' style={{marginTop:'2%'}} onClick={() => { clearSorting() }}>Clear sorting</Button>
 
                             {/* <Dropdown className='filterDropdown'>
                                 <Dropdown.Toggle id="dropdown-basic">

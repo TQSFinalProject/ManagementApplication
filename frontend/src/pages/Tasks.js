@@ -28,6 +28,9 @@ import SearchBar from '../components/css/SearchBar.css'
 const endpoint_orders = "api/orders";
 const endpoint_riders = "api/riders";
 const endpoint_stores = "api/stores";
+const endpoint_statusSort = "api/orders/status/";
+const endpoint_riderFilter = "api/orders/rider/";
+const endpoint_storeFilter = "api/orders/store/";
 
 export function secsToMins(secs) {
     var mins = Math.floor(secs / 60);
@@ -45,19 +48,31 @@ function Tasks() {
     const [ridernames, setRidernames] = useState({});
     const [storenames, setStorenames] = useState({});
 
+    const [distanceSort, setDistanceSort] = useState(null);
+
+    const [filterRider, setFilterRider] = useState("");
+    const [filterStore, setFilterStore] = useState("");
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + 0).then((response) => {
+    function axiosGet(url, loadPages) {
+        axios.get(url).then((response) => {
             setTasks(response.data.content);
-            setTotalPages(response.data.totalPages);
+            if (loadPages) {
+                setTotalPages(response.data.totalPages);
+            }
         });
+    }
 
+    useEffect(() => {
+        let url = process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + 0;
+        axiosGet(url, true);
     }, []);
 
+    // should work automatically for filters and sorting because it updates whenever 'tasks' changes
     useEffect(() => {
-        
+
         for (let task of tasks) {
             let riderId = task.riderId;
             let storeId = task.storeId;
@@ -88,9 +103,42 @@ function Tasks() {
     }, [tasks]);
 
     function handleCallback(page) {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + (page-1)).then((response) => {
-            setTasks(response.data.content);
-        });
+        let url;
+
+        if (distanceSort==null) {
+            url = process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + (page - 1);
+        }
+        else {
+            url = process.env.REACT_APP_BACKEND_URL + endpoint_statusSort + distanceSort + "?page=" + (page - 1);
+        }
+
+        axiosGet(url, false);
+    }
+
+    function sortByDistance(param) {
+        setDistanceSort(param);
+
+        let url = process.env.REACT_APP_BACKEND_URL + endpoint_statusSort + param + "?page=" + 0;
+        axiosGet(url, true);
+    }
+
+    function clearSorting() {
+        setDistanceSort(null);
+
+        let url = process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + 0;
+        axiosGet(url, true);
+    }
+
+    function filterByRiderAndStore() {
+        if (filterRider!="") {
+            let url = process.env.REACT_APP_BACKEND_URL + endpoint_riderFilter + filterRider + "?page=" + 0;
+            axiosGet(url, true);
+        }
+        else if (filterStore!="") {
+            let url = process.env.REACT_APP_BACKEND_URL + endpoint_storeFilter + filterStore + "?page=" + 0;
+            axiosGet(url, true);
+        }
+
     }
 
     return (
@@ -102,7 +150,7 @@ function Tasks() {
             </Container>
 
             <Container style={{ marginTop: '2%' }}>
-                {tasks.length == 0 ?
+                {tasks.length == 0 && distanceSort == null ?
                     <Row>
                         <h5 style={{ textAlign: 'center' }}>There are no orders currently.</h5>
                     </Row>
@@ -112,30 +160,54 @@ function Tasks() {
 
                             <p><strong>Filters:</strong></p>
 
+                            {/* /orders/rider/{riderId} */}
                             <label htmlFor="searchAssignedRider" className="inp">
-                                <input type="text" id="searchAssignedRider" placeholder="&nbsp;" />
+                                <input type="text" id="searchAssignedRider" placeholder="&nbsp;"
+                                    onChange={e => {
+                                        setFilterRider(e.target.value);
+                                        setFilterStore("");
+                                        document.getElementById("searchStore").value = "";
+                                    }} />
                                 <span className="label">Assigned rider</span>
                                 <span className="focus-bg"></span>
                             </label>
 
+                            {/* /orders/store/{storeId} */}
                             <label htmlFor="searchStore" className="inp">
-                                <input type="text" id="searchStore" placeholder="&nbsp;" />
+                                <input type="text" id="searchStore" placeholder="&nbsp;" 
+                                    onChange={e => {
+                                        setFilterStore(e.target.value);
+                                        setFilterRider("");
+                                        document.getElementById("searchAssignedRider").value = "";
+                                    }} />
                                 <span className="label">Store/Restaurant</span>
                                 <span className="focus-bg"></span>
                             </label>
 
+                            <div className='text-center'>
+                                <Button className='submitBtn' onClick={() => { filterByRiderAndStore() }}>Search</Button>
+                            </div>
+
+                            <p><strong>Sorting:</strong></p>
+
+                            {/* /orders/status/{status} */}
                             <Dropdown className='filterDropdown'>
                                 <Dropdown.Toggle id="dropdown-basic">
-                                    Lateness
+                                    Order status
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item className="clickable">On time</Dropdown.Item>
-                                    <Dropdown.Item className="clickable">Late</Dropdown.Item>
-                                    <Dropdown.Item className="clickable">Very late</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortByDistance("Requested") }}>Requested</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortByDistance("Accepted") }}>Accepted</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortByDistance("On Delivery") }}>On Delivery</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortByDistance("Late") }}>Late</Dropdown.Item>
+                                    <Dropdown.Item className="clickable" onClick={() => { sortByDistance("Complete") }}>Complete</Dropdown.Item>
+                                    {/* requested, accepted, on delivery, (late), complete */}
                                 </Dropdown.Menu>
                             </Dropdown>
 
-                            <Dropdown className='filterDropdown'>
+                            <Button className='submitBtn' style={{ marginTop: '2%' }} onClick={() => { clearSorting() }}>Clear sorting</Button>
+
+                            {/* <Dropdown className='filterDropdown'>
                                 <Dropdown.Toggle id="dropdown-basic">
                                     Distance
                                 </Dropdown.Toggle>
@@ -144,13 +216,13 @@ function Tasks() {
                                     <Dropdown.Item className="clickable">Average</Dropdown.Item>
                                     <Dropdown.Item className="clickable">Far away</Dropdown.Item>
                                 </Dropdown.Menu>
-                            </Dropdown>
+                            </Dropdown> */}
 
                         </Col>
                         <Col sm={8}>
                             <Row className="d-flex justify-content-center">
                                 {tasks.map((callbackfn, idx) => (
-                                    <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
+                                    <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '22vw' }} className="employeeCard">
                                         <Toast.Header closeButton={false}>
                                             <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
                                             {tasks[idx].orderStatus == 'Late' ?
@@ -176,9 +248,13 @@ function Tasks() {
                                     </Toast>
                                 ))}
                             </Row>
-                            <Row className="d-flex justify-content-center">
-                                <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
-                            </Row>
+                            {tasks.length == 0 && distanceSort != null ?
+                                <h5 style={{ textAlign: 'center' }}>There are no orders with this status.</h5>
+                                :
+                                <Row className="d-flex justify-content-center">
+                                    <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
+                                </Row>
+                            }
                         </Col>
                     </Row>
                 }

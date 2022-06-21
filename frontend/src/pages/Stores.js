@@ -36,11 +36,18 @@ function Stores() {
 
     let navigate = useNavigate();
 
-    useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + 0).then((response) => {
+    function axiosGet(url, loadPages) {
+        axios.get(url).then((response) => {
             setStores(response.data.content);
-            setTotalPages(response.data.totalPages);
+            if (loadPages) {
+                setTotalPages(response.data.totalPages);
+            }
         });
+    }
+
+    useEffect(() => {
+        let url = process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + 0;
+        axiosGet(url, true);
     }, []);
 
     useEffect(() => {
@@ -59,9 +66,18 @@ function Stores() {
     }, [stores]);
 
     function handleCallback(page) {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + (page - 1)).then((response) => {
-            setStores(response.data.content);
-        });
+        if (filterName != "") {
+            let url = process.env.REACT_APP_BACKEND_URL + endpoint_filterStoreName + filterName + "?page=" + (page - 1);
+            axiosGet(url, true);
+        }
+        else if (filterAddress != "") {
+            let url = process.env.REACT_APP_BACKEND_URL + endpoint_filterStoreAddress + filterAddress + "?page=" + (page - 1);
+            axiosGet(url, true);
+        }
+        else {
+            let url = process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + (page - 1);
+            axiosGet(url, true);
+        }
     }
 
     function redirectStoreTasksPage(storeId) {
@@ -69,12 +85,19 @@ function Stores() {
     }
 
     function filterStores() {
-        // filterName
-        // filterAddress
-        
-        // axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_filterStoreName + filterName).then((response) => {
-        //     // ...
-        // });
+
+        if (filterName != "") {
+            let url = process.env.REACT_APP_BACKEND_URL + endpoint_filterStoreName + filterName + "?page=" + 0;
+            axiosGet(url, true);
+        }
+        else if (filterAddress != "") {
+            let url = process.env.REACT_APP_BACKEND_URL + endpoint_filterStoreAddress + filterAddress + "?page=" + 0;
+            axiosGet(url, true);
+        }
+        else {
+            let url = process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + 0;
+            axiosGet(url, true);
+        }
     }
 
     return (
@@ -86,70 +109,80 @@ function Stores() {
             </Container>
 
             <Container style={{ marginTop: '2%' }}>
-                {stores.length == 0 ?
-                    <Row>
-                        <h5 style={{ textAlign: 'center' }}>There are no affiliated stores.</h5>
-                    </Row>
-                    :
-                    <Row>
-                        <Col sm={4}>
+                <Row>
+                    <Col sm={4}>
 
-                            <p><strong>Filters:</strong></p>
+                        <p><strong>Filters:</strong></p>
 
-                            <label htmlFor="searchStoreName" className="inp">
-                                <input type="text" id="searchStoreName" placeholder="&nbsp;"
-                                    onChange={e => setFilterName(e.target.value)} />
-                                <span className="label">Name</span>
-                                <span className="focus-bg"></span>
-                            </label>
+                        {/* /stores/name/{storeName} */}
+                        <label htmlFor="searchStoreName" className="inp">
+                            <input type="text" id="searchStoreName" placeholder="&nbsp;"
+                                onChange={e => {
+                                    setFilterName(e.target.value)
+                                    setFilterAddress("");
+                                    document.getElementById("searchStoreAddress").value = "";
+                                }} />
+                            <span className="label">Name</span>
+                            <span className="focus-bg"></span>
+                        </label>
 
-                            <label htmlFor="searchStoreAddress" className="inp">
-                                <input type="text" id="searchStoreAddress" placeholder="&nbsp;"
-                                    onChange={e => setFilterAddress(e.target.value)} />
-                                <span className="label">Address</span>
-                                <span className="focus-bg"></span>
-                            </label>
+                        {/* /stores/address/{storeAddress} */}
+                        <label htmlFor="searchStoreAddress" className="inp">
+                            <input type="text" id="searchStoreAddress" placeholder="&nbsp;"
+                                onChange={e => {
+                                    setFilterAddress(e.target.value)
+                                    setFilterName("");
+                                    document.getElementById("searchStoreName").value = "";
+                                }} />
+                            <span className="label">Address</span>
+                            <span className="focus-bg"></span>
+                        </label>
 
-                            <div className='text-center'>
-                                <Button onClick={() => { filterStores() }}>Search</Button>
-                            </div>
+                        <div className='text-center'>
+                            <Button className='submitBtn' onClick={() => { filterStores() }}>Search</Button>
+                        </div>
 
-                        </Col>
-                        <Col sm={8}>
-                            <Row className="d-flex justify-content-center">
-                                {stores.map((callbackfn, idx) => (
-                                    <Toast key={"key" + stores[idx].id} style={{ margin: '1%', width: '22vw' }} className="employeeCard">
-                                        <Toast.Header closeButton={false}>
-                                            <strong className="me-auto">Store #{stores[idx].id} </strong><br />
-                                        </Toast.Header>
-                                        <Toast.Body>
-                                            <Container>
-                                                <Row>
-                                                    <Col>
-                                                        <span>
-                                                            <strong>Name: </strong>{stores[idx].storeName}<br />
-                                                            <strong>Address: </strong>{stores[idx].storeAddress}<br />
-                                                            <strong>Shipping tax: </strong>{stores[idx].shippingTax}%<br />
-                                                            <strong>Current tasks: </strong>{tasksPerStore["store" + stores[idx].id]}<br />
-                                                        </span>
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col className="d-flex justify-content-center">
-                                                        <Button style={{ marginTop: '3%' }} onClick={() => { redirectStoreTasksPage(stores[idx].id) }}><FontAwesomeIcon icon={faListCheck} /></Button>
-                                                    </Col>
-                                                </Row>
-                                            </Container>
-                                        </Toast.Body>
-                                    </Toast>
-                                ))}
-                            </Row>
-                            <Row className="d-flex justify-content-center">
-                                <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
-                            </Row>
-                        </Col>
-                    </Row>
-                }
+                    </Col>
+                    <Col sm={8}>
+                        {stores.length == 0 ?
+                            <h5 style={{ textAlign: 'center' }}>There are no affiliated stores.</h5>
+                            :
+                            <>
+                                <Row className="d-flex justify-content-center">
+                                    {stores.map((callbackfn, idx) => (
+                                        <Toast key={"key" + stores[idx].id} style={{ margin: '1%', width: '22vw' }} className="employeeCard">
+                                            <Toast.Header closeButton={false}>
+                                                <strong className="me-auto">Store #{stores[idx].id} </strong><br />
+                                            </Toast.Header>
+                                            <Toast.Body>
+                                                <Container>
+                                                    <Row>
+                                                        <Col>
+                                                            <span>
+                                                                <strong>Name: </strong>{stores[idx].storeName}<br />
+                                                                <strong>Address: </strong>{stores[idx].storeAddress}<br />
+                                                                <strong>Shipping tax: </strong>{stores[idx].shippingTax}%<br />
+                                                                <strong>Current tasks: </strong>{tasksPerStore["store" + stores[idx].id]}<br />
+                                                            </span>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Col className="d-flex justify-content-center">
+                                                            <Button style={{ marginTop: '3%' }} onClick={() => { redirectStoreTasksPage(stores[idx].id) }}><FontAwesomeIcon icon={faListCheck} /></Button>
+                                                        </Col>
+                                                    </Row>
+                                                </Container>
+                                            </Toast.Body>
+                                        </Toast>
+                                    ))}
+                                </Row>
+                                <Row className="d-flex justify-content-center">
+                                    <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
+                                </Row>
+                            </>
+                        }
+                    </Col>
+                </Row>
             </Container>
 
         </>);
