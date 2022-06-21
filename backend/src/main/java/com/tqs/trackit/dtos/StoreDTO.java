@@ -7,24 +7,27 @@ public class StoreDTO {
     private String storeName;
     private Double shippingTax;
     private String storeAddress;
+    private Double storeLat;
+    private Double storeLong;
 
     public static StoreDTO fromStoreEntity(Store store){
-        return new StoreDTO(store.getStoreName(), store.getShippingTax(), store.getStoreAddress(),store.getId());
+        return new StoreDTO(store.getStoreName(), store.getShippingTax(),store.getStoreAddress(),store.getStoreLat(),store.getStoreLong(),store.getId());
     }
     public Store toStoreEntity(){
-        return new Store(getStoreName(), getShippingTax(),getStoreAddress(), getId());
+        return new Store(getStoreName(),getShippingTax(),getStoreAddress(),getStoreLat(),getStoreLong(),getId());
     }
 
     public StoreDTO() {
     }
 
-    public StoreDTO(String storeName, Double shippingTax, String storeAddress, long id) {
+    public StoreDTO(String storeName, Double shippingTax, String storeAddress, Double storeLat, Double storeLong, long id) {
         this.storeName = storeName;
         this.shippingTax = shippingTax;
         this.storeAddress = storeAddress;
+        this.storeLat = storeLat;
+        this.storeLong = storeLong;
         this.id = id;
     }
-
 
     public long getId() {
         return this.id;
@@ -58,4 +61,19 @@ public class StoreDTO {
         this.storeAddress = storeAddress;
     }
 
+    public Double getStoreLat() {
+        return this.storeLat;
+    }
+
+    public void setStoreLat(Double storeLat) {
+        this.storeLat = storeLat;
+    }
+
+    public Double getStoreLong() {
+        return this.storeLong;
+    }
+
+    public void setStoreLong(Double storeLong) {
+        this.storeLong = storeLong;
+    }
 }

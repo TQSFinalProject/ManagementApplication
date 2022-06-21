@@ -35,13 +35,13 @@ public class OrdersServiceTest {
     @BeforeEach
     public void setUp() {
 
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
-        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
         order1.setId(10L);
 
         List<Order> allOrders = Arrays.asList(order1, order2,order3);
@@ -70,13 +70,13 @@ public class OrdersServiceTest {
 
     @Test
     void given3Orders_whenGetAllOrders_thenRetur3Orders() {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
-        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
         Page<Order> allOrders = orderService.getOrders(0);
         verifyFindOrdersIsCalledOnce();
         assertThat(allOrders.getContent()).hasSize(3).extracting(Order::getDeliveryAddress).contains(order1.getDeliveryAddress(), order2.getDeliveryAddress(),order3.getDeliveryAddress());
@@ -85,10 +85,10 @@ public class OrdersServiceTest {
 
     @Test
     void given2Orders_whenGetAllOrdersbyRiderId_thenReturnRiderIdOrders() {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
 
@@ -100,10 +100,10 @@ public class OrdersServiceTest {
 
     @Test
     void given2Orders_whenGetAllOrdersbyStoreId_thenReturnStoreIdOrders() {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0,10.0,LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
 
@@ -115,7 +115,7 @@ public class OrdersServiceTest {
 
     @Test
     void given2Orders_whenGetAllOrdersbyStatus_thenReturnOrdersWithThatStatus() {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0,10.0,LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
         Page<Order> riderOrders = orderService.getOrdersByStatus("Late",0);

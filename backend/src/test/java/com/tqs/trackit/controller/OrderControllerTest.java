@@ -48,7 +48,7 @@ public class OrderControllerTest {
 
     @Test
      void whenValidInput_thenCreateOrder() throws IOException, Exception {
-        Order order1 = new Order("Late","Home Y", LocalDateTime.of(2022,Month.JANUARY,7,19,43,20),LocalDateTime.of(2022,Month.JANUARY,7,19,20,10),LocalDateTime.of(2022,Month.JANUARY,7,19,45,32),1L,1L,"Wine X","9183725364",4.5);
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022,Month.JANUARY,7,19,43,20),LocalDateTime.of(2022,Month.JANUARY,7,19,20,10),LocalDateTime.of(2022,Month.JANUARY,7,19,45,32),1L,1L,"Wine X","9183725364",4.5);
 
         mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(order1)));
 
@@ -58,10 +58,10 @@ public class OrderControllerTest {
 
     @Test
      void givenOrders_whenGetOrders_thenStatus200FromPage0() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
         orderRepository.saveAndFlush(order1);
@@ -78,10 +78,10 @@ public class OrderControllerTest {
 
     @Test
      void givenOrders_whenGetOrders_thenStatus200FromPage1() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
         orderRepository.saveAndFlush(order1);
@@ -96,7 +96,7 @@ public class OrderControllerTest {
 
     @Test
     void givenOrderId_whenGetOrderById_thenStatus200() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
 
@@ -106,19 +106,19 @@ public class OrderControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()", equalTo(11)))
+                .andExpect(jsonPath("$.length()", equalTo(13)))
                 .andExpect(jsonPath("$.orderStatus", is("Late")));
     }
 
     @Test
     void givenRiderId_whenGetOrdersByRiderId_thenStatus200() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine Y", "9183725354", 4.0);
-        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
         order1.setId(1L);
         orderRepository.saveAndFlush(order1);
         orderRepository.saveAndFlush(order2);
@@ -137,13 +137,13 @@ public class OrderControllerTest {
 
     @Test
     void givenStoreId_whenGetOrdersByStoreId_thenStatus200() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine Y", "9183725354", 4.0);
-        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
         order1.setId(1L);
         orderRepository.saveAndFlush(order1);
         orderRepository.saveAndFlush(order2);
@@ -161,13 +161,13 @@ public class OrderControllerTest {
 
     @Test
     void givenStatus_whenGetOrdersByStatus_thenStatus200() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
-        Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+        Order order2 = new Order("On Time", "Home X",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine Y", "9183725354", 4.0);
-        Order order3 = new Order("On Time", "Home Z", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
+        Order order3 = new Order("On Time", "Home Z",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 2L, 1L, "Wine Z", "9183725354", 4.0);
         order1.setId(1L);
         orderRepository.saveAndFlush(order1);
         orderRepository.saveAndFlush(order2);
@@ -184,7 +184,7 @@ public class OrderControllerTest {
 
     @Test
     void whenDeleteOrderById_thenStatus200() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
         orderRepository.saveAndFlush(order1);
@@ -197,7 +197,7 @@ public class OrderControllerTest {
 
     @Test
     void whenDeleteOrderByMalformedId_thenStatus400() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
         order1.setId(1L);
@@ -211,7 +211,7 @@ public class OrderControllerTest {
 
     @Test
     void whenDeleteOrderByNonExistentId_thenStatus500() throws Exception {
-        Order order1 = new Order("Late", "Home Y", LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+        Order order1 = new Order("Late", "Home Y",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
         order1.setId(1L);

@@ -43,27 +43,57 @@ function Tasks() {
     const [tasks, setTasks] = useState([]);
     const [stores, setStores] = useState([]);
 
+    const [totalPages, setTotalPages] = useState(0);
+
+    const [name1, setName1] = useState("");
+    const [name2, setName2] = useState("");
+    const [name3, setName3] = useState("");
+    const [name4, setName4] = useState("");
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
-            setStaff(response.data);
-            // console.log(response.data);
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + 0).then((response) => {
+            setTasks(response.data.content);
+            setTotalPages(response.data.totalPages);
         });
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders).then((response) => {
-            setTasks(response.data);
-            // console.log(response.data);
-        });
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores).then((response) => {
-            setStores(response.data);
-            // console.log(response.data);
-        });
+
     }, []);
 
-    function handleCallback(page) { // for the pagination buttons
+    useEffect(() => {
 
+        let counter = 1;
+        
+        for (let task of tasks) {
+            let riderId = task.riderId;
+
+            axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "/" + riderId).then((response) => {
+                let name = response.data.firstName + " " + response.data.lastName;
+                if (counter==1) {setName1(name);}
+                else if (counter==2) {setName2(name);}
+                else if (counter==3) {setName3(name);}
+                else if (counter==4) {setName4(name);}
+                counter++;
+            });
+        }
+
+    }, [tasks]);
+
+    function handleCallback(page) {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + (page-1)).then((response) => {
+            setTasks(response.data.content);
+        });
     }
+
+    // function getRiderInfo(riderId) {
+    //     let name;
+    //     axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "/" + riderId).then((response) => {
+    //         name = response.data.firstName + " " + response.data.lastName;
+    //         console.log("name: ", name)
+    //     });
+    //     return name;
+    // }
 
     return (
         <>
@@ -138,7 +168,7 @@ function Tasks() {
                                                 <Row>
                                                     <Col>
                                                         <span>
-                                                            <strong>Rider: </strong>{staff[tasks[idx].riderId - 1].firstName + " " + staff[tasks[idx].riderId - 1].lastName}<br />
+                                                            <strong>Rider: </strong>{idx==0 ? name1 : idx==1 ? name2 : idx==2 ? name3 : name4}<br />
                                                             <strong>Store: </strong>Chateau Du Vin<br />
                                                             <strong>Delivery address: </strong>{tasks[idx].deliveryAddress}<br />
                                                         </span>
@@ -150,8 +180,7 @@ function Tasks() {
                                 ))}
                             </Row>
                             <Row className="d-flex justify-content-center">
-                                {/* 4 tasks per page: TODO: elements per page as pagination input */}
-                                <Pagination pageNumber={1} parentCallback={handleCallback} />
+                                <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
                             </Row>
                         </Col>
                     </Row>

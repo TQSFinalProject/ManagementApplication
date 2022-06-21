@@ -53,26 +53,25 @@ function averageRating(listOfRatings) {
 function Staff() {
 
     let navigate = useNavigate();
-    // let local_staff = [...staff]; // because the sorting of the filters was changing the original staff and messing things up
 
     const [staff, setStaff] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
-            setStaff(response.data);
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?page=" + 0).then((response) => {
+            setStaff(response.data.content);
+            setTotalPages(response.data.totalPages);
         });
     }, []);
 
-    function handleCallback(page) { // for the pagination buttons
-        // setCurrentPage(page);
+    function handleCallback(page) {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "?page=" + (page-1)).then((response) => {
+            setStaff(response.data.content);
+        });
     }
 
     function redirectUserPage(userId) {
         navigate('/rider/' + userId);
-    }
-
-    function checkBoxFoolery() {
-        // TODO: do this
     }
 
     return (
@@ -98,7 +97,7 @@ function Staff() {
             <Container style={{ marginTop: '2%' }}>
                 {staff.length == 0 ?
                     <Row>
-                        <h5 style={{textAlign:'center'}}>There is no hired staff.</h5>
+                        <h5 style={{ textAlign: 'center' }}>There is no hired staff.</h5>
                     </Row>
                     :
                     <Row>
@@ -127,7 +126,7 @@ function Staff() {
                                 </Dropdown.Menu>
                             </Dropdown>
 
-                            <Dropdown className='filterDropdown'>
+                            {/* <Dropdown className='filterDropdown'>
                                 <Dropdown.Toggle id="dropdown-basic">
                                     Time As An Employee
                                 </Dropdown.Toggle>
@@ -155,7 +154,7 @@ function Staff() {
                                     <input id='checkboxD' type="checkbox" onChange={checkBoxFoolery} />
                                     &nbsp; D
                                 </label>
-                            </div>
+                            </div> */}
 
                         </Col>
                         <Col sm={8}>
@@ -186,7 +185,7 @@ function Staff() {
                                 ))}
                             </Row>
                             <Row className="d-flex justify-content-center">
-                                <Pagination pageNumber={Math.ceil(staff.length / 6)} parentCallback={handleCallback} />
+                                <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
                             </Row>
                         </Col>
                     </Row>

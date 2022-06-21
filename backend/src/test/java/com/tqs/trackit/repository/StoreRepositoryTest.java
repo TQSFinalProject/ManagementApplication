@@ -24,7 +24,7 @@ public class StoreRepositoryTest {
 
     @Test
     void whenFindStoreByExistingId_thenReturnStore() {
-        Store store1 = new Store("Store X",2.5,"Avenue X");
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
         entityManager.persistAndFlush(store1);
 
         Store fromDb = storeRepository.findById(store1.getId()).orElse(null);
@@ -41,7 +41,7 @@ public class StoreRepositoryTest {
     @Test
     void whenDelete1StoreById_thenReturnListOfStores() {
         Pageable elements = PageRequest.of(0, 6);
-        Store store1 = new Store("Store X",2.5,"Avenue X");
+        Store store1 = new Store("Store X",2.5,"Avenue X",10.0,10.0);
         entityManager.persistAndFlush(store1);
 
         storeRepository.deleteById(store1.getId());

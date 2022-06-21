@@ -19,7 +19,7 @@ import { faFile } from '@fortawesome/free-solid-svg-icons'
 
 import axios from "axios";
 
-const endpoint_applications = "api/job_applications";
+const endpoint_applications = "api/jobApplications";
 
 function getAge(birthDate) {
     const dateElements = birthDate.split("-");
@@ -32,15 +32,19 @@ function getAge(birthDate) {
 function NewApplications() {
 
     const [applications, setApplications] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_applications).then((response) => {
-            setApplications(response.data);
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_applications + "?page=" + 0).then((response) => {
+            setApplications(response.data.content);
+            setTotalPages(response.data.totalPages);
         });
     }, []);
 
-    function handleCallback(page) { // for the pagination buttons
-        // setCurrentPage(page);
+    function handleCallback(page) {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_applications + "?page=" + (page-1)).then((response) => {
+            setApplications(response.data.content);
+        });
     }
 
     return (
@@ -66,7 +70,7 @@ function NewApplications() {
                                 :
                                 <>
                                     {applications.map((callbackfn, idx) => (
-                                        <Toast key={"key" + applications[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
+                                        <Toast key={"key" + applications[idx].id} style={{ margin: '1%', width: '22vw' }} className="employeeCard">
                                             <Toast.Header closeButton={false}>
                                                 <strong className="me-auto">Application #{applications[idx].id} </strong><br />
                                                 <Button target="_blank" href={applications[idx].cv}><FontAwesomeIcon icon={faFile} /></Button>
@@ -100,9 +104,13 @@ function NewApplications() {
                             }
                         </Row>
 
-                        <Row className="d-flex justify-content-center">
-                            <Pagination pageNumber={1} parentCallback={handleCallback} />
-                        </Row>
+                        {applications.length == 0 ?
+                            <></>
+                            :
+                            <Row className="d-flex justify-content-center">
+                                <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
+                            </Row>
+                        }
                     </Col>
                 </Row>
             </Container>

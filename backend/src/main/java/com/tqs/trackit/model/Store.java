@@ -16,7 +16,7 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "store_name", nullable = false)
+    @Column(name = "store_name", nullable = false, unique = true)
     private String storeName;
 
     @Column(name = "shipping_tax", nullable = false)
@@ -25,23 +25,27 @@ public class Store {
     @Column(name = "store_address", nullable = false)
     private String storeAddress;
 
+    @Column(name = "store_lat", nullable = false)
+    private Double storeLat;
+
+    @Column(name = "store_long", nullable = false)
+    private Double storeLong;
 
     public Store() {
     }
 
-
-    public Store(String storeName, Double shippingTax, String storeAddress) {
+    public Store(String storeName, Double shippingTax, String storeAddress, Double storeLat, Double storeLong) {
         this.storeName = storeName;
         this.shippingTax = shippingTax;
         this.storeAddress = storeAddress;
+        this.storeLat = storeLat;
+        this.storeLong = storeLong;
     }
 
-    public Store(String storeName, Double shippingTax, String storeAddress,Long id) {
-        this(storeName,shippingTax,storeAddress);
+    public Store(String storeName, Double shippingTax, String storeAddress, Double storeLat, Double storeLong, Long id) {
+        this(storeName,shippingTax,storeAddress,storeLat,storeLong);
         this.id = id;
     }
-
-
 
     public long getId() {
         return this.id;
@@ -75,6 +79,21 @@ public class Store {
         this.storeAddress = storeAddress;
     }
 
+    public Double getStoreLat() {
+        return this.storeLat;
+    }
+
+    public void setStoreLat(Double storeLat) {
+        this.storeLat = storeLat;
+    }
+
+    public Double getStoreLong() {
+        return this.storeLong;
+    }
+
+    public void setStoreLong(Double storeLong) {
+        this.storeLong = storeLong;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -84,14 +103,13 @@ public class Store {
             return false;
         }
         Store store = (Store) o;
-        return id == store.id && Objects.equals(storeName, store.storeName) && Objects.equals(shippingTax, store.shippingTax) && Objects.equals(storeAddress, store.storeAddress);
+        return id == store.id && Objects.equals(storeName, store.storeName) && Objects.equals(shippingTax, store.shippingTax) && Objects.equals(storeAddress, store.storeAddress) && Objects.equals(storeLat, store.storeLat) && Objects.equals(storeLong, store.storeLong);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, storeName, shippingTax, storeAddress);
+        return Objects.hash(id, storeName, shippingTax, storeAddress, storeLat, storeLong);
     }
-
 
     @Override
     public String toString() {
@@ -100,8 +118,8 @@ public class Store {
             ", storeName='" + getStoreName() + "'" +
             ", shippingTax='" + getShippingTax() + "'" +
             ", storeAddress='" + getStoreAddress() + "'" +
+            ", storeLat='" + getStoreLat() + "'" +
+            ", storeLong='" + getStoreLong() + "'" +
             "}";
     }
-    
-
 }

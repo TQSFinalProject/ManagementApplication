@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin("http://localhost:3001,http://localhost:3002")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
 public class ManagementController {
@@ -179,8 +179,10 @@ public class ManagementController {
     }
 
     @PostMapping("/stores")
-    public Store createStore(@RequestBody StoreDTO store) {
-        return storesServ.saveStore(store.toStoreEntity());
+    public ResponseEntity<Store> createStore(@RequestBody StoreDTO store) {
+        Store otherStore = storesServ.getStoreByName(store.getStoreName());
+        if(otherStore != null) return ResponseEntity.status(409).body(otherStore);
+        return ResponseEntity.ok().body(storesServ.saveStore(store.toStoreEntity()));
     }
 
     @DeleteMapping("/stores/{storeId}")
