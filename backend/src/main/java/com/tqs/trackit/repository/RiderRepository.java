@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface RiderRepository extends JpaRepository<Rider,Long>{
     Page<Rider> findAll(Pageable page);
     Rider findByUser_Username(String username);
-    Object findByUser(User user);
+    Rider findByUser(User user);
 }

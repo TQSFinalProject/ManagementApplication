@@ -19,10 +19,8 @@ import com.tqs.trackit.dtos.RiderCreationDTO;
 import com.tqs.trackit.dtos.StoreDTO;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.model.Store;
-import com.tqs.trackit.model.User;
 import com.tqs.trackit.repository.RiderRepository;
 import com.tqs.trackit.repository.StoreRepository;
-import com.tqs.trackit.repository.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -44,9 +42,6 @@ public class AuthenticationControllerTest {
     private MockMvc mvc;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private StoreRepository storeRepository;
 
     @Autowired
@@ -59,7 +54,6 @@ public class AuthenticationControllerTest {
     public void resetDb() {
         storeRepository.deleteAll();
         riderRepository.deleteAll();
-        userRepository.deleteAll();
     }
     
     @Test

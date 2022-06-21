@@ -2,15 +2,22 @@ package com.tqs.trackit.controller;
 
 import com.tqs.trackit.exception.ResourceNotFoundException;
 import com.tqs.trackit.model.JobApplication;
+import com.tqs.trackit.config.TokenProvider;
 import com.tqs.trackit.dtos.JobApplicationDTO;
+import com.tqs.trackit.dtos.LocationDTO;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.dtos.OrderDTO;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.model.Store;
+import com.tqs.trackit.model.User;
+import com.tqs.trackit.service.AuthService;
 import com.tqs.trackit.service.JobApplicationsService;
 import com.tqs.trackit.service.OrdersService;
 import com.tqs.trackit.service.RidersService;
 import com.tqs.trackit.service.StoresService;
+
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +49,12 @@ public class ManagementController {
 
     @Autowired
     private JobApplicationsService jobServ;
+
+    @Autowired
+    private TokenProvider jwtTokenUtil;
+
+    @Autowired
+    private AuthService authServ;
 
     @GetMapping("/orders")
     public ResponseEntity<Page<Order>> getOrders(@RequestParam(required = false) Integer page,@RequestParam(required = false) Long riderId,@RequestParam(required = false) Long storeId,@RequestParam(required = false) String status) {
@@ -237,4 +251,28 @@ public class ManagementController {
         } 
         catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
     }
+
+    // Endpoints that require authentication
+
+    @GetMapping("/rider/orders")
+    public ResponseEntity<List<Map<String,Object>>> getRiderOrdersByDistance(@RequestHeader("authorization") String auth, @RequestParam(required = false) Integer limit) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) return ResponseEntity.status(401).build();
+        List<Map<String,Object>> sortedOrder = ordersServ.getRiderOrders(rider, limit);
+        return ResponseEntity.ok().body(sortedOrder);
+    }
+
+    @PostMapping("/rider/updateLocation")
+    public ResponseEntity<LocationDTO> updateRiderLocation(@RequestHeader("authorization") String auth, @RequestBody LocationDTO location) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok().body(ridersServ.updateRiderLocation(rider, location));
+    }
+
 }

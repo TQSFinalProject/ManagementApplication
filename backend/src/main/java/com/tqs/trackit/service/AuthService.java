@@ -81,11 +81,11 @@ public class AuthService implements UserDetailsService {
         return userRep.findByUsername(username);
     }
 
-    public Object getStoreByUser(User user) {
+    public Store getStoreByUser(User user) {
         return storeRep.findByUser(user);
     }
 
-    public Object getRiderByUser(User user) {
+    public Rider getRiderByUser(User user) {
         return riderRep.findByUser(user);
     }
 }
