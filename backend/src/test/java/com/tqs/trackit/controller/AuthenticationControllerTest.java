@@ -9,25 +9,32 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.tqs.trackit.JsonUtils;
 import com.tqs.trackit.TrackitApplication;
+import com.tqs.trackit.config.TokenProvider;
 import com.tqs.trackit.dtos.LogInRequestDTO;
 import com.tqs.trackit.dtos.RiderCreationDTO;
 import com.tqs.trackit.dtos.StoreDTO;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.model.Store;
+import com.tqs.trackit.model.User;
 import com.tqs.trackit.repository.RiderRepository;
 import com.tqs.trackit.repository.StoreRepository;
+import com.tqs.trackit.repository.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.IOException;
 import java.util.List;  
+import org.json.JSONObject; 
 
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK, classes = TrackitApplication.class)
 @AutoConfigureMockMvc
@@ -37,15 +44,22 @@ public class AuthenticationControllerTest {
     private MockMvc mvc;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private StoreRepository storeRepository;
 
     @Autowired
     private RiderRepository riderRepository;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
     @AfterEach
     public void resetDb() {
         storeRepository.deleteAll();
         riderRepository.deleteAll();
+        userRepository.deleteAll();
     }
     
     @Test
@@ -65,10 +79,18 @@ public class AuthenticationControllerTest {
 
         // User can successfully authenticate, recieving a token
         LogInRequestDTO credentials = new LogInRequestDTO(rider.getUsername(), rider.getPassword());
-        mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
+        MvcResult result = mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
+        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").exists())
         .andReturn();
+
+        // Test given token on endpoint requiring auth
+        JSONObject tokenJSON = new JSONObject(result.getResponse().getContentAsString());
+        String token = tokenJSON.getString("token");
+        mvc.perform(get("/myprofile").header("Authorization", "Bearer "+token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.user.username", is("bobwolf")));
     }
 
     @Test
@@ -87,10 +109,17 @@ public class AuthenticationControllerTest {
 
         // User can successfully authenticate, recieving a token
         LogInRequestDTO credentials = new LogInRequestDTO(store.getUsername(), store.getPassword());
-        mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
+        MvcResult result = mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").exists())
         .andReturn();
+
+        // Test given token on endpoint requiring auth
+        JSONObject tokenJSON = new JSONObject(result.getResponse().getContentAsString());
+        String token = tokenJSON.getString("token");
+        mvc.perform(get("/myprofile").header("Authorization", "Bearer "+token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.user.username", is("CDV")));
     }
 
 
@@ -101,6 +130,40 @@ public class AuthenticationControllerTest {
         mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(unregisteredCredentials)))
         .andExpect(status().is(500))
         .andExpect(jsonPath("$.message", is("Bad credentials")));
+    }
+
+    @Test
+    void whenUsingExpiredToken_thenUnsuccessfulAccess() throws IOException, Exception {
+        StoreDTO store = new StoreDTO("CDV", 1.99, "UA", 10.0, 10.0, "CDV", "CDV123", 0L);
+
+        mvc.perform(post("/registration/store").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(store)))
+        .andExpect(status().isOk());
+
+        tokenProvider.TOKEN_VALIDITY = 0L;
+        LogInRequestDTO credentials = new LogInRequestDTO(store.getUsername(), store.getPassword());
+        MvcResult result = mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.token").exists())
+        .andReturn();
+
+        JSONObject tokenJSON = new JSONObject(result.getResponse().getContentAsString());
+        String expiredToken = tokenJSON.getString("token");
+
+        mvc.perform(get("/myprofile").header("Authorization", "Bearer "+expiredToken))
+        .andExpect(status().isUnauthorized());
+        tokenProvider.TOKEN_VALIDITY = 120L;
+    }
+
+    @Test
+    void whenWrongPassword_thenUnsuccessfulAuth() throws IOException, Exception {
+        StoreDTO store = new StoreDTO("CDV", 1.99, "UA", 10.0, 10.0, "CDV", "CDV123", 0L);
+
+        mvc.perform(post("/registration/store").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(store)))
+        .andExpect(status().isOk());
+
+        LogInRequestDTO credentials = new LogInRequestDTO(store.getUsername(), "CDV321");
+        mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(credentials)))
+        .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -128,5 +191,4 @@ public class AuthenticationControllerTest {
         .andExpect(status().is(409));
 
     }
-
 }

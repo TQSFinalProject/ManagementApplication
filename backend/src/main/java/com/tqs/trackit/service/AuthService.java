@@ -76,4 +76,16 @@ public class AuthService implements UserDetailsService {
     public Rider getRiderByUsername(String username) {
         return riderRep.findByUser_Username(username);
     }
+
+    public User getUserByUsername(String username) {
+        return userRep.findByUsername(username);
+    }
+
+    public Object getStoreByUser(User user) {
+        return storeRep.findByUser(user);
+    }
+
+    public Object getRiderByUser(User user) {
+        return riderRep.findByUser(user);
+    }
 }

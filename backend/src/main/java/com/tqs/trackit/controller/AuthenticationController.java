@@ -8,9 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 // import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 // import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,7 @@ import com.tqs.trackit.dtos.LogInRequestDTO;
 import com.tqs.trackit.dtos.RiderCreationDTO;
 import com.tqs.trackit.dtos.StoreDTO;
 import com.tqs.trackit.model.Store;
+import com.tqs.trackit.model.User;
 import com.tqs.trackit.service.AuthService;
 
 @CrossOrigin("*")
@@ -69,5 +72,16 @@ public class AuthenticationController {
             authServ.saveRider(rider.toRiderEntity());
             return ResponseEntity.status(200).body("User registered successfully.");
         }
+    }
+
+    @GetMapping("/myprofile")
+    public ResponseEntity<Object> getCustomerDetails(@RequestHeader("authorization") String auth) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Object response;
+        response = authServ.getStoreByUser(user);
+        if(response == null) response = authServ.getRiderByUser(user);
+        return ResponseEntity.ok().body(response);
     }
 }

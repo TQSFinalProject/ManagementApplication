@@ -1,6 +1,7 @@
 package com.tqs.trackit.repository;
 
 import com.tqs.trackit.model.Store;
+import com.tqs.trackit.model.User;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,5 @@ public interface StoreRepository extends JpaRepository<Store,Long>{
     Store findByStoreName(String name);
     Store findByUser_Username(String username);
     Store findByStoreAddress(String address);
+    Object findByUser(User user);
 }
