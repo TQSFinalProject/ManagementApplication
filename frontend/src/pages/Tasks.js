@@ -39,16 +39,11 @@ function Tasks() {
 
     const [show, setShow] = useState(false);
 
-    const [staff, setStaff] = useState([]);
     const [tasks, setTasks] = useState([]);
-    const [stores, setStores] = useState([]);
 
     const [totalPages, setTotalPages] = useState(0);
-
-    const [name1, setName1] = useState("");
-    const [name2, setName2] = useState("");
-    const [name3, setName3] = useState("");
-    const [name4, setName4] = useState("");
+    const [ridernames, setRidernames] = useState({});
+    const [storenames, setStorenames] = useState({});
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -62,19 +57,31 @@ function Tasks() {
     }, []);
 
     useEffect(() => {
-
-        let counter = 1;
         
         for (let task of tasks) {
             let riderId = task.riderId;
+            let storeId = task.storeId;
 
             axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "/" + riderId).then((response) => {
-                let name = response.data.firstName + " " + response.data.lastName;
-                if (counter==1) {setName1(name);}
-                else if (counter==2) {setName2(name);}
-                else if (counter==3) {setName3(name);}
-                else if (counter==4) {setName4(name);}
-                counter++;
+                let riderKey = "rider" + riderId;
+                let newRidername = {};
+                newRidername[riderKey] = response.data.firstName + " " + response.data.lastName;
+
+                setRidernames(ridernames => ({
+                    ...ridernames,
+                    ...newRidername
+                }));
+            });
+
+            axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "/" + storeId).then((response) => {
+                let storeKey = "store" + storeId;
+                let newStorename = {};
+                newStorename[storeKey] = response.data.storeName;
+
+                setStorenames(storenames => ({
+                    ...storenames,
+                    ...newStorename
+                }));
             });
         }
 
@@ -85,15 +92,6 @@ function Tasks() {
             setTasks(response.data.content);
         });
     }
-
-    // function getRiderInfo(riderId) {
-    //     let name;
-    //     axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "/" + riderId).then((response) => {
-    //         name = response.data.firstName + " " + response.data.lastName;
-    //         console.log("name: ", name)
-    //     });
-    //     return name;
-    // }
 
     return (
         <>
@@ -155,7 +153,6 @@ function Tasks() {
                                     <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
                                         <Toast.Header closeButton={false}>
                                             <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
-                                            {/* <Badge style={{ marginRight: '5%' }} bg="warning" text="dark">Far Away</Badge> */}
                                             {tasks[idx].orderStatus == 'Late' ?
                                                 <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
                                                 :
@@ -168,8 +165,8 @@ function Tasks() {
                                                 <Row>
                                                     <Col>
                                                         <span>
-                                                            <strong>Rider: </strong>{idx==0 ? name1 : idx==1 ? name2 : idx==2 ? name3 : name4}<br />
-                                                            <strong>Store: </strong>Chateau Du Vin<br />
+                                                            <strong>Rider: </strong>{ridernames["rider" + tasks[idx].riderId]}<br />
+                                                            <strong>Store: </strong>{storenames["store" + tasks[idx].storeId]}<br />
                                                             <strong>Delivery address: </strong>{tasks[idx].deliveryAddress}<br />
                                                         </span>
                                                     </Col>

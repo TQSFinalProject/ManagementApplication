@@ -18,29 +18,16 @@ import { faListCheck } from '@fortawesome/free-solid-svg-icons'
 import GeneralNavbar from '../components/GeneralNavbar';
 import Pagination from '../components/Pagination';
 
-const endpoint_orders = "api/orders";
-const endpoint_riders = "api/riders";
 const endpoint_stores = "api/stores";
-
-function secsToMins(secs) {
-    var mins = Math.floor(secs / 60);
-    var rest_secs = secs % 60;
-    return mins.toString().padStart(2, '0') + ":" + rest_secs.toString().padStart(2, '0') + " minutes";
-}
+const endpoint_tasksPerStore = "api/orders/store/";
 
 function Stores() {
 
-    const [show, setShow] = useState(false);
-
-    const [tasks, setTasks] = useState([]);
     const [stores, setStores] = useState([]);
 
     const [totalPages, setTotalPages] = useState(0);
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
-    const collect = require('collect.js');
+    const [tasksPerStore, setTasksPerStore] = useState({});
 
     let navigate = useNavigate();
 
@@ -52,29 +39,31 @@ function Stores() {
     }, []);
 
     useEffect(() => {
-        // TODO: fetch each store's number of tasks
+        for (let store of stores) {
+            axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_tasksPerStore + store.id).then((response) => {
+                let storeKey = "store" + store.id;
+                let newTaskNum = {};
+                newTaskNum[storeKey] = response.data.totalElements;
+
+                setTasksPerStore(tasksPerStore => ({
+                    ...tasksPerStore,
+                    ...newTaskNum
+                }));
+            });
+        }
     }, [stores]);
 
-    function handleCallback(page) { // for the pagination buttons
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + (page-1)).then((response) => {
+    function handleCallback(page) {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "?page=" + (page - 1)).then((response) => {
             setStores(response.data.content);
         });
-    }
-
-    function getNumberOfTasks(idx) {
-        const storeId = stores[idx].id;
-        let count = 0;
-        for (let task of tasks) {
-            if (task.storeId == storeId) {
-                count++;
-            }
-        }
-        return count;
     }
 
     function redirectStoreTasksPage(storeId) {
         navigate('/store_tasks/' + storeId);
     }
+
+    console.log(tasksPerStore);
 
     return (
         <>
@@ -114,7 +103,6 @@ function Stores() {
                                     <Toast key={"key" + stores[idx].id} style={{ margin: '1%', width: '22vw' }} className="employeeCard">
                                         <Toast.Header closeButton={false}>
                                             <strong className="me-auto">Store #{stores[idx].id} </strong><br />
-                                            {/* <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a> */}
                                         </Toast.Header>
                                         <Toast.Body>
                                             <Container>
@@ -124,7 +112,7 @@ function Stores() {
                                                             <strong>Name: </strong>{stores[idx].storeName}<br />
                                                             <strong>Address: </strong>{stores[idx].storeAddress}<br />
                                                             <strong>Shipping tax: </strong>{stores[idx].shippingTax}%<br />
-                                                            <strong>Current tasks: </strong>{collect(tasks).where('storeId', '=', stores[idx].id).count()}<br />
+                                                            <strong>Current tasks: </strong>{tasksPerStore["store" + stores[idx].id]}<br />
                                                         </span>
                                                     </Col>
                                                 </Row>

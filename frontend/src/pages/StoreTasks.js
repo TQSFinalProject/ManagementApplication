@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 
 // Components
 import GeneralNavbar from '../components/GeneralNavbar';
@@ -14,22 +15,55 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Toast from 'react-bootstrap/Toast'
+import Badge from 'react-bootstrap/Badge'
 
-import { staff, tasks, stores } from '../App'
-import { secsToMins } from './Tasks';
+const endpoint_tasksPerStore = "api/orders/store/";
+const endpoint_riders = "api/riders";
+const endpoint_stores = "api/stores";
 
 export function StoreTasks() {
 
     const params = useParams();
     const storeId = params.id;
 
-    const collect = require('collect.js');
+    const [storeTasks, setStoreTasks] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
 
-    let storeTasks = collect(tasks).where('storeId', '=', stores[storeId - 1].id).items
-    console.log(storeTasks)
+    const [ridernames, setRidernames] = useState({});
+    const [storename, setStorename] = useState("");
 
-    function handleCallback(page) { // for the pagination buttons
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_tasksPerStore + storeId + "?page=" + 0).then((response) => {
+            setStoreTasks(response.data.content);
+            setTotalPages(response.data.totalPages);
+        });
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "/" + storeId).then((response) => {
+            setStorename(response.data.storeName);
+        });
+    }, []);
 
+    useEffect(() => {
+        for (let task of storeTasks) {
+            let riderId = task.riderId;
+
+            axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "/" + riderId).then((response) => {
+                let riderKey = "rider" + riderId;
+                let newRidername = {};
+                newRidername[riderKey] = response.data.firstName + " " + response.data.lastName;
+
+                setRidernames(ridernames => ({
+                    ...ridernames,
+                    ...newRidername
+                }));
+            });
+        }
+
+    }, [storeTasks]);
+
+    function handleCallback(page) {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_tasksPerStore + storeId + "?page=" + (page-1)).then((response) => {
+            setStoreTasks(response.data.content);
+        });
     }
 
     return (
@@ -52,21 +86,23 @@ export function StoreTasks() {
                             <>
                                 <Row className="d-flex justify-content-center">
                                     {storeTasks.map((callbackfn, idx) => (
-                                        <Toast key={"key" + storeTasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
+                                        <Toast key={"key" + storeTasks[idx].id} style={{ margin: '1%', width: '22vw' }} className="employeeCard">
                                             <Toast.Header closeButton={false}>
                                                 <strong className="me-auto">Task #{storeTasks[idx].id} </strong><br />
+                                                {storeTasks[idx].orderStatus == 'Late' ?
+                                                    <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
+                                                    :
+                                                    <></>
+                                                }
                                             </Toast.Header>
                                             <Toast.Body>
                                                 <Container>
                                                     <Row>
                                                         <Col>
                                                             <span>
-                                                                <strong>Rider: </strong>{staff[storeTasks[idx].riderId - 1].name}<br />
-                                                                <strong>Store: </strong>{stores[storeTasks[idx].storeId - 1].name}<br />
-                                                                <strong>Delivery address: </strong>{storeTasks[idx].delivery}<br />
-                                                                <strong>Distance from store: </strong>{storeTasks[idx].distance} km<br />
-                                                                <strong>Submitted: </strong>{secsToMins(storeTasks[idx].time)} ago<br />
-                                                                <strong>Estimated completion time: </strong>{secsToMins(storeTasks[idx].completion)}<br />
+                                                                <strong>Rider: </strong>{ridernames["rider" + storeTasks[idx].riderId]}<br />
+                                                                <strong>Store: </strong>{storename}<br />
+                                                                <strong>Delivery address: </strong>{storeTasks[idx].deliveryAddress}<br />
                                                             </span>
                                                         </Col>
                                                     </Row>
@@ -76,8 +112,7 @@ export function StoreTasks() {
                                     ))}
                                 </Row>
                                 <Row className="d-flex justify-content-center">
-                                    {/* 4 tasks per page: TODO: elements per page as pagination input */}
-                                    <Pagination pageNumber={1} parentCallback={handleCallback} />
+                                    <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
                                 </Row>
                             </>
                             :
