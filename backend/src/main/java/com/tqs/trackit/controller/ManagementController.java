@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -273,6 +274,16 @@ public class ManagementController {
         Rider rider = authServ.getRiderByUser(user);
         if(rider == null) return ResponseEntity.status(401).build();
         return ResponseEntity.ok().body(ridersServ.updateRiderLocation(rider, location));
+    }
+
+    @PutMapping("/rider/order/{orderid}")
+    public ResponseEntity<Order> riderAcceptsOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) return ResponseEntity.status(401).build();
+        return null;
     }
 
 }
