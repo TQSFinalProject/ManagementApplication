@@ -191,14 +191,16 @@ public class ManagementController {
     }
 
     @GetMapping("/stores/name/{storeName}") 
-    public ResponseEntity<Store> getStoreByName(@PathVariable(value = "storeName") String storeName) {
-        Store storeByName = storesServ.getStoreByName(storeName);
+    public ResponseEntity<Page<Store>> getStoreByName(@PathVariable(value = "storeName") String storeName, @RequestParam(required = false) Integer page) {
+        if(page == null) page = 0;
+        Page<Store> storeByName = storesServ.getStoreByName(page, storeName);
         return ResponseEntity.ok().body(storeByName);
     }
 
     @GetMapping("/stores/address/{storeAddress}") 
-    public ResponseEntity<Store> getStoreByAddress(@PathVariable(value = "storeAddress") String storeAddress) {
-        Store storeByAddress = storesServ.getStoreByAddress(storeAddress);
+    public ResponseEntity<Page<Store>> getStoreByAddress(@PathVariable(value = "storeAddress") String storeAddress, @RequestParam(required = false) Integer page) {
+        if(page == null) page = 0;
+        Page<Store> storeByAddress = storesServ.getStoreByAddress(page, storeAddress);
         return ResponseEntity.ok().body(storeByAddress);
     }
 

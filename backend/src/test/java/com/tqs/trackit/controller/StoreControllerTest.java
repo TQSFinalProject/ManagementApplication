@@ -144,8 +144,8 @@ public class StoreControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()", equalTo(7)))
-                .andExpect(jsonPath("$.storeName", is(store1.getStoreName())));
+                .andExpect(jsonPath("$.content[0].length()", equalTo(7)))
+                .andExpect(jsonPath("$.content[0].storeName", is(store1.getStoreName())));
     }
 
     @Test
@@ -157,8 +157,8 @@ public class StoreControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()", equalTo(7)))
-                .andExpect(jsonPath("$.storeAddress", is(store1.getStoreAddress())));
+                .andExpect(jsonPath("$.content[0].length()", equalTo(7)))
+                .andExpect(jsonPath("$.content[0].storeAddress", is(store1.getStoreAddress())));
     }
     
 }

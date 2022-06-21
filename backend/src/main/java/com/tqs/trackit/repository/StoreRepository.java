@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StoreRepository extends JpaRepository<Store,Long>{
     Page<Store> findAll(Pageable page); 
-    Store findByStoreName(String name);
+    Page<Store> findByStoreName(String name, Pageable page);
+    Page<Store> findByStoreAddress(String address, Pageable page);
     Store findByUser_Username(String username);
-    Store findByStoreAddress(String address);
     Store findByUser(User user);
 }

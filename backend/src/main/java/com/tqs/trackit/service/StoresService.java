@@ -25,12 +25,14 @@ public class StoresService {
         return storeRep.findById(id).orElse(null);
     }
 
-    public Store getStoreByName(String name) {
-        return storeRep.findByStoreName(name);
+    public Page<Store> getStoreByName(Integer page, String name) {
+        Pageable elements = PageRequest.of(page, 6);
+        return storeRep.findByStoreName(name, elements);
     }
 
-    public Store getStoreByAddress(String address) {
-        return storeRep.findByStoreAddress(address);
+    public Page<Store> getStoreByAddress(Integer page, String address) {
+        Pageable elements = PageRequest.of(page, 6);
+        return storeRep.findByStoreAddress(address, elements);
     }
 
     public Store saveStore(Store store) {

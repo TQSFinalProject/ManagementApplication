@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.tqs.trackit.model.Store;
 import com.tqs.trackit.repository.StoreRepository;
@@ -39,14 +40,18 @@ public class StoresServiceTest {
         store1.setId(10L);
 
         List<Store> allStores = Arrays.asList(store1, store2, store3);
+        List<Store> allStores2 = Arrays.asList(store1);
 
         Page<Store> page = new PageImpl<>(allStores);
+        Page<Store> page2 = new PageImpl<>(allStores2);
+
+        Pageable elements = PageRequest.of(0, 6);
 
         Mockito.when(storeRepository.findById(store1.getId())).thenReturn(Optional.of(store1));
         Mockito.when(storeRepository.findById(-1L)).thenReturn(Optional.empty());
         Mockito.when(storeRepository.findAll(PageRequest.of(0, 6))).thenReturn(page);
-        Mockito.when(storeRepository.findByStoreName(store1.getStoreName())).thenReturn(store1);
-        Mockito.when(storeRepository.findByStoreAddress(store1.getStoreAddress())).thenReturn(store1);
+        Mockito.when(storeRepository.findByStoreName(store1.getStoreName(), elements)).thenReturn(page2);
+        Mockito.when(storeRepository.findByStoreAddress(store1.getStoreAddress(), elements)).thenReturn(page2);
     }
 
     @Test
@@ -84,9 +89,9 @@ public class StoresServiceTest {
         Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0,"X","X");
         store1.setId(10L);
 
-        Store fromServ = storeService.getStoreByName(store1.getStoreName());
+        Page<Store> fromServ = storeService.getStoreByName(0, store1.getStoreName());
         verifyFindByNameIsCalledOnce();
-        assertThat(fromServ).isEqualTo(store1);
+        assertThat(fromServ.getContent().get(0)).isEqualTo(store1);
 
     }
 
@@ -95,9 +100,9 @@ public class StoresServiceTest {
         Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0,"X","X");
         store1.setId(10L);
         
-        Store fromServ = storeService.getStoreByAddress(store1.getStoreAddress());
+        Page<Store> fromServ = storeService.getStoreByAddress(0, store1.getStoreAddress());
         verifyFindByAddressIsCalledOnce();
-        assertThat(fromServ).isEqualTo(store1);
+        assertThat(fromServ.getContent().get(0)).isEqualTo(store1);
 
     }
 
@@ -108,11 +113,11 @@ public class StoresServiceTest {
     }
 
     private void verifyFindByNameIsCalledOnce() {
-        Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findByStoreName(Mockito.anyString());
+        Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findByStoreName(Mockito.anyString(), Mockito.any(Pageable.class));
     }
 
     private void verifyFindByAddressIsCalledOnce() {
-        Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findByStoreAddress(Mockito.anyString());
+        Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findByStoreAddress(Mockito.anyString(), Mockito.any(Pageable.class));
     }
 
     private void verifyFindStoresIsCalledOnce() {

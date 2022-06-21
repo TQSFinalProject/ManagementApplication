@@ -56,8 +56,9 @@ public class StoreRepositoryTest {
         Store store1 = new Store("Store X",2.5,"Avenue X",10.0,10.0,"X","X");
         entityManager.persistAndFlush(store1);
 
-        Store fromDb = storeRepository.findByStoreName(store1.getStoreName());
-        assertThat(fromDb).isEqualTo(store1);
+        Pageable elements = PageRequest.of(0, 6);
+        Page<Store> fromDb = storeRepository.findByStoreName(store1.getStoreName(), elements);
+        assertThat(fromDb.getContent().get(0)).isEqualTo(store1);
     }
 
     @Test
@@ -65,8 +66,9 @@ public class StoreRepositoryTest {
         Store store1 = new Store("Store X",2.5,"Avenue X",10.0,10.0,"X","X");
         entityManager.persistAndFlush(store1);
 
-        Store fromDb = storeRepository.findByStoreAddress(store1.getStoreAddress());
-        assertThat(fromDb).isEqualTo(store1);
+        Pageable elements = PageRequest.of(0, 6);
+        Page<Store> fromDb = storeRepository.findByStoreAddress(store1.getStoreAddress(), elements);
+        assertThat(fromDb.getContent().get(0)).isEqualTo(store1);
     }
     
 }
