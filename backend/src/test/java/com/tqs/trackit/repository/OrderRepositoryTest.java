@@ -52,8 +52,8 @@ public class OrderRepositoryTest {
         Page<Order> pageFromDb = orderRepository.findByRiderId(1L,elements);
         List<Order> fromDb = pageFromDb.getContent();
         assertThat(fromDb.size()).isEqualTo(2);
-        assertThat(fromDb.get(0).getOrderDetails()).isEqualTo("Wine X");
-        assertThat(fromDb.get(1).getOrderDetails()).isEqualTo("Wine Y");
+        assertThat(fromDb.get(0).getOrderDetails()).isEqualTo(order1.getOrderDetails());
+        assertThat(fromDb.get(1).getOrderDetails()).isEqualTo(order2.getOrderDetails());
     }
 
     @Test
@@ -76,8 +76,8 @@ public class OrderRepositoryTest {
         Page<Order> pageFromDb = orderRepository.findByStoreId(1L,elements);
         List<Order> fromDb = pageFromDb.getContent();
         assertThat(fromDb.size()).isEqualTo(2);
-        assertThat(fromDb.get(0).getOrderDetails()).isEqualTo("Wine X");
-        assertThat(fromDb.get(1).getOrderDetails()).isEqualTo("Wine Y");
+        assertThat(fromDb.get(0).getOrderDetails()).isEqualTo(order1.getOrderDetails());
+        assertThat(fromDb.get(1).getOrderDetails()).isEqualTo(order2.getOrderDetails());
     }
 
     @Test
@@ -100,8 +100,7 @@ public class OrderRepositoryTest {
         Page<Order> pageFromDb = orderRepository.findByOrderStatus("Late",elements);
         List<Order> fromDb = pageFromDb.getContent();
         assertThat(fromDb.size()).isEqualTo(1);
-        assertThat(fromDb.get(0).getOrderStatus()).isEqualTo("Late");
-        assertThat(fromDb.get(0).getOrderDetails()).isEqualTo("Wine X");
+        assertThat(fromDb.get(0)).isEqualTo(order1);
     }
 
     @Test
@@ -128,7 +127,7 @@ public class OrderRepositoryTest {
         Page<Order> pageFromDb = orderRepository.findAll(elements);
         List<Order> fromDb = pageFromDb.getContent();
         assertThat(fromDb.size()).isEqualTo(2);
-        assertThat(fromDb.get(0).getDeliveryAddress()).isEqualTo("Home X");
-        assertThat(fromDb.get(1).getDeliveryAddress()).isEqualTo("Home Z");
+        assertThat(fromDb.get(0).getDeliveryAddress()).isEqualTo(order2.getDeliveryAddress());
+        assertThat(fromDb.get(1).getDeliveryAddress()).isEqualTo(order3.getDeliveryAddress());
     }
 }

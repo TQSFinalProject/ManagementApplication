@@ -7,9 +7,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -55,7 +52,7 @@ public class JobApplicationControllerTest {
         mvc.perform(post("/api/jobApplications").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(jobApp1)));
 
         List<JobApplication> found = jobRepository.findAll();
-        assertThat(found).extracting(JobApplication::getFirstName).containsOnly("Paulo");
+        assertThat(found).extracting(JobApplication::getFirstName).containsOnly(jobApp1.getFirstName());
     }
 
     @Test
@@ -70,8 +67,8 @@ public class JobApplicationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
-                .andExpect(jsonPath("$.content[0].firstName", is("Paulo")))
-                .andExpect(jsonPath("$.content[1].firstName", is("Miguel")));
+                .andExpect(jsonPath("$.content[0].firstName", is(jobApp1.getFirstName())))
+                .andExpect(jsonPath("$.content[1].firstName", is(jobApp2.getFirstName())));
     }
 
     @Test
@@ -98,7 +95,7 @@ public class JobApplicationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", equalTo(8)))
-                .andExpect(jsonPath("$.firstName", is("Paulo")));
+                .andExpect(jsonPath("$.firstName", is(jobApp1.getFirstName())));
     }
 
 

@@ -68,9 +68,9 @@ public class StoreControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
-                .andExpect(jsonPath("$.content[0].storeName", is("Store X")))
-                .andExpect(jsonPath("$.content[1].storeName", is("Store Y")))
-                .andExpect(jsonPath("$.content[2].storeName", is("Store Z")));
+                .andExpect(jsonPath("$.content[0].storeName", is(store1.getStoreName())))
+                .andExpect(jsonPath("$.content[1].storeName", is(store2.getStoreName())))
+                .andExpect(jsonPath("$.content[2].storeName", is(store3.getStoreName())));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class StoreControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", equalTo(6)))
-                .andExpect(jsonPath("$.storeName", is("Store X")));
+                .andExpect(jsonPath("$.storeName", is(store1.getStoreName())));
     }
 
     @Test

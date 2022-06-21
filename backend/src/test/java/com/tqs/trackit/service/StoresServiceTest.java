@@ -51,8 +51,10 @@ public class StoresServiceTest {
 
     @Test
     void whenValidId_thenStoreShouldBeFound() {
-        Store fromDb = storeService.getStoreById(10L);
-        assertThat(fromDb.getStoreName()).isEqualTo("Store X");
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        store1.setId(10L);
+        Store fromDb = storeService.getStoreById(store1.getId());
+        assertThat(fromDb).isEqualTo(store1);
         verifyFindByIdIsCalledOnce();
     }
 
