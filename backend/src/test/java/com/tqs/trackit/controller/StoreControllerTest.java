@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -99,6 +100,38 @@ public class StoreControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", equalTo(4)))
                 .andExpect(jsonPath("$.storeName", is("Store X")));
+    }
+
+    @Test
+    void whenDeleteStoreById_thenStatus200() throws Exception {
+        Store store1 = new Store("Store X",2.5,"Avenue X");
+        storeRepository.saveAndFlush(store1);
+
+        mvc.perform(delete("/api/stores/{storeId}",store1.getId()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is("Deleted")));
+    }
+
+    @Test
+    void whenDeleteStoreByMalformedId_thenStatus400() throws Exception {
+        Store store1 = new Store("Store X",2.5,"Avenue X");
+        storeRepository.saveAndFlush(store1);
+
+        mvc.perform(delete("/api/stores/{storeId}","NotAnId").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", is("Not a Valid ID")));
+    }
+
+    @Test
+    void whenDeleteStoreByNonExistentId_thenStatus500() throws Exception {
+        Store store1 = new Store("Store X",2.5,"Avenue X");
+        storeRepository.saveAndFlush(store1);
+
+        mvc.perform(delete("/api/stores/{storeId}","5").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
     }
 
 

@@ -48,4 +48,8 @@ public class RidersService {
         Pageable elements = PageRequest.of(page, 6,Sort.by("ratingMean").descending());
         return riderRep.findAll(elements);
     } 
+
+    public void deleteRider(Long riderId) {
+        riderRep.deleteById(riderId);
+    }
 }

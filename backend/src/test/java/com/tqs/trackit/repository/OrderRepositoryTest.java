@@ -113,7 +113,7 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    void given3Orders_whenDelete1OrderById_thenReturnListOfOrders() {
+    void whenDelete1OrderById_thenReturnListOfOrders() {
         Pageable elements = PageRequest.of(0, 4);
         Order order1 = new Order("Late","Home Y", LocalDateTime.of(2022,Month.JANUARY,7,19,43,20),LocalDateTime.of(2022,Month.JANUARY,7,19,20,10),LocalDateTime.of(2022,Month.JANUARY,7,19,45,32),1L,1L,"Wine X","9183725364",4.5);
         Order order2 = new Order("On Time", "Home X", LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10), LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine Y", "9183725354", 4.0);

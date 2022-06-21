@@ -189,9 +189,6 @@ public class OrderControllerTest {
                 LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
         orderRepository.saveAndFlush(order1);
 
-        mvc.perform(get("/api/orders").contentType(MediaType.APPLICATION_JSON))
-        .andDo(print());
-
         mvc.perform(delete("/api/orders/{orderId}",order1.getId()).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

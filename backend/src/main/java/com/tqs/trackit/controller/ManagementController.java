@@ -97,7 +97,7 @@ public class ManagementController {
     }
 
     @DeleteMapping("/orders/{orderId}")
-    public ResponseEntity<String> deleteAlert(@PathVariable(value = "orderId") String orderId) {
+    public ResponseEntity<String> deleteOrder(@PathVariable(value = "orderId") String orderId) {
         try {
             Long id = Long.parseLong(orderId);
             ordersServ.deleteOrder(id);
@@ -150,6 +150,16 @@ public class ManagementController {
         return ridersServ.saveRider(rider.toRiderEntity());
     }
 
+    @DeleteMapping("/riders/{riderId}")
+    public ResponseEntity<String> deleteRider(@PathVariable(value = "riderId") String riderId) {
+        try {
+            Long id = Long.parseLong(riderId);
+            ridersServ.deleteRider(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
+    }
+
     @GetMapping("/stores")
     public ResponseEntity<Page<Store>> getStores(@RequestParam(required = false) Integer page) {
         if(page==null) {
@@ -171,6 +181,16 @@ public class ManagementController {
     @PostMapping("/stores")
     public Store createStore(@RequestBody StoreDTO store) {
         return storesServ.saveStore(store.toStoreEntity());
+    }
+
+    @DeleteMapping("/stores/{storeId}")
+    public ResponseEntity<String> deleteStore(@PathVariable(value = "storeId") String storeId) {
+        try {
+            Long id = Long.parseLong(storeId);
+            storesServ.deleteStore(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
     }
 
     @GetMapping("/jobApplications")
