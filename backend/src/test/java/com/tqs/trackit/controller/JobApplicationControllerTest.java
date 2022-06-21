@@ -7,6 +7,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -96,6 +99,39 @@ public class JobApplicationControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", equalTo(8)))
                 .andExpect(jsonPath("$.firstName", is("Paulo")));
+    }
+
+
+    @Test
+    void whenDeleteJobApplicationById_thenStatus200() throws Exception {
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobRepository.saveAndFlush(jobApp1);
+
+        mvc.perform(delete("/api/jobApplications/{jobApplicationId}",jobApp1.getId()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is("Deleted")));
+    }
+
+    @Test
+    void whenDeleteStoreByMalformedId_thenStatus400() throws Exception {
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobRepository.saveAndFlush(jobApp1);
+
+        mvc.perform(delete("/api/jobApplications/{jobApplicationId}","NotAnId").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", is("Not a Valid ID")));
+    }
+
+    @Test
+    void whenDeleteStoreByNonExistentId_thenStatus500() throws Exception {
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobRepository.saveAndFlush(jobApp1);
+
+        mvc.perform(delete("/api/jobApplications/{jobApplicationId}","5").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
     }
 
 

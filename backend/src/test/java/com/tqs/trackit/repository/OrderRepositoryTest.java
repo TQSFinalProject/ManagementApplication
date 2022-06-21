@@ -123,7 +123,7 @@ public class OrderRepositoryTest {
         entityManager.persistAndFlush(order2);
         entityManager.persistAndFlush(order3);
 
-        orderRepository.deleteById(1L);
+        orderRepository.deleteById(order1.getId());
 
         Page<Order> pageFromDb = orderRepository.findAll(elements);
         List<Order> fromDb = pageFromDb.getContent();

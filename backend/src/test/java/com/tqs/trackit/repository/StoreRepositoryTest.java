@@ -44,7 +44,7 @@ public class StoreRepositoryTest {
         Store store1 = new Store("Store X",2.5,"Avenue X");
         entityManager.persistAndFlush(store1);
 
-        storeRepository.deleteById(1L);
+        storeRepository.deleteById(store1.getId());
 
         Page<Store> pageFromDb = storeRepository.findAll(elements);
         List<Store> fromDb = pageFromDb.getContent();

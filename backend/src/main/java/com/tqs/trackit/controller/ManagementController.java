@@ -215,4 +215,14 @@ public class ManagementController {
     public JobApplication createApplication(@RequestBody JobApplicationDTO application) {
         return jobServ.saveApplication(application.toJobApplicationEntity());
     }
+
+    @DeleteMapping("/jobApplications/{jobApplicationId}")
+    public ResponseEntity<String> deleteJobApplication(@PathVariable(value = "jobApplicationId") String jobAppId) {
+        try {
+            Long id = Long.parseLong(jobAppId);
+            jobServ.deleteApplication(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
+    }
 }

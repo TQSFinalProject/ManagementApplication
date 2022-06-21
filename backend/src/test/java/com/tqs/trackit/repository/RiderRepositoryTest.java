@@ -49,7 +49,7 @@ public class RiderRepositoryTest {
         Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings);
         entityManager.persistAndFlush(rider1);
 
-        riderRepository.deleteById(1L);
+        riderRepository.deleteById(rider1.getId());
 
         Page<Rider> pageFromDb = riderRepository.findAll(elements);
         List<Rider> fromDb = pageFromDb.getContent();
