@@ -29,18 +29,6 @@ public class AuthService implements UserDetailsService {
 
     private BCryptPasswordEncoder bcryptEncoder = new BCryptPasswordEncoder();
 
-    public User saveUser(User user) {
-
-        user.setPassword(bcryptEncoder.encode(user.getPassword()));
-
-        // In case we need role authorization
-        // Role role = roleService.findByName("USER");
-        // Set<Role> roleSet = new HashSet<>();
-        // roleSet.add(role);
-
-        return userRep.save(user);
-    }
-
     public Store saveStore(Store store) {
         User user = store.getUser();
 
