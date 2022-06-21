@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -235,6 +236,47 @@ public class RiderControllerTest {
         .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
         .andExpect(jsonPath("$.content[2].firstName", is("Afonso")));
 
+    }
+
+    @Test
+    void whenDeleteRiderById_thenStatus200() throws Exception {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);;
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        riderRepository.saveAndFlush(rider1);
+
+        mvc.perform(delete("/api/riders/{riderId}",rider1.getId()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is("Deleted")));
+    }
+
+    @Test
+    void whenDeleteRiderByMalformedId_thenStatus400() throws Exception {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);;
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        riderRepository.saveAndFlush(rider1);
+
+        mvc.perform(delete("/api/riders/{riderId}","NotAnId").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", is("Not a Valid ID")));
+    }
+
+    @Test
+    void whenDeleteOrderByNonExistentId_thenStatus500() throws Exception {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);;
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        riderRepository.saveAndFlush(rider1);
+
+        mvc.perform(delete("/api/riders/{riderId}","5").contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
     }
 
 

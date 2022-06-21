@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,11 +45,12 @@ public class ManagementController {
     private JobApplicationsService jobServ;
 
     @GetMapping("/orders")
-    public ResponseEntity<Page<Order>> getOrders(@RequestParam(required = false) Integer page) {
+    public ResponseEntity<Page<Order>> getOrders(@RequestParam(required = false) Integer page,@RequestParam(required = false) Long riderId,@RequestParam(required = false) Long storeId,@RequestParam(required = false) String status) {
         if(page==null) 
         {
             page=0;
         }
+
         return ResponseEntity.ok().body(ordersServ.getOrders(page));
     }
 
@@ -71,9 +73,37 @@ public class ManagementController {
         return ResponseEntity.ok().body(ordersByRider);
     }
 
+    @GetMapping("/orders/store/{storeId}") 
+    public ResponseEntity<Page<Order>> getOrderByStoreId(@RequestParam(required = false) Integer page, @PathVariable(value = "storeId") Long storeId) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Order> ordersByStore = ordersServ.getOrdersByStoreId(storeId,page);
+        return ResponseEntity.ok().body(ordersByStore);
+    }
+
+    @GetMapping("/orders/status/{status}") 
+    public ResponseEntity<Page<Order>> getOrderByStatus(@RequestParam(required = false) Integer page, @PathVariable(value = "status") String status) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Order> ordersByStatus = ordersServ.getOrdersByStatus(status,page);
+        return ResponseEntity.ok().body(ordersByStatus);
+    }
+
     @PostMapping("/orders")
     public Order createOrder(@RequestBody OrderDTO order) {
         return ordersServ.saveOrder(order.toOrderEntity());
+    }
+
+    @DeleteMapping("/orders/{orderId}")
+    public ResponseEntity<String> deleteOrder(@PathVariable(value = "orderId") String orderId) {
+        try {
+            Long id = Long.parseLong(orderId);
+            ordersServ.deleteOrder(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
     }
 
     @GetMapping("/riders")
@@ -120,6 +150,16 @@ public class ManagementController {
         return ridersServ.saveRider(rider.toRiderEntity());
     }
 
+    @DeleteMapping("/riders/{riderId}")
+    public ResponseEntity<String> deleteRider(@PathVariable(value = "riderId") String riderId) {
+        try {
+            Long id = Long.parseLong(riderId);
+            ridersServ.deleteRider(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
+    }
+
     @GetMapping("/stores")
     public ResponseEntity<Page<Store>> getStores(@RequestParam(required = false) Integer page) {
         if(page==null) {
@@ -145,6 +185,16 @@ public class ManagementController {
         return ResponseEntity.ok().body(storesServ.saveStore(store.toStoreEntity()));
     }
 
+    @DeleteMapping("/stores/{storeId}")
+    public ResponseEntity<String> deleteStore(@PathVariable(value = "storeId") String storeId) {
+        try {
+            Long id = Long.parseLong(storeId);
+            storesServ.deleteStore(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
+    }
+
     @GetMapping("/jobApplications")
     public ResponseEntity<Page<JobApplication>> getApplications(@RequestParam(required = false) Integer page) {
         if(page==null) {
@@ -166,5 +216,15 @@ public class ManagementController {
     @PostMapping("/jobApplications")
     public JobApplication createApplication(@RequestBody JobApplicationDTO application) {
         return jobServ.saveApplication(application.toJobApplicationEntity());
+    }
+
+    @DeleteMapping("/jobApplications/{jobApplicationId}")
+    public ResponseEntity<String> deleteJobApplication(@PathVariable(value = "jobApplicationId") String jobAppId) {
+        try {
+            Long id = Long.parseLong(jobAppId);
+            jobServ.deleteApplication(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
     }
 }

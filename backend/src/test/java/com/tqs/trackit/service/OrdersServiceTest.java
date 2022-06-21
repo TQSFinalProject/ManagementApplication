@@ -50,6 +50,8 @@ public class OrdersServiceTest {
         Mockito.when(orderRepository.findById(-1L)).thenReturn(Optional.empty());
         Mockito.when(orderRepository.findAll(PageRequest.of(0, 4))).thenReturn(new PageImpl<>(allOrders));
         Mockito.when(orderRepository.findByRiderId(1L,PageRequest.of(0, 4))).thenReturn(new PageImpl<>(Arrays.asList(order1,order2)));
+        Mockito.when(orderRepository.findByStoreId(1L,PageRequest.of(0, 4))).thenReturn(new PageImpl<>(Arrays.asList(order1,order2)));
+        Mockito.when(orderRepository.findByOrderStatus("Late",PageRequest.of(0, 4))).thenReturn(new PageImpl<>(Arrays.asList(order1)));
     }
     
     @Test
@@ -96,6 +98,32 @@ public class OrdersServiceTest {
 
     }
 
+    @Test
+    void given2Orders_whenGetAllOrdersbyStoreId_thenReturnStoreIdOrders() {
+        Order order1 = new Order("Late", "Home Y", 10.0,10.0,LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        Order order2 = new Order("On Time", "Home X",10.0,10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 15, 43, 00),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
+
+        Page<Order> riderOrders = orderService.getOrdersByStoreId(1L,0);
+        verifyFindOrdersByStoreIdIsCalledOnce();
+        assertThat(riderOrders.getContent()).hasSize(2).extracting(Order::getOrderDetails).contains(order1.getOrderDetails(), order2.getOrderDetails());
+
+    }
+
+    @Test
+    void given2Orders_whenGetAllOrdersbyStatus_thenReturnOrdersWithThatStatus() {
+        Order order1 = new Order("Late", "Home Y", 10.0,10.0,LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
+        Page<Order> riderOrders = orderService.getOrdersByStatus("Late",0);
+        verifyFindOrdersByStatusIsCalledOnce();
+        assertThat(riderOrders.getContent()).hasSize(1).extracting(Order::getOrderDetails).contains(order1.getOrderDetails());
+
+    }
+
     private void verifyFindByIdIsCalledOnce() {
         Mockito.verify(orderRepository, VerificationModeFactory.times(1)).findById(Mockito.anyLong());
     }
@@ -106,6 +134,14 @@ public class OrdersServiceTest {
 
     private void verifyFindOrdersByRiderIdIsCalledOnce() {
         Mockito.verify(orderRepository, VerificationModeFactory.times(1)).findByRiderId(1L,(PageRequest.of(0, 4)));
+    }
+
+    private void verifyFindOrdersByStoreIdIsCalledOnce() {
+        Mockito.verify(orderRepository, VerificationModeFactory.times(1)).findByStoreId(1L,(PageRequest.of(0, 4)));
+    }
+
+    private void verifyFindOrdersByStatusIsCalledOnce() {
+        Mockito.verify(orderRepository, VerificationModeFactory.times(1)).findByOrderStatus("Late",(PageRequest.of(0, 4)));
     }
 
 }
