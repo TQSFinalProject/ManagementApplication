@@ -56,7 +56,7 @@ public class RiderControllerTest {
         mvc.perform(post("/registration/rider").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(rider1)));
 
         List<Rider> found = riderRepository.findAll();
-        assertThat(found).extracting(Rider::getFirstName).containsOnly("Miguel");
+        assertThat(found).extracting(Rider::getFirstName).containsOnly(rider1.getFirstName());
     }
 
     @Test
@@ -77,9 +77,9 @@ public class RiderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
-                .andExpect(jsonPath("$.content[0].firstName", is("Miguel")))
-                .andExpect(jsonPath("$.content[1].firstName", is("Afonso")))
-                .andExpect(jsonPath("$.content[2].firstName", is("Ana")));
+                .andExpect(jsonPath("$.content[0].firstName", is(rider1.getFirstName())))
+                .andExpect(jsonPath("$.content[1].firstName", is(rider2.getFirstName())))
+                .andExpect(jsonPath("$.content[2].firstName", is(rider3.getFirstName())));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class RiderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", equalTo(10)))
-                .andExpect(jsonPath("$.firstName", is("Miguel")));
+                .andExpect(jsonPath("$.firstName", is(rider1.getFirstName())));
     }
 
     @Test
@@ -143,9 +143,9 @@ public class RiderControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
-        .andExpect(jsonPath("$.content[0].firstName", is("Afonso")))
-        .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
-        .andExpect(jsonPath("$.content[2].firstName", is("Miguel")));
+        .andExpect(jsonPath("$.content[0].firstName", is(rider2.getFirstName())))
+        .andExpect(jsonPath("$.content[1].firstName", is(rider3.getFirstName())))
+        .andExpect(jsonPath("$.content[2].firstName", is(rider1.getFirstName())));
 
     }
 
@@ -173,9 +173,9 @@ public class RiderControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
-        .andExpect(jsonPath("$.content[0].firstName", is("Miguel")))
-        .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
-        .andExpect(jsonPath("$.content[2].firstName", is("Afonso")));
+        .andExpect(jsonPath("$.content[0].firstName", is(rider1.getFirstName())))
+        .andExpect(jsonPath("$.content[1].firstName", is(rider3.getFirstName())))
+        .andExpect(jsonPath("$.content[2].firstName", is(rider2.getFirstName())));
 
     }
 
@@ -203,9 +203,9 @@ public class RiderControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
-        .andExpect(jsonPath("$.content[0].firstName", is("Afonso")))
-        .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
-        .andExpect(jsonPath("$.content[2].firstName", is("Miguel")));
+        .andExpect(jsonPath("$.content[0].firstName", is(rider2.getFirstName())))
+        .andExpect(jsonPath("$.content[1].firstName", is(rider3.getFirstName())))
+        .andExpect(jsonPath("$.content[2].firstName", is(rider1.getFirstName())));
 
     }
 
@@ -233,9 +233,9 @@ public class RiderControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
-        .andExpect(jsonPath("$.content[0].firstName", is("Miguel")))
-        .andExpect(jsonPath("$.content[1].firstName", is("Ana")))
-        .andExpect(jsonPath("$.content[2].firstName", is("Afonso")));
+        .andExpect(jsonPath("$.content[0].firstName", is(rider1.getFirstName())))
+        .andExpect(jsonPath("$.content[1].firstName", is(rider3.getFirstName())))
+        .andExpect(jsonPath("$.content[2].firstName", is(rider2.getFirstName())));
 
     }
 

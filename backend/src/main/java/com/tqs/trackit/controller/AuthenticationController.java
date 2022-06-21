@@ -70,22 +70,4 @@ public class AuthenticationController {
             return ResponseEntity.status(200).body("User registered successfully.");
         }
     }
-
-    // @GetMapping("/myprofile/store")
-    // public ResponseEntity<CustomerDTO> getCustomerDetails(@RequestHeader("authorization") String auth) {
-    //     String token = auth.split(" ")[1];
-    //     String username = jwtTokenUtil.getUsernameFromToken(token);
-    //     Customer cust = authServ.getCustomerByUsername(username);
-    //     CustomerDTO response = CustomerDTO.fromCustomerEntity(cust);
-    //     return ResponseEntity.ok().body(response);
-    // }
-
-    // @GetMapping("/myprofile/rider")
-    // public ResponseEntity<CustomerDTO> getCustomerDetails(@RequestHeader("authorization") String auth) {
-    //     String token = auth.split(" ")[1];
-    //     String username = jwtTokenUtil.getUsernameFromToken(token);
-    //     Customer cust = authServ.getCustomerByUsername(username);
-    //     CustomerDTO response = CustomerDTO.fromCustomerEntity(cust);
-    //     return ResponseEntity.ok().body(response);
-    // }
 }

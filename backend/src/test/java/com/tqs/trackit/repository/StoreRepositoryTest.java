@@ -50,5 +50,23 @@ public class StoreRepositoryTest {
         List<Store> fromDb = pageFromDb.getContent();
         assertThat(fromDb.size()).isEqualTo(0);
     }
+
+    @Test
+    void whenFindStoreByName_thenReturnStore() {
+        Store store1 = new Store("Store X",2.5,"Avenue X",10.0,10.0,"X","X");
+        entityManager.persistAndFlush(store1);
+
+        Store fromDb = storeRepository.findByStoreName(store1.getStoreName());
+        assertThat(fromDb).isEqualTo(store1);
+    }
+
+    @Test
+    void whenFindStoreByAddress_thenReturnStore() {
+        Store store1 = new Store("Store X",2.5,"Avenue X",10.0,10.0,"X","X");
+        entityManager.persistAndFlush(store1);
+
+        Store fromDb = storeRepository.findByStoreAddress(store1.getStoreAddress());
+        assertThat(fromDb).isEqualTo(store1);
+    }
     
 }

@@ -47,8 +47,10 @@ public class JobApplicationsServiceTest {
 
     @Test
     void whenValidId_thenJobApplicationShouldBeFound() {
-        JobApplication fromDb = jobService.getApplicationById(10L);
-        assertThat(fromDb.getFirstName()).isEqualTo("Paulo");
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobApp1.setId(10L);
+        JobApplication fromDb = jobService.getApplicationById(jobApp1.getId());
+        assertThat(fromDb).isEqualTo(jobApp1);
         verifyFindByIdIsCalledOnce();
     }
 

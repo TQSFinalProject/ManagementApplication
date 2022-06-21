@@ -176,6 +176,18 @@ public class ManagementController {
         return ResponseEntity.ok().body(store1);
     }
 
+    @GetMapping("/stores/name/{storeName}") 
+    public ResponseEntity<Store> getStoreByName(@PathVariable(value = "storeName") String storeName) {
+        Store storeByName = storesServ.getStoreByName(storeName);
+        return ResponseEntity.ok().body(storeByName);
+    }
+
+    @GetMapping("/stores/address/{storeAddress}") 
+    public ResponseEntity<Store> getStoreByAddress(@PathVariable(value = "storeAddress") String storeAddress) {
+        Store storeByAddress = storesServ.getStoreByAddress(storeAddress);
+        return ResponseEntity.ok().body(storeByAddress);
+    }
+
     // @PostMapping("/stores")
     // public ResponseEntity<Store> createStore(@RequestBody StoreDTO store) {
     //     Store otherStore = storesServ.getStoreByName(store.getStoreName());
