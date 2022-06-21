@@ -29,6 +29,10 @@ public class StoresService {
         return storeRep.findByStoreName(name);
     }
 
+    public Store getStoreByAddress(String address) {
+        return storeRep.findByStoreAddress(address);
+    }
+
     public Store saveStore(Store store) {
         return storeRep.save(store);
     }
