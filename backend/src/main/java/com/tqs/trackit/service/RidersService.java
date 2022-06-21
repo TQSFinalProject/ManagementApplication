@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.tqs.trackit.dtos.LocationDTO;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.repository.RiderRepository;
 
@@ -51,5 +52,12 @@ public class RidersService {
 
     public void deleteRider(Long riderId) {
         riderRep.deleteById(riderId);
+    }
+
+    public LocationDTO updateRiderLocation(Rider rider, LocationDTO location) {
+        rider.setLatitude(location.getLatitude());
+        rider.setLongitude(location.getLongitude());
+        riderRep.save(rider);
+        return location;
     }
 }
