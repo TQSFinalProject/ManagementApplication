@@ -29,7 +29,7 @@ public class DTOTest {
 
     @Test
     void checkIfStoreIsEqualToDTOConvertedStore() {
-        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0,"X","X");
         Store storeFromDTO = StoreDTO.fromStoreEntity(store1).toStoreEntity();
         assertThat(storeFromDTO).isEqualTo(store1);
     }

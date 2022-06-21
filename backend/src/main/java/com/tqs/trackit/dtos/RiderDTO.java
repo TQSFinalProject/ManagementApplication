@@ -17,7 +17,7 @@ public class RiderDTO {
     private List<Double> ratings;
 
     public static RiderDTO fromRiderEntity(Rider rider){
-        return new RiderDTO(rider.getFirstName(), rider.getLastName(), rider.getPhone(), rider.getUsername(), rider.getPassword(), rider.getRiderPhoto(), rider.getLatitude(), rider.getLongitude(), rider.getRatings(), rider.getId());
+        return new RiderDTO(rider.getFirstName(), rider.getLastName(), rider.getPhone(), rider.getUser().getUsername(), rider.getUser().getPassword(), rider.getRiderPhoto(), rider.getLatitude(), rider.getLongitude(), rider.getRatings(), rider.getId());
     }
     public Rider toRiderEntity(){
         return new Rider(getFirstName(), getLastName(), getPhone(),getUsername(),getPassword(),getRiderPhoto(),getLatitude(),getLongitude(),getRatings(), getId());

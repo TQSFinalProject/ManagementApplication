@@ -6,9 +6,7 @@ import com.tqs.trackit.dtos.JobApplicationDTO;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.dtos.OrderDTO;
 import com.tqs.trackit.model.Rider;
-import com.tqs.trackit.dtos.RiderDTO;
 import com.tqs.trackit.model.Store;
-import com.tqs.trackit.dtos.StoreDTO;
 import com.tqs.trackit.service.JobApplicationsService;
 import com.tqs.trackit.service.OrdersService;
 import com.tqs.trackit.service.RidersService;
@@ -145,10 +143,10 @@ public class ManagementController {
         return ResponseEntity.ok().body(rider1);
     }
 
-    @PostMapping("/riders")
-    public Rider createRider(@RequestBody RiderDTO rider) {
-        return ridersServ.saveRider(rider.toRiderEntity());
-    }
+    // @PostMapping("/riders")
+    // public Rider createRider(@RequestBody RiderDTO rider) {
+    //     return ridersServ.saveRider(rider.toRiderEntity());
+    // }
 
     @DeleteMapping("/riders/{riderId}")
     public ResponseEntity<String> deleteRider(@PathVariable(value = "riderId") String riderId) {
@@ -190,12 +188,12 @@ public class ManagementController {
         return ResponseEntity.ok().body(storeByAddress);
     }
 
-    @PostMapping("/stores")
-    public ResponseEntity<Store> createStore(@RequestBody StoreDTO store) {
-        Store otherStore = storesServ.getStoreByName(store.getStoreName());
-        if(otherStore != null) return ResponseEntity.status(409).body(otherStore);
-        return ResponseEntity.ok().body(storesServ.saveStore(store.toStoreEntity()));
-    }
+    // @PostMapping("/stores")
+    // public ResponseEntity<Store> createStore(@RequestBody StoreDTO store) {
+    //     Store otherStore = storesServ.getStoreByName(store.getStoreName());
+    //     if(otherStore != null) return ResponseEntity.status(409).body(otherStore);
+    //     return ResponseEntity.ok().body(storesServ.saveStore(store.toStoreEntity()));
+    // }
 
     @DeleteMapping("/stores/{storeId}")
     public ResponseEntity<String> deleteStore(@PathVariable(value = "storeId") String storeId) {
