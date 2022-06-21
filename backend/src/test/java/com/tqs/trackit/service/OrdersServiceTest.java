@@ -56,8 +56,11 @@ public class OrdersServiceTest {
     
     @Test
     void whenValidId_thenOrderShouldBeFound() {
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022, Month.JANUARY, 7, 19, 43, 20),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 20, 10),
+                LocalDateTime.of(2022, Month.JANUARY, 7, 19, 45, 32), 1L, 1L, "Wine X", "9183725364", 4.5);
         Order fromDb = orderService.getOrderById(10L);
-        assertThat(fromDb.getOrderStatus()).isEqualTo("Late");
+        assertThat(fromDb.getOrderStatus()).isEqualTo(order1.getOrderStatus());
         verifyFindByIdIsCalledOnce();
     }
 
@@ -92,7 +95,7 @@ public class OrdersServiceTest {
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
 
-        Page<Order> riderOrders = orderService.getOrdersByRiderId(1L,0);
+        Page<Order> riderOrders = orderService.getOrdersByRiderId(order1.getRiderId(),0);
         verifyFindOrdersByRiderIdIsCalledOnce();
         assertThat(riderOrders.getContent()).hasSize(2).extracting(Order::getOrderDetails).contains(order1.getOrderDetails(), order2.getOrderDetails());
 
@@ -107,7 +110,7 @@ public class OrdersServiceTest {
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 30, 10),
                 LocalDateTime.of(2022, Month.JANUARY, 7, 15, 35, 10), 1L, 1L, "Wine X", "9183725354", 4.0);
 
-        Page<Order> riderOrders = orderService.getOrdersByStoreId(1L,0);
+        Page<Order> riderOrders = orderService.getOrdersByStoreId(order1.getStoreId(),0);
         verifyFindOrdersByStoreIdIsCalledOnce();
         assertThat(riderOrders.getContent()).hasSize(2).extracting(Order::getOrderDetails).contains(order1.getOrderDetails(), order2.getOrderDetails());
 

@@ -68,9 +68,9 @@ public class StoreControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
-                .andExpect(jsonPath("$.content[0].storeName", is("Store X")))
-                .andExpect(jsonPath("$.content[1].storeName", is("Store Y")))
-                .andExpect(jsonPath("$.content[2].storeName", is("Store Z")));
+                .andExpect(jsonPath("$.content[0].storeName", is(store1.getStoreName())))
+                .andExpect(jsonPath("$.content[1].storeName", is(store2.getStoreName())))
+                .andExpect(jsonPath("$.content[2].storeName", is(store3.getStoreName())));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class StoreControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", equalTo(6)))
-                .andExpect(jsonPath("$.storeName", is("Store X")));
+                .andExpect(jsonPath("$.storeName", is(store1.getStoreName())));
     }
 
     @Test
@@ -134,6 +134,30 @@ public class StoreControllerTest {
                 .andExpect(status().isInternalServerError());
     }
 
+    @Test
+    void givenStoreName_whenGetStoreByName_thenStatus200() throws Exception {
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        storeRepository.saveAndFlush(store1);
 
+        mvc.perform(get("/api/stores/name/{storeName}",store1.getStoreName()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", equalTo(6)))
+                .andExpect(jsonPath("$.storeName", is(store1.getStoreName())));
+    }
+
+    @Test
+    void givenStoreAddress_whenGetStoreByAddress_thenStatus200() throws Exception {
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        storeRepository.saveAndFlush(store1);
+
+        mvc.perform(get("/api/stores/address/{storeAddress}",store1.getStoreAddress()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", equalTo(6)))
+                .andExpect(jsonPath("$.storeAddress", is(store1.getStoreAddress())));
+    }
     
 }

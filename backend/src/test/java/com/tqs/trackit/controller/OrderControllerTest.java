@@ -53,7 +53,7 @@ public class OrderControllerTest {
         mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(order1)));
 
         List<Order> found = orderRepository.findAll();
-        assertThat(found).extracting(Order::getOrderStatus).containsOnly("Late");
+        assertThat(found).extracting(Order::getOrderStatus).containsOnly(order1.getOrderStatus());
     }
 
     @Test
@@ -72,8 +72,8 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
-                .andExpect(jsonPath("$.content[0].orderStatus", is("Late")))
-                .andExpect(jsonPath("$.content[1].orderStatus", is("On Time")));
+                .andExpect(jsonPath("$.content[0].orderStatus", is(order1.getOrderStatus())))
+                .andExpect(jsonPath("$.content[1].orderStatus", is(order2.getOrderStatus())));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", equalTo(13)))
-                .andExpect(jsonPath("$.orderStatus", is("Late")));
+                .andExpect(jsonPath("$.orderStatus", is(order1.getOrderStatus())));
     }
 
     @Test
@@ -129,8 +129,8 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
-                .andExpect(jsonPath("$.content[0].orderDetails", is("Wine X")))
-                .andExpect(jsonPath("$.content[1].orderDetails", is("Wine Y")));
+                .andExpect(jsonPath("$.content[0].orderDetails", is(order1.getOrderDetails())))
+                .andExpect(jsonPath("$.content[1].orderDetails", is(order2.getOrderDetails())));
 
 
     }
@@ -154,9 +154,9 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(3))))
-                .andExpect(jsonPath("$.content[0].orderDetails", is("Wine X")))
-                .andExpect(jsonPath("$.content[1].orderDetails", is("Wine Y")))
-                .andExpect(jsonPath("$.content[2].orderDetails", is("Wine Z")));
+                .andExpect(jsonPath("$.content[0].orderDetails", is(order1.getOrderDetails())))
+                .andExpect(jsonPath("$.content[1].orderDetails", is(order2.getOrderDetails())))
+                .andExpect(jsonPath("$.content[2].orderDetails", is(order3.getOrderDetails())));
     }
 
     @Test
@@ -178,8 +178,8 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(equalTo(2))))
-                .andExpect(jsonPath("$.content[0].orderDetails", is("Wine Y")))
-                .andExpect(jsonPath("$.content[1].orderDetails", is("Wine Z")));
+                .andExpect(jsonPath("$.content[0].orderDetails", is(order2.getOrderDetails())))
+                .andExpect(jsonPath("$.content[1].orderDetails", is(order3.getOrderDetails())));
     }
 
     @Test

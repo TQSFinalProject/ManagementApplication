@@ -70,8 +70,13 @@ public class RidersServiceTest {
 
     @Test
     void whenValidId_thenRiderShouldBeFound() {
-        Rider fromDb = riderService.getRiderById(10L);
-        assertThat(fromDb.getFirstName()).isEqualTo("Miguel");
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        rider1.setId(10L);
+        Rider fromDb = riderService.getRiderById(rider1.getId());
+        assertThat(fromDb.getFirstName()).isEqualTo(rider1.getFirstName());
         verifyFindByIdIsCalledOnce();
     }
 

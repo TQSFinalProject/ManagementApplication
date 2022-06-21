@@ -45,12 +45,16 @@ public class StoresServiceTest {
         Mockito.when(storeRepository.findById(store1.getId())).thenReturn(Optional.of(store1));
         Mockito.when(storeRepository.findById(-1L)).thenReturn(Optional.empty());
         Mockito.when(storeRepository.findAll(PageRequest.of(0, 6))).thenReturn(page);
+        Mockito.when(storeRepository.findByStoreName(store1.getStoreName())).thenReturn(store1);
+        Mockito.when(storeRepository.findByStoreAddress(store1.getStoreAddress())).thenReturn(store1);
     }
 
     @Test
     void whenValidId_thenStoreShouldBeFound() {
-        Store fromDb = storeService.getStoreById(10L);
-        assertThat(fromDb.getStoreName()).isEqualTo("Store X");
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        store1.setId(10L);
+        Store fromDb = storeService.getStoreById(store1.getId());
+        assertThat(fromDb).isEqualTo(store1);
         verifyFindByIdIsCalledOnce();
     }
 
@@ -75,10 +79,40 @@ public class StoresServiceTest {
 
     }
 
+    @Test
+    void given1Store_whenGetStoreByName_thenReturnStoreWithThatName() {
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        store1.setId(10L);
+
+        Store fromServ = storeService.getStoreByName(store1.getStoreName());
+        verifyFindByNameIsCalledOnce();
+        assertThat(fromServ).isEqualTo(store1);
+
+    }
+
+    @Test
+    void given1Store_whenGetStoreByAddress_thenReturnStoreWithThatAddress() {
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0);
+        store1.setId(10L);
+        
+        Store fromServ = storeService.getStoreByAddress(store1.getStoreAddress());
+        verifyFindByAddressIsCalledOnce();
+        assertThat(fromServ).isEqualTo(store1);
+
+    }
+
 
 
     private void verifyFindByIdIsCalledOnce() {
         Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findById(Mockito.anyLong());
+    }
+
+    private void verifyFindByNameIsCalledOnce() {
+        Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findByStoreName(Mockito.anyString());
+    }
+
+    private void verifyFindByAddressIsCalledOnce() {
+        Mockito.verify(storeRepository, VerificationModeFactory.times(1)).findByStoreAddress(Mockito.anyString());
     }
 
     private void verifyFindStoresIsCalledOnce() {
