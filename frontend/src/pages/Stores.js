@@ -20,6 +20,8 @@ import Pagination from '../components/Pagination';
 
 const endpoint_stores = "api/stores";
 const endpoint_tasksPerStore = "api/orders/store/";
+const endpoint_filterStoreName = "api/stores/name/";
+const endpoint_filterStoreAddress = "api/stores/address/";
 
 function Stores() {
 
@@ -28,6 +30,9 @@ function Stores() {
     const [totalPages, setTotalPages] = useState(0);
 
     const [tasksPerStore, setTasksPerStore] = useState({});
+
+    const [filterName, setFilterName] = useState("");
+    const [filterAddress, setFilterAddress] = useState("");
 
     let navigate = useNavigate();
 
@@ -63,7 +68,14 @@ function Stores() {
         navigate('/store_tasks/' + storeId);
     }
 
-    console.log(tasksPerStore);
+    function filterStores() {
+        // filterName
+        // filterAddress
+        
+        // axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_filterStoreName + filterName).then((response) => {
+        //     // ...
+        // });
+    }
 
     return (
         <>
@@ -84,17 +96,23 @@ function Stores() {
 
                             <p><strong>Filters:</strong></p>
 
-                            <label htmlFor="searchAssignedRider" className="inp">
-                                <input type="text" id="searchAssignedRider" placeholder="&nbsp;" />
+                            <label htmlFor="searchStoreName" className="inp">
+                                <input type="text" id="searchStoreName" placeholder="&nbsp;"
+                                    onChange={e => setFilterName(e.target.value)} />
                                 <span className="label">Name</span>
                                 <span className="focus-bg"></span>
                             </label>
 
-                            <label htmlFor="searchStore" className="inp">
-                                <input type="text" id="searchStore" placeholder="&nbsp;" />
+                            <label htmlFor="searchStoreAddress" className="inp">
+                                <input type="text" id="searchStoreAddress" placeholder="&nbsp;"
+                                    onChange={e => setFilterAddress(e.target.value)} />
                                 <span className="label">Address</span>
                                 <span className="focus-bg"></span>
                             </label>
+
+                            <div className='text-center'>
+                                <Button onClick={() => { filterStores() }}>Search</Button>
+                            </div>
 
                         </Col>
                         <Col sm={8}>

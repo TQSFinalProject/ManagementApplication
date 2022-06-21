@@ -64,7 +64,7 @@ function App() {
         <Route path="/tasks" element={<Tasks />}></Route>
         <Route path="/riders" element={<Riders />}></Route>
         <Route path="/stores" element={<Stores />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        {/* <Route path="/login" element={<Login />}></Route> */}
         <Route path="/applications" element={<NewApplications />}></Route>
         <Route path="/store_tasks/:id" element={<StoreTasks />}></Route>
         <Route path="/map" element={<Map />}></Route>
