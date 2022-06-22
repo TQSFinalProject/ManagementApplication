@@ -5,7 +5,7 @@ import com.tqs.trackit.model.JobApplication;
 import com.tqs.trackit.config.TokenProvider;
 import com.tqs.trackit.dtos.JobApplicationDTO;
 import com.tqs.trackit.dtos.LocationDTO;
-import com.tqs.trackit.dtos.OrderDTO;
+import com.tqs.trackit.dtos.OrderCreationDTO;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.model.Store;
@@ -340,12 +340,13 @@ public class ManagementController {
     }
 
     @PostMapping("/store/order")
-    public ResponseEntity<Order> storeSubmitsOrder(@RequestHeader("authorization") String auth, @RequestBody OrderDTO orderDto) {
+    public ResponseEntity<Order> storeSubmitsOrder(@RequestHeader("authorization") String auth, @RequestBody OrderCreationDTO orderDto) {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user = authServ.getUserByUsername(username);
         Store store = authServ.getStoreByUser(user);
         if(store == null) return ResponseEntity.status(401).build();
+        System.out.println(orderDto);
         Order order = ordersServ.newOrderFromStore(orderDto.toOrderEntity(), store);
         return ResponseEntity.ok().body(order);
     }

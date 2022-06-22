@@ -122,6 +122,7 @@ public class OrdersService {
     }
 
     public Order newOrderFromStore(Order order, Store store) {
+        System.out.println(order);
         order.setStoreId(store.getId());
         order.setOrderStatus("requested");
         return orderRep.save(order);
