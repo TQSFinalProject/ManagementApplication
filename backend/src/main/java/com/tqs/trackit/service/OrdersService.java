@@ -70,7 +70,7 @@ public class OrdersService {
 
         for(Order o : orders) {
             System.out.println("ABC "+ o.getStoreId());
-            Store store = storeRep.findById(o.getStoreId()).get();
+            Store store = storeRep.findById(o.getStoreId()).orElseThrow();
             Map<String,Object> map = new HashMap<>();
             map.put("order", o);
             map.put("distance", distanceFromRiderToStoreDouble(store, rider) + distanceFromStoreToOrderDouble(o, store));
@@ -89,11 +89,11 @@ public class OrdersService {
         List<Order> riderOrders = orderRep.findByRiderId(rider.getId());
         for(Order o : riderOrders) if(!o.getOrderStatus().equals("completed")) throw new IllegalAccessException();
 
-        Order order = orderRep.findById(orderid).get();
+        Order order = orderRep.findById(orderid).orElseThrow();
         order.setRiderId(rider.getId());
         order.setOrderStatus("accepted");
 
-        Store store = storeRep.findById(order.getStoreId()).get();
+        Store store = storeRep.findById(order.getStoreId()).orElseThrow();
         
         Double distance = distanceFromRiderToStoreDouble(store, rider) + distanceFromStoreToOrderDouble(order, store);
         int minutes = (int) (distance * 4 + 4);
@@ -104,7 +104,7 @@ public class OrdersService {
     }
 
     public Order riderDeliveringOrder(Rider rider, Long orderid) throws IllegalAccessException {
-        Order order = orderRep.findById(orderid).get();
+        Order order = orderRep.findById(orderid).orElseThrow();
         System.out.println("ABC "+order.getRiderId()+" "+rider.getId());
         if(order.getRiderId() != rider.getId()) throw new IllegalAccessException();
         order.setOrderStatus("delivering");
@@ -113,7 +113,7 @@ public class OrdersService {
     }
 
     public Order riderCompleteOrder(Rider rider, Long orderid) throws IllegalAccessException {
-        Order order = orderRep.findById(orderid).get();
+        Order order = orderRep.findById(orderid).orElseThrow();
         if(order.getRiderId() != rider.getId()) throw new IllegalAccessException();
         order.setOrderStatus("completed");
         order.setDeliveryTime(LocalDateTime.now());
@@ -128,12 +128,12 @@ public class OrdersService {
     }
 
     public Map<String, Object> storeGetsOrderAndRider(Store store, Long orderid) throws IllegalAccessException {
-        Order order = orderRep.findById(orderid).get();
+        Order order = orderRep.findById(orderid).orElseThrow();
         if(order.getStoreId() != store.getId()) throw new IllegalAccessException();
 
         Rider rider = null;
         if(order.getRiderId() != null) {
-            rider = riderRep.findById(order.getRiderId()).get();
+            rider = riderRep.findById(order.getRiderId()).orElseThrow();
             rider.setUser(null);
         }
 
