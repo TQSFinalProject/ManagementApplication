@@ -10,25 +10,20 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.tqs.trackit.JsonUtils;
 import com.tqs.trackit.TrackitApplication;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.repository.OrderRepository;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.List;
 
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK, classes = TrackitApplication.class)
 @AutoConfigureMockMvc

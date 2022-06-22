@@ -29,7 +29,6 @@ import com.tqs.trackit.repository.StoreRepository;
 import com.tqs.trackit.repository.UserRepository;
 import com.tqs.trackit.service.AuthService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
