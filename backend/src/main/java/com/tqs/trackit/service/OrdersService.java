@@ -1,5 +1,6 @@
 package com.tqs.trackit.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,13 +14,22 @@ import org.springframework.stereotype.Service;
 
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
+import com.tqs.trackit.model.Store;
 import com.tqs.trackit.repository.OrderRepository;
+import com.tqs.trackit.repository.RiderRepository;
+import com.tqs.trackit.repository.StoreRepository;
 
 @Service
 public class OrdersService {
 
     @Autowired
     OrderRepository orderRep;
+
+    @Autowired
+    StoreRepository storeRep;
+
+    @Autowired
+    RiderRepository riderRep;
 
     public Page<Order> getOrders(Integer page) {
         Pageable elements = PageRequest.of(page, 4);
@@ -59,9 +69,11 @@ public class OrdersService {
         List<Map<String,Object>> ret = new ArrayList<>();
 
         for(Order o : orders) {
+            System.out.println("ABC "+ o.getStoreId());
+            Store store = storeRep.findById(o.getStoreId()).orElseThrow();
             Map<String,Object> map = new HashMap<>();
             map.put("order", o);
-            map.put("distance", distanceFromRiderToOrderDouble(o, rider));
+            map.put("distance", distanceFromRiderToStoreDouble(store, rider) + distanceFromStoreToOrderDouble(o, store));
             ret.add(map);
         }
 
@@ -72,8 +84,73 @@ public class OrdersService {
         return ret;
     }
 
-    public Double distanceFromRiderToOrderDouble(Order order, Rider rider) {
-        return distanceDouble(order.getDeliveryLat(), order.getDeliveryLong(), rider.getLatitude(), rider.getLongitude());
+    public Order riderAcceptOrder(Rider rider, Long orderid) throws IllegalAccessException {
+        // Is rider free
+        List<Order> riderOrders = orderRep.findByRiderId(rider.getId());
+        for(Order o : riderOrders) if(!o.getOrderStatus().equals("completed")) throw new IllegalAccessException();
+
+        Order order = orderRep.findById(orderid).orElseThrow();
+        order.setRiderId(rider.getId());
+        order.setOrderStatus("accepted");
+
+        Store store = storeRep.findById(order.getStoreId()).orElseThrow();
+        
+        Double distance = distanceFromRiderToStoreDouble(store, rider) + distanceFromStoreToOrderDouble(order, store);
+        int minutes = (int) (distance * 4 + 4);
+
+        order.setEstimatedDeliveryTime(LocalDateTime.now().plusMinutes(minutes));
+        
+        return orderRep.save(order);
+    }
+
+    public Order riderDeliveringOrder(Rider rider, Long orderid) throws IllegalAccessException {
+        Order order = orderRep.findById(orderid).orElseThrow();
+        System.out.println("ABC "+order.getRiderId()+" "+rider.getId());
+        if(order.getRiderId() != rider.getId()) throw new IllegalAccessException();
+        order.setOrderStatus("delivering");
+
+        return orderRep.save(order);
+    }
+
+    public Order riderCompleteOrder(Rider rider, Long orderid) throws IllegalAccessException {
+        Order order = orderRep.findById(orderid).orElseThrow();
+        if(order.getRiderId() != rider.getId()) throw new IllegalAccessException();
+        order.setOrderStatus("completed");
+        order.setDeliveryTime(LocalDateTime.now());
+
+        return orderRep.save(order);
+    }
+
+    public Order newOrderFromStore(Order order, Store store) {
+        order.setStoreId(store.getId());
+        order.setOrderStatus("requested");
+        return orderRep.save(order);
+    }
+
+    public Map<String, Object> storeGetsOrderAndRider(Store store, Long orderid) throws IllegalAccessException {
+        Order order = orderRep.findById(orderid).orElseThrow();
+        if(order.getStoreId() != store.getId()) throw new IllegalAccessException();
+
+        Rider rider = null;
+        if(order.getRiderId() != null) {
+            rider = riderRep.findById(order.getRiderId()).orElseThrow();
+            rider.setUser(null);
+        }
+
+        Map<String, Object> ret = new HashMap<>();
+        ret.put("order", order);
+        ret.put("rider", rider);
+        return ret;
+    }
+
+
+
+    public Double distanceFromStoreToOrderDouble(Order order, Store store) {
+        return distanceDouble(order.getDeliveryLat(), order.getDeliveryLong(), store.getStoreLat(), store.getStoreLong());
+    }
+
+    public Double distanceFromRiderToStoreDouble(Store store, Rider rider) {
+        return distanceDouble(store.getStoreLat(), store.getStoreLong(), rider.getLatitude(), rider.getLongitude());
     }
 
     // Functions below adapted from https://dzone.com/articles/distance-calculation-using-3
@@ -94,5 +171,5 @@ public class OrdersService {
     private Double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
-    
+
 }

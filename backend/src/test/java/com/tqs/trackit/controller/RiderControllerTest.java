@@ -275,7 +275,7 @@ public class RiderControllerTest {
         Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
         riderRepository.saveAndFlush(rider1);
 
-        mvc.perform(delete("/api/riders/{riderId}","5").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/api/riders/{riderId}","135").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isInternalServerError());
     }
