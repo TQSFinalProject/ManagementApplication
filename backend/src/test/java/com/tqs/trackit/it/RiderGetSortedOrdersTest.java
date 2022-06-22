@@ -20,21 +20,18 @@ import com.tqs.trackit.dtos.RiderCreationDTO;
 import com.tqs.trackit.dtos.StoreDTO;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
+import com.tqs.trackit.model.Store;
 import com.tqs.trackit.repository.OrderRepository;
 import com.tqs.trackit.repository.RiderRepository;
 import com.tqs.trackit.repository.StoreRepository;
 import com.tqs.trackit.service.AuthService;
 import com.tqs.trackit.service.OrdersService;
 import com.tqs.trackit.service.RidersService;
-import com.tqs.trackit.service.StoresService;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -92,8 +89,13 @@ public class RiderGetSortedOrdersTest {
     Order o12;
     Order o13;
 
+    Store storeEntity;
+
     @BeforeEach
     public void setUp() throws IOException, Exception {
+        StoreDTO store = new StoreDTO("CDV", 1.99, "UA", 10.0, 10.0, "CDV", "CDV123", 0L);
+        storeEntity = authServ.saveStore(store.toStoreEntity());
+        
         RiderCreationDTO rider = new RiderCreationDTO("Bob", "Wolf", "1234", "bobwolf", "1234", "");
         authServ.saveRider(rider.toRiderEntity());
 
@@ -128,6 +130,16 @@ public class RiderGetSortedOrdersTest {
         // 59km
         o9 = new Order("created", "A", 10.2, 10.5, null, LocalDateTime.now(), null, null, null, null, "1234", null);
         
+        o1.setStoreId(storeEntity.getId());
+        o2.setStoreId(storeEntity.getId());
+        o3.setStoreId(storeEntity.getId());
+        o4.setStoreId(storeEntity.getId());
+        o5.setStoreId(storeEntity.getId());
+        o6.setStoreId(storeEntity.getId());
+        o7.setStoreId(storeEntity.getId());
+        o8.setStoreId(storeEntity.getId());
+        o9.setStoreId(storeEntity.getId());
+
         orderServ.saveOrder(o1);
         orderServ.saveOrder(o2);
         orderServ.saveOrder(o3);
@@ -183,11 +195,6 @@ public class RiderGetSortedOrdersTest {
 
     @Test
     void ifNotRider_thenUnauthorized() throws Exception {
-        StoreDTO store = new StoreDTO("CDV", 1.99, "UA", 10.0, 10.0, "CDV", "CDV123", 0L);
-
-        mvc.perform(post("/registration/store").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(store)))
-        .andExpect(status().isOk());
-
         LogInRequestDTO req = new LogInRequestDTO("CDV", "CDV123");
         MvcResult result1 = mvc.perform(post("/authentication").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(req))).andReturn();
         JSONObject tokenJSON1 = new JSONObject(result1.getResponse().getContentAsString());

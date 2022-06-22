@@ -46,15 +46,15 @@ public class OrderControllerTest {
         orderRepository.deleteAll();
     }
 
-    @Test
-     void whenValidInput_thenCreateOrder() throws IOException, Exception {
-        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022,Month.JANUARY,7,19,43,20),LocalDateTime.of(2022,Month.JANUARY,7,19,20,10),LocalDateTime.of(2022,Month.JANUARY,7,19,45,32),1L,1L,"Wine X","9183725364",4.5);
+//     @Test
+//      void whenValidInput_thenCreateOrder() throws IOException, Exception {
+//         Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022,Month.JANUARY,7,19,43,20),LocalDateTime.of(2022,Month.JANUARY,7,19,20,10),LocalDateTime.of(2022,Month.JANUARY,7,19,45,32),1L,1L,"Wine X","9183725364",4.5);
 
-        mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(order1)));
+//         mvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(order1)));
 
-        List<Order> found = orderRepository.findAll();
-        assertThat(found).extracting(Order::getOrderStatus).containsOnly(order1.getOrderStatus());
-    }
+//         List<Order> found = orderRepository.findAll();
+//         assertThat(found).extracting(Order::getOrderStatus).containsOnly(order1.getOrderStatus());
+//     }
 
     @Test
      void givenOrders_whenGetOrders_thenStatus200FromPage0() throws Exception {

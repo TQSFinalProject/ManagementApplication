@@ -5,8 +5,8 @@ import com.tqs.trackit.model.JobApplication;
 import com.tqs.trackit.config.TokenProvider;
 import com.tqs.trackit.dtos.JobApplicationDTO;
 import com.tqs.trackit.dtos.LocationDTO;
-import com.tqs.trackit.model.Order;
 import com.tqs.trackit.dtos.OrderDTO;
+import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.model.Store;
 import com.tqs.trackit.model.User;
@@ -18,6 +18,7 @@ import com.tqs.trackit.service.StoresService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -104,10 +105,10 @@ public class ManagementController {
         return ResponseEntity.ok().body(ordersByStatus);
     }
 
-    @PostMapping("/orders")
-    public Order createOrder(@RequestBody OrderDTO order) {
-        return ordersServ.saveOrder(order.toOrderEntity());
-    }
+    // @PostMapping("/orders")
+    // public Order createOrder(@RequestBody OrderDTO order) {
+    //     return ordersServ.saveOrder(order.toOrderEntity());
+    // }
 
     @DeleteMapping("/orders/{orderId}")
     public ResponseEntity<String> deleteOrder(@PathVariable(value = "orderId") String orderId) {
@@ -276,14 +277,92 @@ public class ManagementController {
         return ResponseEntity.ok().body(ridersServ.updateRiderLocation(rider, location));
     }
 
-    @PutMapping("/rider/order/{orderid}")
+    @PutMapping("/rider/order/accept/{orderid}")
     public ResponseEntity<Order> riderAcceptsOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
         String token = auth.split(" ")[1];
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user = authServ.getUserByUsername(username);
         Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) {
+            return ResponseEntity.status(401).build();
+        }
+        Order order;
+        try{
+            order = ordersServ.riderAcceptOrder(rider, orderid);
+            return ResponseEntity.ok().body(order);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PutMapping("/rider/order/delivering/{orderid}")
+    public ResponseEntity<Order> riderIsDeliveringOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) {
+            System.out.println("XXX");
+            return ResponseEntity.status(401).build();
+        } 
+        Order order;
+        try{
+            order = ordersServ.riderDeliveringOrder(rider, orderid);
+            return ResponseEntity.ok().body(order);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalAccessException e) {
+            System.out.println("YYY");
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PutMapping("/rider/order/complete/{orderid}")
+    public ResponseEntity<Order> riderCompletedOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
         if(rider == null) return ResponseEntity.status(401).build();
-        return null;
+        Order order;
+        try{
+            order = ordersServ.riderCompleteOrder(rider, orderid);
+            return ResponseEntity.ok().body(order);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PostMapping("/store/order")
+    public ResponseEntity<Order> storeSubmitsOrder(@RequestHeader("authorization") String auth, @RequestBody OrderDTO orderDto) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Store store = authServ.getStoreByUser(user);
+        if(store == null) return ResponseEntity.status(401).build();
+        Order order = ordersServ.newOrderFromStore(orderDto.toOrderEntity(), store);
+        return ResponseEntity.ok().body(order);
+    }
+
+    @GetMapping("/store/order/{orderid}")
+    public ResponseEntity<Map<String,Object>> storeRequestOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Store store = authServ.getStoreByUser(user);
+        if(store == null) return ResponseEntity.status(401).build();
+        try{
+            Map<String,Object> orderAndRider = ordersServ.storeGetsOrderAndRider(store, orderid);
+            return ResponseEntity.ok().body(orderAndRider);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(401).build();
+        }
     }
 
 }
