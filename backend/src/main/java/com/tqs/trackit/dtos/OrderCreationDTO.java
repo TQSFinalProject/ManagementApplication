@@ -2,6 +2,8 @@ package com.tqs.trackit.dtos;
 
 import java.time.LocalDateTime;
 
+import com.tqs.trackit.model.Order;
+
 public class OrderCreationDTO {
     private String orderStatus;
     private String deliveryAddress;
@@ -19,6 +21,10 @@ public class OrderCreationDTO {
         this.submitedTime = submitedTime;
         this.orderDetails = orderDetails;
         this.phone = phone;
+    }
+
+    public Order toOrderEntity() {
+        return new Order(orderStatus, deliveryAddress, deliveryLat, deliveryLong,null, submitedTime, null, null, null, orderDetails, phone, null);
     }
 
     public String getOrderStatus() {
@@ -48,4 +54,18 @@ public class OrderCreationDTO {
     public String getPhone() {
         return this.phone;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " orderStatus='" + getOrderStatus() + "'" +
+            ", deliveryAddress='" + getDeliveryAddress() + "'" +
+            ", deliveryLat='" + getDeliveryLat() + "'" +
+            ", deliveryLong='" + getDeliveryLong() + "'" +
+            ", submitedTime='" + getSubmitedTime() + "'" +
+            ", orderDetails='" + getOrderDetails() + "'" +
+            ", phone='" + getPhone() + "'" +
+            "}";
+    }
+
 }
