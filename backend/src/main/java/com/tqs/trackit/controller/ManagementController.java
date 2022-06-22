@@ -159,6 +159,15 @@ public class ManagementController {
         return ResponseEntity.ok().body(rider1);
     }
 
+    @GetMapping("/riders/{firstName}/{lastName}") 
+    public ResponseEntity<Page<Rider>> getRiderByFullName(@RequestParam(required = false) Integer page, @PathVariable(value = "firstName") String firstName, @PathVariable(value = "lastName") String lastName) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Rider> riderByName = ridersServ.getRidersByFullName(firstName, lastName, page);
+        return ResponseEntity.ok().body(riderByName);
+    }
+
     // @PostMapping("/riders")
     // public Rider createRider(@RequestBody RiderDTO rider) {
     //     return ridersServ.saveRider(rider.toRiderEntity());

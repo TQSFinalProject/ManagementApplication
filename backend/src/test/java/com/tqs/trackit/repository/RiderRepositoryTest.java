@@ -55,4 +55,18 @@ public class RiderRepositoryTest {
         List<Rider> fromDb = pageFromDb.getContent();
         assertThat(fromDb.size()).isEqualTo(0);
     }
+
+    @Test
+    void whenFindRiderByFullName_thenReturnRider() {
+        Pageable elements = PageRequest.of(0, 6);
+        List<Double> ratings = new ArrayList<>();
+        ratings.add(4.5);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings);
+        entityManager.persistAndFlush(rider1);
+
+        Page<Rider> fromDbPage = riderRepository.findByRiderFullName(rider1.getFirstName(), rider1.getLastName(), elements);
+        List<Rider> fromDb = fromDbPage.getContent();
+        assertThat(fromDb.size()).isEqualTo(1);
+        assertThat(fromDb.get(0)).isEqualTo(rider1);
+    }
 }

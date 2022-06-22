@@ -50,6 +50,12 @@ public class RidersService {
         return riderRep.findAll(elements);
     } 
 
+    public Page<Rider> getRidersByFullName(String firstName,String lastName,Integer page) {
+        Pageable elements = PageRequest.of(page, 6);
+        return riderRep.findByRiderFullName(firstName, lastName, elements);
+
+    }
+
     public void deleteRider(Long riderId) {
         riderRep.deleteById(riderId);
     }
