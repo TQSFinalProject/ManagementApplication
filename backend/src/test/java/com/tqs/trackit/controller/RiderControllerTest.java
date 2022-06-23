@@ -280,6 +280,29 @@ public class RiderControllerTest {
                 .andExpect(status().isInternalServerError());
     }
 
+    @Test
+    void givenRiderFullName_whenGetRiderByFullName_thenStatus200() throws Exception {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        List<Double> ratings2 = new ArrayList<>();
+        ratings2.add(2.5);
+        ratings2.add(3.5);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        Rider rider2 = new Rider("Afonso","Campos","937451448","afonsoc","password","link",49.4455,32.93284,ratings2);
+
+        riderRepository.saveAndFlush(rider1);
+        riderRepository.saveAndFlush(rider2);
+
+        mvc.perform(get("/api/riders/{firstName}/{lastName}",rider1.getFirstName(),rider1.getLastName()).contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.content", hasSize(equalTo(1))))
+        .andExpect(jsonPath("$.content[0].firstName", is(rider1.getFirstName())))
+        .andExpect(jsonPath("$.content[0].lastName", is(rider1.getLastName())));
+
+    }
 
     
 }

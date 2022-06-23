@@ -19,6 +19,7 @@ import com.tqs.trackit.repository.RiderRepository;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +60,8 @@ public class RidersServiceTest {
         List<Rider> allRiders3 = Arrays.asList(rider1, rider3, rider2);
         Page<Rider> page3 = new PageImpl<>(allRiders3);
 
+        Page<Rider> pageRiderByName = new PageImpl<>(Arrays.asList(rider1));
+
         Mockito.when(riderRepository.findById(rider1.getId())).thenReturn(Optional.of(rider1));
         Mockito.when(riderRepository.findById(-1L)).thenReturn(Optional.empty());
         Mockito.when(riderRepository.findAll(PageRequest.of(0, 6))).thenReturn(page);
@@ -66,6 +69,7 @@ public class RidersServiceTest {
         Mockito.when(riderRepository.findAll(PageRequest.of(0, 6,Sort.by("ratingMean")))).thenReturn(page2);
         Mockito.when(riderRepository.findAll(PageRequest.of(0, 6,Sort.by("firstName").descending()))).thenReturn(page3);
         Mockito.when(riderRepository.findAll(PageRequest.of(0, 6,Sort.by("ratingMean").descending()))).thenReturn(page3);
+        Mockito.when(riderRepository.findByRiderFullName(rider1.getFirstName(),rider1.getLastName(),PageRequest.of(0, 6))).thenReturn(pageRiderByName);
     }
 
     @Test
@@ -203,7 +207,20 @@ public class RidersServiceTest {
 
     }
 
+    @Test
+    void whenGetRiderByFullName_thenGetRider() {
+        List<Double> ratings1 = new ArrayList<>();
+        ratings1.add(4.5);
+        ratings1.add(4.0);
+        Rider rider1 = new Rider("Miguel","Ferreira","937485748","miguelf","password","link",49.4578,76.93284,ratings1);
+        rider1.setId(10L);
+        Page<Rider> riderByName = riderService.getRidersByFullName(rider1.getFirstName(), rider1.getLastName(), 0);
 
+        assertThat(riderByName.getContent()).hasSize(1);
+        assertThat(riderByName.getContent().get(0)).isEqualTo(rider1);
+
+        Mockito.verify(riderRepository, VerificationModeFactory.times(1)).findByRiderFullName(rider1.getFirstName(), rider1.getLastName(),PageRequest.of(0, 6));
+    }
 
     private void verifyFindByIdIsCalledOnce() {
         Mockito.verify(riderRepository, VerificationModeFactory.times(1)).findById(Mockito.anyLong());
