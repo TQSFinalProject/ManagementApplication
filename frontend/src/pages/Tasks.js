@@ -22,9 +22,6 @@ import Badge from 'react-bootstrap/Badge'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsSpin } from '@fortawesome/free-solid-svg-icons'
 
-// // Employee data
-// import { staff, tasks, stores } from '../App'
-
 // CSS
 import SearchBar from '../components/css/SearchBar.css'
 
@@ -42,30 +39,58 @@ function Tasks() {
 
     const [show, setShow] = useState(false);
 
-    const [staff, setStaff] = useState([]);
     const [tasks, setTasks] = useState([]);
-    const [stores, setStores] = useState([]);
+
+    const [totalPages, setTotalPages] = useState(0);
+    const [ridernames, setRidernames] = useState({});
+    const [storenames, setStorenames] = useState({});
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders).then((response) => {
-            setStaff(response.data);
-            // console.log(response.data);
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + 0).then((response) => {
+            setTasks(response.data.content);
+            setTotalPages(response.data.totalPages);
         });
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders).then((response) => {
-            setTasks(response.data);
-            // console.log(response.data);
-        });
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores).then((response) => {
-            setStores(response.data);
-            // console.log(response.data);
-        });
+
     }, []);
 
-    function handleCallback(page) { // for the pagination buttons
+    useEffect(() => {
+        
+        for (let task of tasks) {
+            let riderId = task.riderId;
+            let storeId = task.storeId;
 
+            axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_riders + "/" + riderId).then((response) => {
+                let riderKey = "rider" + riderId;
+                let newRidername = {};
+                newRidername[riderKey] = response.data.firstName + " " + response.data.lastName;
+
+                setRidernames(ridernames => ({
+                    ...ridernames,
+                    ...newRidername
+                }));
+            });
+
+            axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_stores + "/" + storeId).then((response) => {
+                let storeKey = "store" + storeId;
+                let newStorename = {};
+                newStorename[storeKey] = response.data.storeName;
+
+                setStorenames(storenames => ({
+                    ...storenames,
+                    ...newStorename
+                }));
+            });
+        }
+
+    }, [tasks]);
+
+    function handleCallback(page) {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_orders + "?page=" + (page-1)).then((response) => {
+            setTasks(response.data.content);
+        });
     }
 
     return (
@@ -77,82 +102,86 @@ function Tasks() {
             </Container>
 
             <Container style={{ marginTop: '2%' }}>
-                <Row>
-                    <Col sm={4}>
+                {tasks.length == 0 ?
+                    <Row>
+                        <h5 style={{ textAlign: 'center' }}>There are no orders currently.</h5>
+                    </Row>
+                    :
+                    <Row>
+                        <Col sm={4}>
 
-                        <p><strong>Filters:</strong></p>
+                            <p><strong>Filters:</strong></p>
 
-                        <label htmlFor="searchAssignedRider" className="inp">
-                            <input type="text" id="searchAssignedRider" placeholder="&nbsp;" />
-                            <span className="label">Assigned rider</span>
-                            <span className="focus-bg"></span>
-                        </label>
+                            <label htmlFor="searchAssignedRider" className="inp">
+                                <input type="text" id="searchAssignedRider" placeholder="&nbsp;" />
+                                <span className="label">Assigned rider</span>
+                                <span className="focus-bg"></span>
+                            </label>
 
-                        <label htmlFor="searchStore" className="inp">
-                            <input type="text" id="searchStore" placeholder="&nbsp;" />
-                            <span className="label">Store/Restaurant</span>
-                            <span className="focus-bg"></span>
-                        </label>
+                            <label htmlFor="searchStore" className="inp">
+                                <input type="text" id="searchStore" placeholder="&nbsp;" />
+                                <span className="label">Store/Restaurant</span>
+                                <span className="focus-bg"></span>
+                            </label>
 
-                        <Dropdown className='filterDropdown'>
-                            <Dropdown.Toggle id="dropdown-basic">
-                                Lateness
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item className="clickable">On time</Dropdown.Item>
-                                <Dropdown.Item className="clickable">Late</Dropdown.Item>
-                                <Dropdown.Item className="clickable">Very late</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                            <Dropdown className='filterDropdown'>
+                                <Dropdown.Toggle id="dropdown-basic">
+                                    Lateness
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item className="clickable">On time</Dropdown.Item>
+                                    <Dropdown.Item className="clickable">Late</Dropdown.Item>
+                                    <Dropdown.Item className="clickable">Very late</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
 
-                        <Dropdown className='filterDropdown'>
-                            <Dropdown.Toggle id="dropdown-basic">
-                                Distance
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item className="clickable">Close</Dropdown.Item>
-                                <Dropdown.Item className="clickable">Average</Dropdown.Item>
-                                <Dropdown.Item className="clickable">Far away</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                            <Dropdown className='filterDropdown'>
+                                <Dropdown.Toggle id="dropdown-basic">
+                                    Distance
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item className="clickable">Close</Dropdown.Item>
+                                    <Dropdown.Item className="clickable">Average</Dropdown.Item>
+                                    <Dropdown.Item className="clickable">Far away</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
 
-                    </Col>
-                    <Col sm={8}>
-                        <Row className="d-flex justify-content-center">
-                            {tasks.map((callbackfn, idx) => (
-                                <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
-                                    <Toast.Header closeButton={false}>
-                                        <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
-                                        {/* <Badge style={{ marginRight: '5%' }} bg="warning" text="dark">Far Away</Badge> */}
-                                        {tasks[idx].orderStatus == 'Late' ?
-                                            <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
-                                            :
-                                            <></>
-                                        }
-                                        <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a>
-                                    </Toast.Header>
-                                    <Toast.Body>
-                                        <Container>
-                                            <Row>
-                                                <Col>
-                                                    <span>
-                                                        <strong>Rider: </strong>{staff[tasks[idx].riderId - 1].firstName + " " + staff[tasks[idx].riderId - 1].lastName}<br />
-                                                        <strong>Store: </strong>Chateau Du Vin<br />
-                                                        <strong>Delivery address: </strong>{tasks[idx].deliveryAddress}<br />
-                                                    </span>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                    </Toast.Body>
-                                </Toast>
-                            ))}
-                        </Row>
-                        <Row className="d-flex justify-content-center">
-                            {/* 4 tasks per page: TODO: elements per page as pagination input */}
-                            <Pagination pageNumber={1} parentCallback={handleCallback} />
-                        </Row>
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col sm={8}>
+                            <Row className="d-flex justify-content-center">
+                                {tasks.map((callbackfn, idx) => (
+                                    <Toast key={"key" + tasks[idx].id} style={{ margin: '1%', width: '24vw' }} className="employeeCard">
+                                        <Toast.Header closeButton={false}>
+                                            <strong className="me-auto">Task #{tasks[idx].id} </strong><br />
+                                            {tasks[idx].orderStatus == 'Late' ?
+                                                <Badge style={{ marginRight: '5%' }} bg="danger">Late</Badge>
+                                                :
+                                                <></>
+                                            }
+                                            <a style={{ color: '#06113C', cursor: 'pointer' }} onClick={handleShow}><FontAwesomeIcon icon={faArrowsSpin} /></a>
+                                        </Toast.Header>
+                                        <Toast.Body>
+                                            <Container>
+                                                <Row>
+                                                    <Col>
+                                                        <span>
+                                                            <strong>Rider: </strong>{ridernames["rider" + tasks[idx].riderId]}<br />
+                                                            <strong>Store: </strong>{storenames["store" + tasks[idx].storeId]}<br />
+                                                            <strong>Delivery address: </strong>{tasks[idx].deliveryAddress}<br />
+                                                        </span>
+                                                    </Col>
+                                                </Row>
+                                            </Container>
+                                        </Toast.Body>
+                                    </Toast>
+                                ))}
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Pagination pageNumber={totalPages} parentCallback={handleCallback} />
+                            </Row>
+                        </Col>
+                    </Row>
+                }
             </Container>
 
             <Modal show={show} onHide={handleClose}>

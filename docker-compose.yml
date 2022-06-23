@@ -16,6 +16,8 @@ services:
         - MYSQL_USER=ti
         - MYSQL_DATABASE=ti
         - MYSQL_PASSWORD=trackit2
+      networks:
+        - management_network
 
   ti:
     depends_on:
@@ -32,16 +34,24 @@ services:
       - spring.datasource.password=trackit2
       - spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
       - spring.jpa.hibernate.ddl-auto=update
+    networks:
+      - management_network
 
   client:
-        build:
-            context: frontend
-            dockerfile: Dockerfile
-        ports:
-            - "3001:3001"
-        depends_on: 
-            - ti
+    build:
+        context: frontend
+        dockerfile: Dockerfile
+    ports:
+        - "3001:3001"
+    depends_on: 
+        - ti
+    networks:
+        - management_network
 
 volumes:
   mysql-ti:
     driver: local
+
+networks:
+  management_network:
+    driver: bridge

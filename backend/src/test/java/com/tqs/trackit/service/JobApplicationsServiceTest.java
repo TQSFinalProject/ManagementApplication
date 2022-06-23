@@ -8,6 +8,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.tqs.trackit.model.JobApplication;
 import com.tqs.trackit.repository.JobApplicationRepository;
@@ -39,13 +42,15 @@ public class JobApplicationsServiceTest {
 
         Mockito.when(jobRepository.findById(jobApp1.getId())).thenReturn(Optional.of(jobApp1));
         Mockito.when(jobRepository.findById(-1L)).thenReturn(Optional.empty());
-        Mockito.when(jobRepository.findAll()).thenReturn(allJobs);
+        Mockito.when(jobRepository.findAll(PageRequest.of(0, 4))).thenReturn(new PageImpl<>(allJobs));
     }
 
     @Test
     void whenValidId_thenJobApplicationShouldBeFound() {
-        JobApplication fromDb = jobService.getApplicationById(10L);
-        assertThat(fromDb.getFirstName()).isEqualTo("Paulo");
+        JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
+        jobApp1.setId(10L);
+        JobApplication fromDb = jobService.getApplicationById(jobApp1.getId());
+        assertThat(fromDb).isEqualTo(jobApp1);
         verifyFindByIdIsCalledOnce();
     }
 
@@ -61,9 +66,9 @@ public class JobApplicationsServiceTest {
         JobApplication jobApp1 = new JobApplication("Paulo","Silva",LocalDate.of(1984, 2, 3),"943526152","paulo.silva@ua.pt","link_to_photo","link_to_cv");
         JobApplication jobApp2 = new JobApplication("Miguel","Marques",LocalDate.of(1999, 4, 21),"943583746","miguelm@ua.pt","link_to_photo","link_to_cv");
 
-        List<JobApplication> allApplications = jobService.getApplications();
+        Page<JobApplication> allApplications = jobService.getApplications(0);
         verifyFindJobApplicationsIsCalledOnce();
-        assertThat(allApplications).hasSize(2).extracting(JobApplication::getFirstName).contains(jobApp1.getFirstName(),jobApp2.getFirstName());
+        assertThat(allApplications.getContent()).hasSize(2).extracting(JobApplication::getFirstName).contains(jobApp1.getFirstName(),jobApp2.getFirstName());
 
     }
 
@@ -73,7 +78,7 @@ public class JobApplicationsServiceTest {
     }
 
     private void verifyFindJobApplicationsIsCalledOnce() {
-        Mockito.verify(jobRepository, VerificationModeFactory.times(1)).findAll();
+        Mockito.verify(jobRepository, VerificationModeFactory.times(1)).findAll(PageRequest.of(0, 4));
     }
     
 }

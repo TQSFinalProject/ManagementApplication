@@ -10,7 +10,7 @@ function GeneralNavbar() {
             <a href="/staff">Staff</a>
             <a href="/tasks">Tasks</a>
             <a href="/stores">Stores</a>
-            <a href="/login">Login</a>
+            {/* <a href="/login">Login</a> */}
             <div className="dot"></div>
         </nav>
     </>;

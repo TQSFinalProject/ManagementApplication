@@ -38,12 +38,12 @@ function Homepage() {
                         </Row>
                     </Col>
                     <Col className='align-self-center col-xs-1' align='center'>
-                        <Link to='/login'>
+                        <Link to='/staff'>
                             <button className="learn-more" style={{ marginTop: '70%' }}>
                                 <span className="circle" aria-hidden="true">
                                     <span className="icon arrow"></span>
                                 </span>
-                                <span className="button-text">Login</span>
+                                <span className="button-text">Check your staff</span>
                             </button>
                         </Link>
                     </Col>

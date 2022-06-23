@@ -22,14 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DTOTest {
     @Test
     void checkIfOrderIsEqualToDTOConvertedOrder() {
-        Order order1 = new Order("Late","Home Y", LocalDateTime.of(2022,Month.JANUARY,7,19,43,20),LocalDateTime.of(2022,Month.JANUARY,7,19,20,10),LocalDateTime.of(2022,Month.JANUARY,7,19,45,32),1L,1L,"Wine X","9183725364",4.5);
+        Order order1 = new Order("Late", "Home Y", 10.0, 10.0, LocalDateTime.of(2022,Month.JANUARY,7,19,43,20),LocalDateTime.of(2022,Month.JANUARY,7,19,20,10),LocalDateTime.of(2022,Month.JANUARY,7,19,45,32),1L,1L,"Wine X","9183725364",4.5);
         Order orderFromDTO = OrderDTO.fromOrderEntity(order1).toOrderEntity();
         assertThat(orderFromDTO).isEqualTo(order1);
     }
 
     @Test
     void checkIfStoreIsEqualToDTOConvertedStore() {
-        Store store1 = new Store("Store X",2.5,"Avenue X");
+        Store store1 = new Store("Store X",2.5,"Avenue X", 10.0, 10.0,"X","X");
         Store storeFromDTO = StoreDTO.fromStoreEntity(store1).toStoreEntity();
         assertThat(storeFromDTO).isEqualTo(store1);
     }
