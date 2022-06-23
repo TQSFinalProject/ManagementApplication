@@ -39,12 +39,19 @@ function NewApplications() {
             setApplications(response.data.content);
             setTotalPages(response.data.totalPages);
         });
-    }, []);
+    }, [applications]);
 
     function handleCallback(page) {
-        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_applications + "?page=" + (page-1)).then((response) => {
+        axios.get(process.env.REACT_APP_BACKEND_URL + endpoint_applications + "?page=" + (page - 1)).then((response) => {
             setApplications(response.data.content);
         });
+    }
+
+    function processApplication(jobApplicationId) {
+        axios.delete(process.env.REACT_APP_BACKEND_URL + endpoint_applications + "/" + jobApplicationId)
+            .then((response) => {
+                
+            });
     }
 
     return (
@@ -92,8 +99,8 @@ function NewApplications() {
                                                     </Row>
                                                     <Row style={{ marginTop: '5%' }}>
                                                         <Col className='align-self-center col-xs-1' align='center'>
-                                                            <Button className='acceptApplication' style={{ marginRight: '1%' }} >Accept</Button>
-                                                            <Button className='dismissApplication' style={{ marginLeft: '1%' }} >Dismiss</Button>
+                                                            <Button className='acceptApplication' style={{ marginRight: '1%' }} onClick={() => { processApplication(applications[idx].id) }} >Accept</Button>
+                                                            <Button className='dismissApplication' style={{ marginLeft: '1%' }} onClick={() => { processApplication(applications[idx].id) }} >Dismiss</Button>
                                                         </Col>
                                                     </Row>
                                                 </Container>
