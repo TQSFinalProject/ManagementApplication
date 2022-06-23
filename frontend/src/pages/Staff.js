@@ -169,7 +169,7 @@ function Staff() {
                                                 <Row>
                                                     <Col className='align-self-center col-xs-1' align='center'>
                                                         {staff[idx].firstName + " " + staff[idx].lastName}<br />
-                                                        <StarRating rating={averageRating(staff[idx].ratings)} />
+                                                        <StarRating rating={staff[idx].ratingMean} />
 
                                                     </Col>
                                                     <Col className='align-self-center col-xs-1' align='center' style={{ marginTop: '3%', marginBottom: '3%' }}>
