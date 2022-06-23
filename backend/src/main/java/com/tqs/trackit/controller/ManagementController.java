@@ -1,68 +1,380 @@
 package com.tqs.trackit.controller;
 
-import java.util.List;
-
-import com.tqs.trackit.model.Job_Application;
+import com.tqs.trackit.exception.ResourceNotFoundException;
+import com.tqs.trackit.model.JobApplication;
+import com.tqs.trackit.config.TokenProvider;
+import com.tqs.trackit.dtos.JobApplicationDTO;
+import com.tqs.trackit.dtos.LocationDTO;
+import com.tqs.trackit.dtos.OrderCreationDTO;
 import com.tqs.trackit.model.Order;
 import com.tqs.trackit.model.Rider;
 import com.tqs.trackit.model.Store;
-import com.tqs.trackit.service.ManagementService;
+import com.tqs.trackit.model.User;
+import com.tqs.trackit.service.AuthService;
+import com.tqs.trackit.service.JobApplicationsService;
+import com.tqs.trackit.service.OrdersService;
+import com.tqs.trackit.service.RidersService;
+import com.tqs.trackit.service.StoresService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
 public class ManagementController {
 
     @Autowired
-    private ManagementService manageServ;
+    private OrdersService ordersServ;
+
+    @Autowired
+    private RidersService ridersServ;
+
+    @Autowired
+    private StoresService storesServ;
+
+    @Autowired
+    private JobApplicationsService jobServ;
+
+    @Autowired
+    private TokenProvider jwtTokenUtil;
+
+    @Autowired
+    private AuthService authServ;
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> getOrders() {
-        return ResponseEntity.ok().body(manageServ.getOrders());
+    public ResponseEntity<Page<Order>> getOrders(@RequestParam(required = false) Integer page,@RequestParam(required = false) Long riderId,@RequestParam(required = false) Long storeId,@RequestParam(required = false) String status) {
+        if(page==null) 
+        {
+            page=0;
+        }
+
+        return ResponseEntity.ok().body(ordersServ.getOrders(page));
     }
 
-    @PostMapping("/orders")
-    public Order createOrder(@RequestBody Order order) {
-        return manageServ.saveOrder(order);
+    @GetMapping("/orders/{orderId}") 
+    public ResponseEntity<Order> getOrderById(@PathVariable(value = "orderId") Long orderId)
+        throws ResourceNotFoundException {
+        Order order1 = ordersServ.getOrderById(orderId);
+        if(order1==null) {
+            throw new ResourceNotFoundException("Order not found for this id :: " + orderId);
+        }
+        return ResponseEntity.ok().body(order1);
+    }
+
+    @GetMapping("/orders/rider/{riderId}") 
+    public ResponseEntity<Page<Order>> getOrderByRiderId(@RequestParam(required = false) Integer page, @PathVariable(value = "riderId") Long riderId) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Order> ordersByRider = ordersServ.getOrdersByRiderId(riderId,page);
+        return ResponseEntity.ok().body(ordersByRider);
+    }
+
+    @GetMapping("/orders/store/{storeId}") 
+    public ResponseEntity<Page<Order>> getOrderByStoreId(@RequestParam(required = false) Integer page, @PathVariable(value = "storeId") Long storeId) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Order> ordersByStore = ordersServ.getOrdersByStoreId(storeId,page);
+        return ResponseEntity.ok().body(ordersByStore);
+    }
+
+    @GetMapping("/orders/status/{status}") 
+    public ResponseEntity<Page<Order>> getOrderByStatus(@RequestParam(required = false) Integer page, @PathVariable(value = "status") String status) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Order> ordersByStatus = ordersServ.getOrdersByStatus(status,page);
+        return ResponseEntity.ok().body(ordersByStatus);
+    }
+
+    // @PostMapping("/orders")
+    // public Order createOrder(@RequestBody OrderDTO order) {
+    //     return ordersServ.saveOrder(order.toOrderEntity());
+    // }
+
+    @DeleteMapping("/orders/{orderId}")
+    public ResponseEntity<String> deleteOrder(@PathVariable(value = "orderId") String orderId) {
+        try {
+            Long id = Long.parseLong(orderId);
+            ordersServ.deleteOrder(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
     }
 
     @GetMapping("/riders")
-    public ResponseEntity<List<Rider>> getRiders() {
-        return ResponseEntity.ok().body(manageServ.getRiders());
+    public ResponseEntity<Page<Rider>> getRiders(@RequestParam(required = false) Integer page,@RequestParam(required = false) String sort, @RequestParam(required = false) String desc) throws ResourceNotFoundException {
+        if(page==null) {
+            page=0;
+        }
+        
+        if(sort==null) {
+            return ResponseEntity.ok().body(ridersServ.getRiders(page));
+        }
+        
+        switch(sort) {
+            case "rating":
+                if(desc!=null && desc.equals("true")) {
+                    return ResponseEntity.ok().body(ridersServ.getRidersByRating5to0(page));
+                }
+                return ResponseEntity.ok().body(ridersServ.getRidersByRating0to5(page));
+
+            case "name":
+                if(desc!=null && desc.equals("true")) {
+                    return ResponseEntity.ok().body(ridersServ.getRidersByNameZtoA(page));
+                }
+                return ResponseEntity.ok().body(ridersServ.getRidersByNameAtoZ(page));
+            
+            default:
+                throw new ResourceNotFoundException("Not a filter :: " + sort);
+                
+        }
     }
 
-    @PostMapping("/riders")
-    public Rider createRider(@RequestBody Rider rider) {
-        return manageServ.saveRider(rider);
+    @GetMapping("/riders/{riderId}") 
+    public ResponseEntity<Rider> getRiderById(@PathVariable(value = "riderId") Long riderId)
+        throws ResourceNotFoundException {
+        Rider rider1 = ridersServ.getRiderById(riderId);
+        if(rider1==null) {
+            throw new ResourceNotFoundException("Rider not found for this id :: " + riderId);
+        }
+        return ResponseEntity.ok().body(rider1);
+    }
+
+    @GetMapping("/riders/{firstName}/{lastName}") 
+    public ResponseEntity<Page<Rider>> getRiderByFullName(@RequestParam(required = false) Integer page, @PathVariable(value = "firstName") String firstName, @PathVariable(value = "lastName") String lastName) {
+        if(page==null) {
+            page=0;
+        }
+        Page<Rider> riderByName = ridersServ.getRidersByFullName(firstName, lastName, page);
+        return ResponseEntity.ok().body(riderByName);
+    }
+
+    // @PostMapping("/riders")
+    // public Rider createRider(@RequestBody RiderDTO rider) {
+    //     return ridersServ.saveRider(rider.toRiderEntity());
+    // }
+
+    @DeleteMapping("/riders/{riderId}")
+    public ResponseEntity<String> deleteRider(@PathVariable(value = "riderId") String riderId) {
+        try {
+            Long id = Long.parseLong(riderId);
+            ridersServ.deleteRider(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
     }
 
     @GetMapping("/stores")
-    public ResponseEntity<List<Store>> getStores() {
-        return ResponseEntity.ok().body(manageServ.getStores());
+    public ResponseEntity<Page<Store>> getStores(@RequestParam(required = false) Integer page) {
+        if(page==null) {
+            page=0;
+        }
+        return ResponseEntity.ok().body(storesServ.getStores(page));
     }
 
-    @PostMapping("/stores")
-    public Store createStore(@RequestBody Store store) {
-        return manageServ.saveStore(store);
+    @GetMapping("/stores/{storeId}") 
+    public ResponseEntity<Store> getStoreById(@PathVariable(value = "storeId") Long storeId)
+        throws ResourceNotFoundException {
+        Store store1 = storesServ.getStoreById(storeId);
+        if(store1==null) {
+            throw new ResourceNotFoundException("Store not found for this id :: " + storeId);
+        }
+        return ResponseEntity.ok().body(store1);
     }
 
-    @GetMapping("/job_applications")
-    public ResponseEntity<List<Job_Application>> getApplications() {
-        return ResponseEntity.ok().body(manageServ.getApplications());
+    @GetMapping("/stores/name/{storeName}") 
+    public ResponseEntity<Page<Store>> getStoreByName(@PathVariable(value = "storeName") String storeName, @RequestParam(required = false) Integer page) {
+        if(page == null) page = 0;
+        Page<Store> storeByName = storesServ.getStoreByName(page, storeName);
+        return ResponseEntity.ok().body(storeByName);
     }
 
-    @PostMapping("/job_applications")
-    public Job_Application createApplication(@RequestBody Job_Application application) {
-        return manageServ.saveApplication(application);
+    @GetMapping("/stores/address/{storeAddress}") 
+    public ResponseEntity<Page<Store>> getStoreByAddress(@PathVariable(value = "storeAddress") String storeAddress, @RequestParam(required = false) Integer page) {
+        if(page == null) page = 0;
+        Page<Store> storeByAddress = storesServ.getStoreByAddress(page, storeAddress);
+        return ResponseEntity.ok().body(storeByAddress);
     }
+
+    // @PostMapping("/stores")
+    // public ResponseEntity<Store> createStore(@RequestBody StoreDTO store) {
+    //     Store otherStore = storesServ.getStoreByName(store.getStoreName());
+    //     if(otherStore != null) return ResponseEntity.status(409).body(otherStore);
+    //     return ResponseEntity.ok().body(storesServ.saveStore(store.toStoreEntity()));
+    // }
+
+    @DeleteMapping("/stores/{storeId}")
+    public ResponseEntity<String> deleteStore(@PathVariable(value = "storeId") String storeId) {
+        try {
+            Long id = Long.parseLong(storeId);
+            storesServ.deleteStore(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
+    }
+
+    @GetMapping("/jobApplications")
+    public ResponseEntity<Page<JobApplication>> getApplications(@RequestParam(required = false) Integer page) {
+        if(page==null) {
+            page=0;
+        }
+        return ResponseEntity.ok().body(jobServ.getApplications(page));
+    }
+
+    @GetMapping("/jobApplications/{jobApplicationId}") 
+    public ResponseEntity<JobApplication> getJobApplicationById(@PathVariable(value = "jobApplicationId") Long jobApplicationId)
+        throws ResourceNotFoundException {
+        JobApplication jobApplication1 = jobServ.getApplicationById(jobApplicationId);
+        if(jobApplication1==null) {
+            throw new ResourceNotFoundException("JobApplication not found for this id :: " + jobApplicationId);
+        }
+        return ResponseEntity.ok().body(jobApplication1);
+    }
+
+    @PostMapping("/jobApplications")
+    public JobApplication createApplication(@RequestBody JobApplicationDTO application) {
+        return jobServ.saveApplication(application.toJobApplicationEntity());
+    }
+
+    @DeleteMapping("/jobApplications/{jobApplicationId}")
+    public ResponseEntity<String> deleteJobApplication(@PathVariable(value = "jobApplicationId") String jobAppId) {
+        try {
+            Long id = Long.parseLong(jobAppId);
+            jobServ.deleteApplication(id);
+            return ResponseEntity.ok().body("Deleted");
+        } 
+        catch(NumberFormatException e) { return ResponseEntity.badRequest().body("Not a Valid ID");}
+    }
+
+    // Endpoints that require authentication
+
+    @GetMapping("/rider/orders")
+    public ResponseEntity<List<Map<String,Object>>> getRiderOrdersByDistance(@RequestHeader("authorization") String auth, @RequestParam(required = false) Integer limit) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) return ResponseEntity.status(401).build();
+        List<Map<String,Object>> sortedOrder = ordersServ.getRiderOrders(rider, limit);
+        return ResponseEntity.ok().body(sortedOrder);
+    }
+
+    @PostMapping("/rider/updateLocation")
+    public ResponseEntity<LocationDTO> updateRiderLocation(@RequestHeader("authorization") String auth, @RequestBody LocationDTO location) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok().body(ridersServ.updateRiderLocation(rider, location));
+    }
+
+    @PutMapping("/rider/order/accept/{orderid}")
+    public ResponseEntity<Order> riderAcceptsOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) {
+            return ResponseEntity.status(401).build();
+        }
+        Order order;
+        try{
+            order = ordersServ.riderAcceptOrder(rider, orderid);
+            return ResponseEntity.ok().body(order);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PutMapping("/rider/order/delivering/{orderid}")
+    public ResponseEntity<Order> riderIsDeliveringOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) {
+            System.out.println("XXX");
+            return ResponseEntity.status(401).build();
+        } 
+        Order order;
+        try{
+            order = ordersServ.riderDeliveringOrder(rider, orderid);
+            return ResponseEntity.ok().body(order);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalAccessException e) {
+            System.out.println("YYY");
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PutMapping("/rider/order/complete/{orderid}")
+    public ResponseEntity<Order> riderCompletedOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Rider rider = authServ.getRiderByUser(user);
+        if(rider == null) return ResponseEntity.status(401).build();
+        Order order;
+        try{
+            order = ordersServ.riderCompleteOrder(rider, orderid);
+            return ResponseEntity.ok().body(order);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PostMapping("/store/order")
+    public ResponseEntity<Order> storeSubmitsOrder(@RequestHeader("authorization") String auth, @RequestBody OrderCreationDTO orderDto) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Store store = authServ.getStoreByUser(user);
+        if(store == null) return ResponseEntity.status(401).build();
+        System.out.println(orderDto);
+        Order order = ordersServ.newOrderFromStore(orderDto.toOrderEntity(), store);
+        return ResponseEntity.ok().body(order);
+    }
+
+    @GetMapping("/store/order/{orderid}")
+    public ResponseEntity<Map<String,Object>> storeRequestOrder(@RequestHeader("authorization") String auth, @PathVariable Long orderid) {
+        String token = auth.split(" ")[1];
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User user = authServ.getUserByUsername(username);
+        Store store = authServ.getStoreByUser(user);
+        if(store == null) return ResponseEntity.status(401).build();
+        try{
+            Map<String,Object> orderAndRider = ordersServ.storeGetsOrderAndRider(store, orderid);
+            return ResponseEntity.ok().body(orderAndRider);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
 }

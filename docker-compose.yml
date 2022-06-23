@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+
+  mysql_ti:
+      image: mysql/mysql-server:5.7
+      container_name: TI_DB
+      command: mysqld 
+      volumes:
+        - mysql-ti:/volumes/TI_DB
+      ports:
+        - "33062:3306"
+      hostname: mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=trackit
+        - MYSQL_USER=ti
+        - MYSQL_DATABASE=ti
+        - MYSQL_PASSWORD=trackit2
+      networks:
+        - management_network
+
+  ti:
+    depends_on:
+      - mysql_ti
+    build: ./backend
+    container_name: TI_API
+    restart: unless-stopped
+    image: ti-api
+    ports:
+      - 8080:8080
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysql:3306/ti
+      - spring.datasource.username=ti
+      - spring.datasource.password=trackit2
+      - spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+      - spring.jpa.hibernate.ddl-auto=update
+    networks:
+      - management_network
+
+  client:
+    build:
+        context: frontend
+        dockerfile: Dockerfile
+    ports:
+        - "3001:3001"
+    depends_on: 
+        - ti
+    networks:
+        - management_network
+
+volumes:
+  mysql-ti:
+    driver: local
+
+networks:
+  management_network:
+    driver: bridge
