@@ -9,8 +9,8 @@ function GeneralNavbar() {
             <a href="/">Home</a>
             <a href="/staff">Staff</a>
             <a href="/tasks">Tasks</a>
-            <a href="/riders">Riders</a>
             <a href="/stores">Stores</a>
+            {/* <a href="/login">Login</a> */}
             <div className="dot"></div>
         </nav>
     </>;

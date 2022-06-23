@@ -9,9 +9,8 @@ function Pagination(props) { // props.pageNumber
     window.onload = function () { // starts on page 1 by default
         pageChange(1)
     };
-
+    
     function pageChange(pageNumber) {
-        console.log(pageNumber)
         for (let i = 1; i <= props.pageNumber; i++) {
             document.getElementById("page" + i).classList.remove("active")
         }
@@ -19,7 +18,7 @@ function Pagination(props) { // props.pageNumber
         props.parentCallback(pageNumber);
     }
 
-    function shiftPage(direction) {
+    function shiftPage(direction) { 
         for (let i = 1; i <= props.pageNumber; i++) {
             if (document.getElementById("page" + i).classList.contains("active")) {
                 let newPage;

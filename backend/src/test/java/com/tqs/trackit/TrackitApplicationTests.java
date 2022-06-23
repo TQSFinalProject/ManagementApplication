@@ -1,10 +1,10 @@
-package com.tqs.chateauduvin;
+package com.tqs.trackit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ChateauduvinApplicationTests {
+class TrackitApplicationTests {
 
 	@Test
 	void contextLoads() {

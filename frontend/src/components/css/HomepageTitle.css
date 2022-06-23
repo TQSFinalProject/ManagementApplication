@@ -1,21 +1,124 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:900i&display=swap');
+/* We’ll set some colors and center everything. */
+/* body {
+    background: #4c268f;
+    color: #99eeb4;
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
 
-body {
-    /* background: yellow; */
-    font-family: 'Montserrat', sans-serif;
+/* We set the position to relative so that we can stack a blurred pseudo element on top of the original text */
+.homepageTitle {
+    position: relative;
+    font-family: "Avenir Next", sans-serif;
+    font-weight: 900;
+    font-size: 64px;
+    text-transform: uppercase;
+    font-style: italic;
+    letter-spacing: 0.05em;
+    display: inline-block;
 }
 
-.mainTitle {
+/* We create a pseudo element and blur it using the SVG filter. We’ll grab the content from the custom HTML attribute. */
+.homepageTitle:before {
     position: absolute;
-    top: 50%;
-    left: 60%;
-    transform: translate(-50%, -50%);
-    font-size: 5vw;
-    letter-spacing: 0.1vw;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke-width: 0.2vw;
-    -webkit-text-stroke-color: #DDDDDD;
-    text-shadow:
-        8px 8px #FF8C32,
-        20px 20px #06113C;
+    left: 0;
+    top: 0;
+    content: attr(filter-content);
+    filter: url(#motion-blur-filter);
+}
+
+/* We hide the SVG filter element from the DOM as it would take up some space */
+svg {
+    display: none;
+}
+
+button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    vertical-align: middle;
+    text-decoration: none;
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+button.learn-more {
+    width: 16rem;
+    height: auto;
+}
+
+button.learn-more .circle {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    display: block;
+    margin: 0;
+    width: 3rem;
+    height: 3rem;
+    background: black;
+    border-radius: 1.625rem;
+}
+
+button.learn-more .circle .icon {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: black;
+}
+
+button.learn-more .circle .icon.arrow {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    left: 0.625rem;
+    width: 1.125rem;
+    height: 0.125rem;
+    background: none;
+}
+
+button.learn-more .circle .icon.arrow::before {
+    position: absolute;
+    content: "";
+    top: -0.25rem;
+    right: 0.0625rem;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-top: 0.125rem solid whitesmoke;
+    border-right: 0.125rem solid whitesmoke;
+    transform: rotate(45deg);
+}
+
+button.learn-more .button-text {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem 0;
+    margin: 0 0 0 1.85rem;
+    color: whitesmoke;
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+button:hover .circle {
+    width: 100%;
+}
+
+button:hover .circle .icon.arrow {
+    background: whitesmoke;
+    transform: translate(1rem, 0);
+}
+
+button:hover .button-text {
+    color: whitesmoke;
 }
